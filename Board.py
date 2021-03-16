@@ -264,6 +264,8 @@ class Board:
         # Initiate the moves list
         moves = []
 
+        # If the knight is at least on the third square from the top, it can move up
+        if
 
 
 
@@ -324,6 +326,8 @@ class Board:
                 pathBlocked = True
 
         return moves
+
+
     def getBishopMoves():
         pass
 
