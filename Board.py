@@ -2,6 +2,8 @@ class Coordinate:
     def __init__(self, row, column):
         self.row = row
         self.column = column
+    def __repr__(self):
+        return  str(self.row) + ":" + str(self.column)
 
 
 class Board:
@@ -30,7 +32,8 @@ class Board:
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
         if piece != ".":
-            coord = Coordinate(row, column)
+            coord = Coordinate(int(self.ranksToRows[str(row)]), column)
+            self.whiteMove = piece.isupper()
             piece = piece.upper()
             moves = []
             if piece == "P":
@@ -38,7 +41,7 @@ class Board:
             elif piece == "R":
                 moves = self.getRookMoves(coord)
             elif piece == "N":
-                moves = self.getKingMoves(coord)
+                moves = self.getKnightMoves(coord)
             elif piece == "B":
                 moves = self.getBishopMoves(coord)
             elif piece == "Q":
@@ -118,19 +121,19 @@ class Board:
 
         # If the rook is not on the upper edge of the board, get the possible up moves
         if coord.column < 7:
-             moves.extend(self.getVertical(coord.column, 1))
+             moves.extend(self.getVertical(coord, 1))
 
         # If the rook is not on the lower edge of the board, get the possible down moves
         if coord.column > 0:
-            moves.extend(self.getVertical(coord.column, -1))
+            moves.extend(self.getVertical(coord, -1))
 
         # If the rook is not on the right edge of the board, get the possible right moves
         if coord.row < 7:
-            moves.extend(self.getHorizontal(coord.row, 1))
+            moves.extend(self.getHorizontal(coord, 1))
 
         # If the rook is not on the left edge of the board, get the possible left moves
         if coord.row > 0:
-            moves.extend(self.getHorizontal(coord.row, -1))
+            moves.extend(self.getHorizontal(coord, -1))
 
         return moves
 
@@ -207,7 +210,7 @@ class Board:
         pathBlocked = False
 
         # The first possible move is the square it is currently standing on
-        current = start.column
+        current = start.column + step
 
         # For the horizontal moves, the row will not change
         row = start.row
@@ -219,7 +222,6 @@ class Board:
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
         while not pathBlocked and current != end:
-            current += step
 
             # Get the value of the target square
             target = self.board[row][current]
@@ -253,23 +255,54 @@ class Board:
             # If the piece occupying the square is of the piece's own color, the piece can not move there and the path is blocked
             else:
                 pathBlocked = True
+            current += step
 
         return moves
 
 
 
 
-    def getKnightMoves():
+    def getKnightMoves(self, coord):
 
         # Initiate the moves list
         moves = []
 
-        # If the knight is at least on the third square from the top, it can move up
-        if
+        # Initiate a list of that contains the target squares for all 8 directions
+        targets = [
+            Coordinate(coord.row - 2, coord.column + 1),
+            Coordinate(coord.row - 1, coord.column + 2),
+            Coordinate(coord.row + 1, coord.column + 2),
+            Coordinate(coord.row + 2, coord.column + 1),
+            Coordinate(coord.row + 2, coord.column - 1),
+            Coordinate(coord.row + 1, coord.column - 2),
+            Coordinate(coord.row - 1, coord.column - 2),
+            Coordinate(coord.row - 2, coord.column - 1)
+        ]
+
+        # For each of these targets, check if they are valid moves for the knight.
+        for target in targets:
+
+            # Check if the target square is on the board
+            if target.row >= 0 and target.row <= 7 and target.column >= 0 and target.column <= 7:
+
+                # Get the value of the target square
+                square = self.board[target.row][target.column]
+
+                # If the square is empty it is a valid move, and it can be added to the moves list
+                if square == ".":
+                    moves.append(target)
+
+                # Else, if it's white's move and the target square contains a black piece, or the other way around, add the capturing move to the moves list
+                elif self.whiteMove and square.islower():
+                    moves.append(target)
+                elif not self.whiteMove and square.isupper():
+                    moves.append(target)
+
+        return moves
 
 
 
-    def getDiagonalNorthEast(self, start, step):
+    def getDiagonalNorthEast(self, start, rowStep, columnStep):
 
         # Initiate the moves list
         moves = []
@@ -282,15 +315,16 @@ class Board:
         currentColumn = start.column
         currentRow = start.row
 
-        # If the step is > 0, the end square is the top most square + 1 (without the + 1 it will not check the last square)
-        # If the step is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
-        end = 8 if step > 1 else -1
+        # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
+        # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
+        verticalEnd = 8 if rowStep > 0 else -1
+        horizontalEnd = 8 if columnStep > 0 else -1
 
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
-        while not pathBlocked and currentRow != end and currentColumn!= end:
-            currentRow += step
-            currentColumn += step
+        while not pathBlocked and currentRow != verticalEnd and currentColumn!= horizontalEnd:
+            currentRow += rowStep
+            currentColumn += columnStep
 
             # Get the value of the target square
             target = self.board[currentRow][currentColumn]
