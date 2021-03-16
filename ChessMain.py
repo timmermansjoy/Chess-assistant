@@ -5,12 +5,11 @@ from Testboards import Testboards as TB
 
 def main():
     board = Board()
-    board.board=TB.knightmoverTest
+    #board.board=TB.bishopAccessTest
     print(board)
-    print(board.getPossibleMoves(4,3))
+    print(board.getPossibleMoves(6,4))
     #move from x,y to
-    board.move(4,3,6,2)
-    board.move(4,3,6,3)
+    board.move(6,4,4,4)
     print(board)
 
 
