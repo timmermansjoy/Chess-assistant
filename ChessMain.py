@@ -5,7 +5,7 @@ from Testboards import Testboards as TB
 
 def main():
     board = Board()
-    #board.board=TB.bishopAccessTest
+    board.board=TB.bishopAccessTest
     print(board)
     print(board.getPossibleMoves(6,4))
     #move from x,y to

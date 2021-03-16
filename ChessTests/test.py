@@ -16,6 +16,7 @@ class Testboard(unittest.TestCase):
         board.board=TB.rookAccessTest
         self.assertEqual("[5:3, 3:3, 2:3, 1:3, 4:4, 4:5, 4:6, 4:7, 4:2, 4:1, 4:0]", str(board.getPossibleMoves(4,3)))
 
+
     def test_bishopTesting(self):
         board = Board()
         board.board = TB.bishopAccessTest
@@ -25,7 +26,13 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(actual), 40)
 
-    def testWhitePawnNoTakeOptions(self):
+
+    def test_PawnMoves(self):
+        board = Board()
+        self.assertEqual("[1:6, 1:5]", str(board.getPossibleMoves(1,7)))
+
+
+    def test_WhitePawnNoTakeOptions(self):
         board = Board()
         actual = str(board.getPossibleMoves(6,3))
         results = ["5:3","4:3"]
@@ -33,7 +40,8 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual)) #each move is exactely 5 long
 
-    def testWhitePawnWithTakeOptions(self):
+
+    def test_WhitePawnWithTakeOptions(self):
         board = Board()
         board.board = TB.TwoPawnTakeOptions
         actual = str(board.getPossibleMoves(4,3))
@@ -42,7 +50,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(15, len(actual))
 
-    def testWhitePawnWithOneTakeOneMove(self):
+    def test_WhitePawnWithOneTakeOneMove(self):
         board = Board()
         board.board = TB.OneTakeOneMoveOption
         actual = str(board.getPossibleMoves(4,3))
@@ -50,8 +58,10 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
+
+
     #Black Pawns
-    def testBlackPawnNoTakeOptions(self):
+    def test_BlackPawnNoTakeOptions(self):
         board = Board()
         actual = str(board.getPossibleMoves(1,3))
         results = ["3:3","2:3"]
@@ -59,7 +69,8 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual)) #each move is exactely 5 long
 
-    def testBlackPawnWithTakeOptions(self):
+
+    def test_BlackPawnWithTakeOptions(self):
         board = Board()
         board.board = TB.BlackTwoPawnTakeOptions
         actual = str(board.getPossibleMoves(4,3))
@@ -68,7 +79,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(15, len(actual))
 
-    def testBlackPawnWithOneTakeOneMove(self):
+    def test_BlackPawnWithOneTakeOneMove(self):
         board = Board()
         board.board = TB.BlackOneTakeOneMoveOption
         actual = str(board.getPossibleMoves(4,3))
