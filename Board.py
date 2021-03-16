@@ -1,3 +1,5 @@
+import logging
+
 class Coordinate:
     def __init__(self, row, column):
         self.row = row
@@ -49,7 +51,7 @@ class Board:
             elif piece == "K":
                 moves = self.getKingMoves(coord)
             else:
-                print(piece + " is not a valid piece ??") #maybe throw an error instead
+                logging.warning(piece + " is not a valid piece ??") #maybe throw an error instead
             return moves
         else:
             print("There is no piece on this square")
@@ -372,16 +374,25 @@ class Board:
         pass
 
 
+    def isValid(): # Je mag jezelf niet check zetten, move moet valide zijn,....
+        pass
+
+
+    def move(self, startRow, startColumn, endRow, endColumn):
+        if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
+            piece = self.board[startRow][startColumn]
+            self.board[startRow][startColumn] = "."
+            self.board[endRow][endColumn] = piece
+        else:
+            logging.warning('That is not a valid move')
+
+
+
 
     def __str__(self):
         result = ""
-
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                result += self.board[row][column] + " "
             result += "\n"
-
         return result
-
-    def isValid(): # Je mag jezelf niet check zetten, move moet valide zijn,....
-        pass

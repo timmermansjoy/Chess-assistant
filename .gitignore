@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pyc
+*.pyc
+
 
 # C extensions
 *.so
@@ -140,4 +143,3 @@ cython_debug/
 
 .DS_Store
 /.vscode
-.pyc

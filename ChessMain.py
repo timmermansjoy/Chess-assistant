@@ -8,6 +8,11 @@ def main():
     board.board=TB.knightmoverTest
     print(board)
     print(board.getPossibleMoves(4,3))
+    #move from x,y to
+    board.move(4,3,6,2)
+    board.move(4,3,6,3)
+    print(board)
+
 
 
 if __name__ == "__main__":
