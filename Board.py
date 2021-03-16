@@ -111,11 +111,11 @@ class Board:
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
                 # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
-                else:
+            else:
 
-                    # If this is the case, add the capturing move to the moves list
-                    if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].isupper():
-                        moves.append(Coordinate(coord.row + step, coord.column + 1))
+                # If this is the case, add the capturing move to the moves list
+                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].isupper():
+                    moves.append(Coordinate(coord.row + step, coord.column + 1))
                 #TODO: en passant
         return moves
 
