@@ -23,6 +23,7 @@ class Testboard(unittest.TestCase):
         actual = str(board.getPossibleMoves(4,3))
         for i in results:
             self.assertIn(i, actual)
+        self.assertEqual(len(actual), 40)
 
     def testWhitePawnNoTakeOptions(self):
         board = Board()
@@ -30,7 +31,51 @@ class Testboard(unittest.TestCase):
         results = ["5:3","4:3"]
         for i in results:
             self.assertIn(i, actual)
+        self.assertEqual(10, len(actual)) #each move is exactely 5 long
 
+    def testWhitePawnWithTakeOptions(self):
+        board = Board()
+        board.board = TB.TwoPawnTakeOptions
+        actual = str(board.getPossibleMoves(4,3))
+        results = ["3:2", "3:3", "3:4"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(15, len(actual))
+
+    def testWhitePawnWithOneTakeOneMove(self):
+        board = Board()
+        board.board = TB.OneTakeOneMoveOption
+        actual = str(board.getPossibleMoves(4,3))
+        results = ["3:3", "3:4"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
+    #Black Pawns
+    def testBlackPawnNoTakeOptions(self):
+        board = Board()
+        actual = str(board.getPossibleMoves(1,3))
+        results = ["3:3","2:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual)) #each move is exactely 5 long
+
+    def testBlackPawnWithTakeOptions(self):
+        board = Board()
+        board.board = TB.BlackTwoPawnTakeOptions
+        actual = str(board.getPossibleMoves(4,3))
+        results = ["5:2", "5:3", "5:4"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(15, len(actual))
+
+    def testBlackPawnWithOneTakeOneMove(self):
+        board = Board()
+        board.board = TB.BlackOneTakeOneMoveOption
+        actual = str(board.getPossibleMoves(4,3))
+        results = ["5:3", "5:4"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
 
 if __name__ == '__main__':
     unittest.main()
