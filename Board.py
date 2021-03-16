@@ -1,0 +1,349 @@
+class Coordinate:
+    def __init__(self, row, column):
+        self.row = row
+        self.column = column
+
+
+class Board:
+    def __init__(self):
+        self.board = [
+            ["r", "n", "b", "q", "k", "b", "n", "r"],
+            ["p", "p", "p", "p", "p", "p", "p", "p"],
+            [".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", "."],
+            ["P", "P", "P", "P", "P", "P", "P", "P"],
+            ["R", "N", "B", "Q", "K", "B", "N", "R"],
+        ]
+        self.whiteMove = True
+        self.whiteARookMoved = False
+        self.whiteHRookMoved = False
+        self.blackARookMoved = False
+        self.blackHRookMoved = False
+        self.moveLog = []
+        self.ranksToRows = {"1":7,"2":6,"3":5,"4":4,"5":3,"6":2,"7":1,"8":0}
+        self.rowsToRanks = {v: k for k, v in self.ranksToRows.items()}
+        self.filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
+        self.columnsToFiles = {v: k for k, v in self.filesToColumns.items()}
+
+    def getPossibleMoves(self, row, column):
+        piece = self.board[row][column]
+        if piece != ".":
+            coord = Coordinate(row, column)
+            piece = piece.upper()
+            moves = []
+            if piece == "P":
+                moves = self.getPawnMoves(coord)
+            elif piece == "R":
+                moves = self.getRookMoves(coord)
+            elif piece == "N":
+                moves = self.getKingMoves(coord)
+            elif piece == "B":
+                moves = self.getBishopMoves(coord)
+            elif piece == "Q":
+                moves = self.getQueenMoves(coord)
+            elif piece == "K":
+                moves = self.getKingMoves(coord)
+            else:
+                print(piece + " is not a valid piece ??") #maybe throw an error instead
+            return moves
+        else:
+            print("There is no piece on this square")
+            return None
+
+    def getPawnMoves(self, coord):
+
+        # Initiate the moves list
+        moves = []
+
+        # Set vertical step to one, if it is white's move the row should be increased with one
+        step = 1
+
+        # If it is black's move the pawn should move down, so the row must decrease with one, multiplying the step by -1 will make sure this is done correctly
+        if not self.whiteMove:
+            step *= -1
+
+        # Check to see if there is a piece on the square in front of the pawn
+        if self.board[coord.row + step][coord.column] == ".":
+
+            # If the square in front of the pawn is empty it can move one square up (or down for black)
+            moves.append(Coordinate(coord.row + step, coord.column))
+
+            # If the square in front of the pawn is empty and it has not yet moved, it can move two squares up (or down for black) IF that square is empty
+            if coord.row == 3.5 + (-2.5*step) and self.board[coord.row + (step * 2)][coord.column] == ".":
+                moves.append(Coordinate(coord.row + (2 * step), coord.column))
+
+        # If the pawn is not on the left edge of the board, check to see if it can capture a piece one square to the right and one square up (or down for black)
+        if coord.column > 0:
+
+            # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
+            if self.whiteMove:
+
+                # If this is the case, add the capturing move to the moves list
+                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][coord.column - 1].islower():
+                    moves.append(Coordinate(coord.row + step, coord.column - 1))
+
+            # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
+            else:
+
+                # If this is the case, add the capturing move to the moves list
+                if self.board[coord.row + step][coord.column - 1]!= "." and self.board[coord.row + step][coord.column - 1].isupper():
+                    moves.append(Coordinate(coord.row + step, coord.column - 1))
+
+        # If the pawn is not on the right edge of the board, check to see if it can capture a piece one square to the left and one square up (or down for black)
+        if coord.column < 7:
+
+            # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
+            if self.whiteMove:
+
+                # If this is the case, add the capturing move to the moves list
+                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].islower():
+                    moves.append(Coordinate(coord.row + step, coord.column + 1))
+
+                # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
+                else:
+
+                    # If this is the case, add the capturing move to the moves list
+                    if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].isupper():
+                        moves.append(Coordinate(coord.row + step, coord.column + 1))
+                #TODO: en passant
+        return moves
+
+
+    def getRookMoves(self, coord):
+
+        # Initiate the moves list
+        moves = []
+
+        # If the rook is not on the upper edge of the board, get the possible up moves
+        if coord.column < 7:
+             moves.extend(self.getVertical(coord.column, 1))
+
+        # If the rook is not on the lower edge of the board, get the possible down moves
+        if coord.column > 0:
+            moves.extend(self.getVertical(coord.column, -1))
+
+        # If the rook is not on the right edge of the board, get the possible right moves
+        if coord.row < 7:
+            moves.extend(self.getHorizontal(coord.row, 1))
+
+        # If the rook is not on the left edge of the board, get the possible left moves
+        if coord.row > 0:
+            moves.extend(self.getHorizontal(coord.row, -1))
+
+        return moves
+
+
+
+
+    def getVertical(self, start, step):
+
+       # Initiate the moves list
+        moves = []
+
+        # Only if the path of the piece is not blocked by either a piece of its own color or a piece of the opponent's color,
+        # will the rook be able to keep moving in the specified direction
+        pathBlocked = False
+
+        # The first possible move is the square it is currently standing on
+        current = start.row
+
+        # For vertical moves, the column will not change
+        col = start.column
+
+        # If the step is > 0, the end square is the top most square + 1 (without the + 1 it will not check the last square)
+        # If the step is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
+        end = 8 if step > 0 else -1
+
+        # While the path is not blocked and we have not yet reached the end square,
+        # increase or decrease the value of the current square and see if the piece can move there
+        while not pathBlocked and current != end:
+            current += step
+
+            # Get the value of the target square
+            target = self.board[current][col]
+
+            # If the square is empty, the piece can move there, and the path is not blocked
+            if target == ".":
+
+                # If this is the case, add the move to the moves list
+                moves.append(Coordinate(current, col))
+
+            # If the square is not empty, and it's white's turn, the piece can only move to this square
+            # if a black piece is currently standing on it
+            elif self.whiteMove and target.islower():
+
+                # If this is the case, add the capturing move to moves list
+                moves.append(Coordinate(current, col))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the square is not empty, and it's black's turn, the piece can only move to this square
+            # if a white piece is currently standing on it
+            elif not self.whiteMove and target.isupper():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(current, col))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the piece occupying the square is of the piece's own color, the piece can not move there and the path is blocked
+            else:
+                pathBlocked = True
+
+        return moves
+
+
+    def getHorizontal(self, start, step):
+
+        # Initiate the moves list
+        moves = []
+
+        # Only if the path of the piece is not blocked by either a piece of its own color or a piece of the opponent's color,
+        # will the rook be able to keep moving in the specified direction
+        pathBlocked = False
+
+        # The first possible move is the square it is currently standing on
+        current = start.column
+
+        # For the horizontal moves, the row will not change
+        row = start.row
+
+        # If the step is > 0, the end square is the top most square + 1 (without the + 1 it will not check the last square)
+        # If the step is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
+        end = 8 if step > 0 else -1
+
+        # While the path is not blocked and we have not yet reached the end square,
+        # increase or decrease the value of the current square and see if the piece can move there
+        while not pathBlocked and current != end:
+            current += step
+
+            # Get the value of the target square
+            target = self.board[row][current]
+
+            # If the square is empty, the piece can move there, and the path is not blocked
+            if target == ".":
+
+                # If this is the case, add the move to the moves list
+                moves.append(Coordinate(row, current))
+
+            # If the square is not empty, and it's white's turn, the piece can only move to this square
+            # if a black piece is currently standing on it
+            elif self.whiteMove and target.islower():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(row, current))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the square is not empty, and it's black's turn, the piece can only move to this square
+            # if a white piece is currently standing on it
+            elif not self.whiteMove and target.isupper():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(row, current))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the piece occupying the square is of the piece's own color, the piece can not move there and the path is blocked
+            else:
+                pathBlocked = True
+
+        return moves
+
+
+
+
+    def getKnightMoves():
+
+        # Initiate the moves list
+        moves = []
+
+
+
+
+    def getDiagonalNorthEast(self, start, step):
+
+        # Initiate the moves list
+        moves = []
+
+        # Only if the path of the piece is not blocked by either a piece of its own color or a piece of the opponent's color,
+        # will the piece be able to keep moving in the specified diagonal direction
+        pathBlocked = False
+
+        # Define the starting square of the piece that plans to move diagonally
+        currentColumn = start.column
+        currentRow = start.row
+
+        # If the step is > 0, the end square is the top most square + 1 (without the + 1 it will not check the last square)
+        # If the step is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
+        end = 8 if step > 1 else -1
+
+        # While the path is not blocked and we have not yet reached the end square,
+        # increase or decrease the value of the current square and see if the piece can move there
+        while not pathBlocked and currentRow != end and currentColumn!= end:
+            currentRow += step
+            currentColumn += step
+
+            # Get the value of the target square
+            target = self.board[currentRow][currentColumn]
+
+            # If the square is empty, the piece can move there, and the path is not blocked
+            if target == ".":
+
+                # If this is the case, add the move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+            # If the square is not empty, and it's white's turn, the piece can only move to this square
+            # if a black piece is currently standing on it
+            elif self.whiteMove and target.islower():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the square is not empty, and it's black's turn, the piece can only move to this square
+            # if a white piece is currently standing on it
+            elif not self.whiteMove and target.isupper():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the piece occupying the square is of the piece's own color, the rook can
+            else:
+                pathBlocked = True
+
+        return moves
+    def getBishopMoves():
+        pass
+
+    def getQueenMoves():
+        pass
+
+    def getKingMoves(self, coord):
+        pass
+
+
+
+    def __str__(self):
+        result = ""
+
+        for row in range(len(self.board)):
+            for column in range(len(self.board[0])):
+               result += self.board[row][column] + " "
+            result += "\n"
+
+        return result
+
+    def isValid(): # Je mag jezelf niet check zetten, move moet valide zijn,....
+        pass
