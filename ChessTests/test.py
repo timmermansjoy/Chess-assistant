@@ -27,7 +27,7 @@ class Testboard(unittest.TestCase):
     def testWhitePawnNoTakeOptions(self):
         board = Board()
         actual = str(board.getPossibleMoves(6,3))
-        results = ["5,3","4,3"]
+        results = ["5:3","4:3"]
         for i in results:
             self.assertIn(i, actual)
 

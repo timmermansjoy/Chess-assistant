@@ -34,7 +34,9 @@ class Board:
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
         if piece != ".":
-            coord = Coordinate(int(self.ranksToRows[str(row)]), column)
+            #commenting out a part of the coordinate processing because it's messing with everything and pawns have become broken enough to do ANYTHING SEND HELP
+            #coord = Coordinate(int(self.ranksToRows[str(row)]), column)
+            coord = Coordinate(row, column)
             self.whiteMove = piece.isupper()
             piece = piece.upper()
             moves = []
@@ -62,11 +64,11 @@ class Board:
         # Initiate the moves list
         moves = []
 
-        # Set vertical step to one, if it is white's move the row should be increased with one
+        # Set vertical step to one, if it is black's move the row should be increased with one
         step = 1
 
-        # If it is black's move the pawn should move down, so the row must decrease with one, multiplying the step by -1 will make sure this is done correctly
-        if not self.whiteMove:
+        # If it is white's move the pawn should move up, so the row must decrease with one, multiplying the step by -1 will make sure this is done correctly
+        if self.whiteMove:
             step *= -1
 
         # Check to see if there is a piece on the square in front of the pawn

@@ -5,11 +5,11 @@ from Testboards import Testboards as TB
 
 def main():
     board = Board()
-    board.board=TB.bishopAccessTest
+    #board.board=TB.bishopAccessTest
     print(board)
-    print(board.getPossibleMoves(6,1))
+    print(board.getPossibleMoves(6,4))
     #move from x,y to
-    board.move(6,1,3,1)
+    board.move(6,4,4,4)
     print(board)
 
 
