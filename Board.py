@@ -304,7 +304,7 @@ class Board:
 
 
 
-    def getDiagonalNorthEast(self, start, rowStep, columnStep):
+    def getDiagonalNorthWest(self, start, step):
 
         # Initiate the moves list
         moves = []
@@ -319,14 +319,14 @@ class Board:
 
         # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
         # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
-        verticalEnd = 8 if rowStep > 0 else -1
-        horizontalEnd = 8 if columnStep > 0 else -1
+        verticalEnd = 8 if step > 0 else -1
+        horizontalEnd = 8 if step > 0 else -1
 
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
         while not pathBlocked and currentRow != verticalEnd and currentColumn!= horizontalEnd:
-            currentRow += rowStep
-            currentColumn += columnStep
+            currentRow += step
+            currentColumn += step
 
             # Get the value of the target square
             target = self.board[currentRow][currentColumn]
@@ -363,9 +363,86 @@ class Board:
 
         return moves
 
+    def getDiagonalNorthEast(self, start, step):
+        # Initiate the moves list
+        moves = []
 
-    def getBishopMoves():
-        pass
+        # Only if the path of the piece is not blocked by either a piece of its own color or a piece of the opponent's color,
+        # will the piece be able to keep moving in the specified diagonal direction
+        pathBlocked = False
+
+        # Define the starting square of the piece that plans to move diagonally
+        currentColumn = start.column
+        currentRow = start.row
+
+        # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
+        # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
+        verticalEnd = 8 if step > 0 else -1
+        horizontalEnd = 8 if step > 0 else -1
+
+        # While the path is not blocked and we have not yet reached the end square,
+        # increase or decrease the value of the current square and see if the piece can move there
+        while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
+            currentRow -= step
+            currentColumn += step
+
+            # Get the value of the target square
+            target = self.board[currentRow][currentColumn]
+
+            # If the square is empty, the piece can move there, and the path is not blocked
+            if target == ".":
+
+                # If this is the case, add the move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+            # If the square is not empty, and it's white's turn, the piece can only move to this square
+            # if a black piece is currently standing on it
+            elif self.whiteMove and target.islower():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the square is not empty, and it's black's turn, the piece can only move to this square
+            # if a white piece is currently standing on it
+            elif not self.whiteMove and target.isupper():
+
+                # If this is the case, add the capturing move to the moves list
+                moves.append(Coordinate(currentRow, currentColumn))
+
+                # The piece can not move any further when it captures, so the path is blocked
+                pathBlocked = True
+
+            # If the piece occupying the square is of the piece's own color, the bishop can
+            else:
+                pathBlocked = True
+
+        return moves
+
+    def getBishopMoves(self, coord):
+
+        # Initiate the moves list
+        moves = []
+
+        # If the bishop is not on the upper or right edge of the board, get the UR moves
+        if coord.column < 7:
+             moves.extend(self.getDiagonalNorthEast(coord, 1))
+
+        # If the bishop is not on the lower or left edge of the board, get the possible DL moves
+        if coord.column > 0:
+            moves.extend(self.getDiagonalNorthEast(coord, -1))
+
+        # If the bishop is not on the left or top edge of the board, get the possible UL moves
+        if coord.row < 7:
+            moves.extend(self.getDiagonalNorthWest(coord, 1))
+
+        # If the bishop is not on the lower or right edge of the board, get the possible DR moves
+        if coord.row > 0:
+            moves.extend(self.getDiagonalNorthWest(coord, -1))
+
+        return moves
 
     def getQueenMoves():
         pass
@@ -396,3 +473,5 @@ class Board:
                result += self.board[row][column] + " "
             result += "\n"
         return result
+
+
