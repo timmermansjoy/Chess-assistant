@@ -31,6 +31,7 @@ class Board:
         self.filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
         self.columnsToFiles = {v: k for k, v in self.filesToColumns.items()}
 
+
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
         if piece != ".":
@@ -54,8 +55,9 @@ class Board:
                 logging.warning(piece + " is not a valid piece ??") #maybe throw an error instead
             return moves
         else:
-            print("There is no piece on this square")
+            logging.warning("There is no piece on this square")
             return None
+
 
     def getPawnMoves(self, coord):
 
@@ -138,8 +140,6 @@ class Board:
             moves.extend(self.getHorizontal(coord, -1))
 
         return moves
-
-
 
 
     def getVertical(self, start, step):
@@ -262,8 +262,6 @@ class Board:
         return moves
 
 
-
-
     def getKnightMoves(self, coord):
 
         # Initiate the moves list
@@ -301,7 +299,6 @@ class Board:
                     moves.append(target)
 
         return moves
-
 
 
     def getDiagonalNorthEast(self, start, rowStep, columnStep):
@@ -367,8 +364,10 @@ class Board:
     def getBishopMoves():
         pass
 
+
     def getQueenMoves():
         pass
+
 
     def getKingMoves(self, coord):
         pass
@@ -385,8 +384,6 @@ class Board:
             self.board[endRow][endColumn] = piece
         else:
             logging.warning('That is not a valid move')
-
-
 
 
     def __str__(self):
