@@ -7,9 +7,9 @@ def main():
     board = Board()
     board.board=TB.bishopAccessTest
     print(board)
-    print(board.getPossibleMoves(4,3))
+    print(board.getPossibleMoves(6,1))
     #move from x,y to
-    board.move(4,3,2,1)
+    board.move(6,1,3,1)
     print(board)
 
 

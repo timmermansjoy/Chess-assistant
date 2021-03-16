@@ -19,7 +19,17 @@ class Testboard(unittest.TestCase):
     def test_bishopTesting(self):
         board = Board()
         board.board = TB.bishopAccessTest
-        self.assertEqual("[3:4, 2:5, 5:2, 6:1, 5:4, 6:5, 3:2, 2:1]", str(board.getPossibleMoves(4,3)))
+        results = ["3:4" , "2:5", "5:2", "6:1", "5:4", "6:5", "3:2", "2:1"]
+        actual = str(board.getPossibleMoves(4,3))
+        for i in results:
+            self.assertIn(i, actual)
+
+    def testWhitePawnNoTakeOptions(self):
+        board = Board()
+        actual = str(board.getPossibleMoves(6,3))
+        results = ["5,3","4,3"]
+        for i in results:
+            self.assertIn(i, actual)
 
 
 if __name__ == '__main__':

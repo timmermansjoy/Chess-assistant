@@ -337,8 +337,8 @@ class Board:
                 # If this is the case, add the move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
 
-            # If the square is not empty, and it's white's turn, the piece can only move to this square
-            # if a black piece is currently standing on it
+                # If the square is not empty, and it's white's turn, the piece can only move to this square
+                # if a black piece is currently standing on it
             elif self.whiteMove and target.islower():
 
                 # If this is the case, add the capturing move to the moves list
@@ -347,8 +347,8 @@ class Board:
                 # The piece can not move any further when it captures, so the path is blocked
                 pathBlocked = True
 
-            # If the square is not empty, and it's black's turn, the piece can only move to this square
-            # if a white piece is currently standing on it
+                # If the square is not empty, and it's black's turn, the piece can only move to this square
+                # if a white piece is currently standing on it
             elif not self.whiteMove and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
@@ -357,7 +357,7 @@ class Board:
                 # The piece can not move any further when it captures, so the path is blocked
                 pathBlocked = True
 
-            # If the piece occupying the square is of the piece's own color, the rook can
+                # If the piece occupying the square is of the piece's own color, the rook can
             else:
                 pathBlocked = True
 
@@ -395,8 +395,8 @@ class Board:
                 # If this is the case, add the move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
 
-            # If the square is not empty, and it's white's turn, the piece can only move to this square
-            # if a black piece is currently standing on it
+                # If the square is not empty, and it's white's turn, the piece can only move to this square
+                # if a black piece is currently standing on it
             elif self.whiteMove and target.islower():
 
                 # If this is the case, add the capturing move to the moves list
@@ -405,8 +405,8 @@ class Board:
                 # The piece can not move any further when it captures, so the path is blocked
                 pathBlocked = True
 
-            # If the square is not empty, and it's black's turn, the piece can only move to this square
-            # if a white piece is currently standing on it
+                # If the square is not empty, and it's black's turn, the piece can only move to this square
+                # if a white piece is currently standing on it
             elif not self.whiteMove and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
@@ -415,7 +415,7 @@ class Board:
                 # The piece can not move any further when it captures, so the path is blocked
                 pathBlocked = True
 
-            # If the piece occupying the square is of the piece's own color, the bishop can
+                # If the piece occupying the square is of the piece's own color, the bishop can
             else:
                 pathBlocked = True
 
