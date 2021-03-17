@@ -25,6 +25,29 @@ jobs:
       - name: Run a one-line script
         run: python src/test.py
 
+
+format:
+    name: formatting code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install autopep8
+          # pip install -r requirements.txt
+      - name: format files with autopep8
+        run: |
+          autopep8 --in-place --aggressive --max-line-length=180 --recursive src/*.py
+          autopep8 --in-place --aggressive --max-line-length=180 --recursive test/*.py
+          autopep8 --in-place --aggressive --max-line-length=180 --recursive *.py
+
+
   linter:
     name: Indentation Linter
     runs-on: ubuntu-latest
