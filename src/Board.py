@@ -123,7 +123,7 @@ class Board:
 
         # If the rook is not on the upper edge of the board, get the possible up moves
         if coord.column < 7:
-             moves.extend(self.getVertical(coord, 1))
+            moves.extend(self.getVertical(coord, 1))
 
         # If the rook is not on the lower edge of the board, get the possible down moves
         if coord.column > 0:
@@ -424,7 +424,7 @@ class Board:
 
         # If the bishop is not on the upper or right edge of the board, get the UR moves
         if coord.column < 7:
-             moves.extend(self.getDiagonalNorthEast(coord, 1))
+            moves.extend(self.getDiagonalNorthEast(coord, 1))
 
         # If the bishop is not on the lower or left edge of the board, get the possible DL moves
         if coord.column > 0:
@@ -485,6 +485,6 @@ class Board:
         result = ""
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
-               result += self.board[row][column] + " "
+                result += self.board[row][column] + " "
             result += "\n"
         return result
