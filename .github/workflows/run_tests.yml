@@ -2,13 +2,13 @@ name: Unit Tests
 
 # Controls when the action will run.
 on:
-   push:
-     branches: [ main ]
-   pull_request:
-     branches: [ main ]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  # # Allows you to run this workflow manually from the Actions tab
+  # workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -26,10 +26,10 @@ jobs:
         run: python src/test.py
 
   linter:
-      name: Indentation Linter
-      runs-on: ubuntu-latest
+    name: Indentation Linter
+    runs-on: ubuntu-latest
 
-      steps:
+    steps:
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Set up Python 3.8
