@@ -1,7 +1,7 @@
 version: "3"
 
 networks:
-  Whaletank:
+  chessNetwork:
 
 services:
   python:
@@ -11,7 +11,7 @@ services:
     container_name: Python
     volumes:
       - .:/Chess
-     ports:
-       - "8080:80"
+    #  ports:
+    #    - "8080:80"
     networks:
       - chessNetwork
