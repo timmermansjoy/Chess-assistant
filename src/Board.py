@@ -1,18 +1,11 @@
 import logging
+from extra import Coordinate
 
 
 ranksToRows = {"1":7,"2":6,"3":5,"4":4,"5":3,"6":2,"7":1,"8":0}
 rowsToRanks = {v: k for k, v in ranksToRows.items()}
 filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
 columnsToFiles = {v: k for k, v in filesToColumns.items()}
-
-class Coordinate:
-    def __init__(self, row, column):
-        self.row = row
-        self.column = column
-    def __repr__(self):
-        return str(self.row) + ":" + str(self.column)
-
 
 class Board:
     def __init__(self):
@@ -365,6 +358,7 @@ class Board:
 
         return moves
 
+
     def getDiagonalNorthEast(self, start, step):
         # Initiate the moves list
         moves = []
@@ -422,6 +416,7 @@ class Board:
 
         return moves
 
+
     def getBishopMoves(self, coord):
 
         # Initiate the moves list
@@ -466,8 +461,6 @@ class Board:
             self.board[endRow][endColumn] = piece
         else:
             logging.warning('That is not a valid move')
-
-
 
 
     def notationToCords(self, notation):
