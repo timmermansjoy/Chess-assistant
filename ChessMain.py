@@ -4,18 +4,13 @@ from Testboards import Testboards as TB
 
 
 def main():
-    #board = Board()
-    #board.board=TB.bishopAccessTest
-    #print(board)
-    #print(board.getPossibleMoves(6,4))
-    #move from x,y to
-    #board.move(6,4,4,4)
-    #print(board)
     board = Board()
-    board.board = TB.BlackOneTakeOneMoveOption
+    # board.board = TB.BlackOneTakeOneMoveOption
     print(board)
-    print(board.getPossibleMoves(4,3))
-
+    print(board.getPossibleMoves(7,1))
+    print(board.notationToCords("b1c3"))
+    board.move(7,1,5,2)
+    print(board)
 
 if __name__ == "__main__":
     main()

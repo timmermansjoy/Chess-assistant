@@ -1,11 +1,17 @@
 import logging
 
+
+ranksToRows = {"1":7,"2":6,"3":5,"4":4,"5":3,"6":2,"7":1,"8":0}
+rowsToRanks = {v: k for k, v in ranksToRows.items()}
+filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
+columnsToFiles = {v: k for k, v in filesToColumns.items()}
+
 class Coordinate:
     def __init__(self, row, column):
         self.row = row
         self.column = column
     def __repr__(self):
-        return  str(self.row) + ":" + str(self.column)
+        return str(self.row) + ":" + str(self.column)
 
 
 class Board:
@@ -26,10 +32,7 @@ class Board:
         self.blackARookMoved = False
         self.blackHRookMoved = False
         self.moveLog = []
-        self.ranksToRows = {"1":7,"2":6,"3":5,"4":4,"5":3,"6":2,"7":1,"8":0}
-        self.rowsToRanks = {v: k for k, v in self.ranksToRows.items()}
-        self.filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
-        self.columnsToFiles = {v: k for k, v in self.filesToColumns.items()}
+
 
 
     def getPossibleMoves(self, row, column):
@@ -456,10 +459,31 @@ class Board:
 
 
     def move(self, startRow, startColumn, endRow, endColumn):
+        #check if the move is on a piece and is a valid move
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
             piece = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
             self.board[endRow][endColumn] = piece
+        else:
+            logging.warning('That is not a valid move')
+
+
+
+
+    def notationToCords(self, notation):
+        #strip the input of spaces
+        notation = notation.strip()
+        notation = notation.lower()
+        if len(notation) == 4:
+            startColumn = filesToColumns[notation[0]]
+            startRow = ranksToRows[notation[1]]
+            endColumn = filesToColumns[notation[2]]
+            endRow = ranksToRows[notation[3]]
+
+        if "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
+            startCord = Coordinate(startRow, startColumn)
+            endCord = Coordinate(endRow, endColumn)
+            return startCord, endCord
         else:
             logging.warning('That is not a valid move')
 
