@@ -41,19 +41,3 @@ jobs:
       - name: Lint with pylint
         run: |
           python -m pylint --disable=all -e W0311 --jobs=0 --indent-string='    ' **/*.py
-
-  black:
-    name: runner / black
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Check files using the black formatter
-        uses: rickstaa/action-black@v1
-        id: action_black
-        with:
-          black_args: "."
-      - name: Annotate diff changes using reviewdog
-        if: steps.action_black.outputs.is_formatted == 'true'
-        uses: reviewdog/action-suggester@v1
-        with:
-          tool_name: blackfmt
