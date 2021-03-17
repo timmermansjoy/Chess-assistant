@@ -25,8 +25,7 @@ jobs:
       - name: Run a one-line script
         run: python src/test.py
 
-
-format:
+  format:
     name: formatting code
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +45,6 @@ format:
           autopep8 --in-place --aggressive --max-line-length=180 --recursive src/*.py
           autopep8 --in-place --aggressive --max-line-length=180 --recursive test/*.py
           autopep8 --in-place --aggressive --max-line-length=180 --recursive *.py
-
 
   linter:
     name: Indentation Linter
