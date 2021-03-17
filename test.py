@@ -29,7 +29,7 @@ class Testboard(unittest.TestCase):
 
     def test_PawnMoves(self):
         board = Board()
-        self.assertEqual("[1:6, 1:5]", str(board.getPossibleMoves(1,7)))
+        self.assertEqual("[2:7, 3:7]", str(board.getPossibleMoves(1,7)))
 
 
     def test_WhitePawnNoTakeOptions(self):
