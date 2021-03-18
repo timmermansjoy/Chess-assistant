@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from src.extra import Coordinate
+from extra import Coordinate
 
 ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
 rowsToRanks = {v: k for k, v in ranksToRows.items()}
@@ -434,7 +434,46 @@ class Board:
         return moves
 
     def getQueenMoves(self, coord):
-        pass
+        
+        # Initiate the moves list
+        moves = []
+
+        canMoveUp = coord.row > 0
+        canMoveRight = coord.column < 7
+        canMoveDown = coord.row < 7
+        canMoveLeft = coord.column > 0
+
+        canMoveUL = canMoveUp and canMoveLeft
+        canMoveUR = canMoveUp and canMoveRight
+        canMoveDR = canMoveDown and canMoveRight
+        canMoveDL = canMoveDown and canMoveLeft
+        
+
+        # For each horizontal and vertical diretion, see if the queen can move there.
+        # If this is the case, add the moves to the moves list
+        if canMoveUp:
+            moves.extend(self.getVertical(coord, -1))
+        if canMoveRight:
+            moves.extend(self.getHorizontal(coord, 1))
+        if canMoveDown:
+            moves.extend(self.getVertical(coord, 1))
+        if canMoveLeft:
+            moves.extend(self.getHorizontal(coord, -1))
+        
+        # For each diagonal direction, see if the queen can move there
+        # If this is the case, add the moves to the moves list
+        if canMoveUL:
+            moves.extend(self.getDiagonalNorthWest(coord, -1))
+        if canMoveUR:
+            moves.extend(self.getDiagonalNorthEast(coord, 1))
+        if canMoveDR:
+            moves.extend(self.getDiagonalNorthWest(coord, 1))
+        if canMoveDL:
+            moves.extend(self.getDiagonalNorthEast(coord, -1))
+        
+        return moves
+        
+
 
     def getKingMoves(self, coord):
         pass
