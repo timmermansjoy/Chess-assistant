@@ -1,7 +1,7 @@
 import unittest
 
-from Board import Board
-from Testboards import Testboards as TB
+from src.Board import Board
+from src.Testboards import Testboards as TB
 
 
 # Basic structure per piece:

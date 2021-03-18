@@ -1,6 +1,5 @@
-from Board import Board
-from Board import Coordinate
-from Testboards import Testboards as TB
+from src.Board import *
+from src.Testboards import Testboards as TB
 
 
 def main():
