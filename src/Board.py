@@ -1,15 +1,16 @@
-import logging
+# import logging
+import numpy as np
 from extra import Coordinate
 
-
-ranksToRows = {"1":7,"2":6,"3":5,"4":4,"5":3,"6":2,"7":1,"8":0}
+ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
 rowsToRanks = {v: k for k, v in ranksToRows.items()}
-filesToColumns = {"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"h":7}
+filesToColumns = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
 columnsToFiles = {v: k for k, v in filesToColumns.items()}
+
 
 class Board:
     def __init__(self):
-        self.board = [
+        self.board = np.array([
             ["r", "n", "b", "q", "k", "b", "n", "r"],
             ["p", "p", "p", "p", "p", "p", "p", "p"],
             [".", ".", ".", ".", ".", ".", ".", "."],
@@ -18,7 +19,8 @@ class Board:
             [".", ".", ".", ".", ".", ".", ".", "."],
             ["P", "P", "P", "P", "P", "P", "P", "P"],
             ["R", "N", "B", "Q", "K", "B", "N", "R"],
-        ]
+        ])
+
         self.whiteMove = True
         self.whiteARookMoved = False
         self.whiteHRookMoved = False
@@ -26,12 +28,10 @@ class Board:
         self.blackHRookMoved = False
         self.moveLog = []
 
-
-
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
         if piece != ".":
-            #commenting out a part of the coordinate processing because it's messing with everything and pawns have become broken enough to do ANYTHING SEND HELP
+            # commenting out a part of the coordinate processing because it's messing with everything and pawns have become broken enough to do ANYTHING SEND HELP
             #coord = Coordinate(int(self.ranksToRows[str(row)]), column)
             coord = Coordinate(row, column)
             self.whiteMove = piece.isupper()
@@ -50,13 +50,15 @@ class Board:
             elif piece == "K":
                 moves = self.getKingMoves(coord)
             else:
-                logging.warning(piece + " is not a valid piece ??") #maybe throw an error instead
+                pass
+                # logging.warning(piece + " is not a valid piece ??")  # maybe throw an error instead
             return moves
         else:
-            logging.warning("There is no piece on this square")
+            pass
+            # logging.warning(piece + " is not a valid piece ??")
             return None
 
-
+    # compiles to machine code
     def getPawnMoves(self, coord):
 
         # Initiate the moves list
@@ -93,7 +95,7 @@ class Board:
             else:
 
                 # If this is the case, add the capturing move to the moves list
-                if self.board[coord.row + step][coord.column - 1]!= "." and self.board[coord.row + step][coord.column - 1].isupper():
+                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][coord.column - 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
         # If the pawn is not on the right edge of the board, check to see if it can capture a piece one square to the left and one square up (or down for black)
@@ -112,9 +114,8 @@ class Board:
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
-                #TODO: en passant
+                # TODO: en passant
         return moves
-
 
     def getRookMoves(self, coord):
 
@@ -138,7 +139,6 @@ class Board:
             moves.extend(self.getHorizontal(coord, -1))
 
         return moves
-
 
     def getVertical(self, start, step):
 
@@ -199,7 +199,6 @@ class Board:
 
         return moves
 
-
     def getHorizontal(self, start, step):
 
         # Initiate the moves list
@@ -259,7 +258,6 @@ class Board:
 
         return moves
 
-
     def getKnightMoves(self, coord):
 
         # Initiate the moves list
@@ -298,7 +296,6 @@ class Board:
 
         return moves
 
-
     def getDiagonalNorthWest(self, start, step):
 
         # Initiate the moves list
@@ -319,7 +316,7 @@ class Board:
 
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
-        while not pathBlocked and currentRow != verticalEnd and currentColumn!= horizontalEnd:
+        while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
             currentRow += step
             currentColumn += step
 
@@ -357,7 +354,6 @@ class Board:
                 pathBlocked = True
 
         return moves
-
 
     def getDiagonalNorthEast(self, start, step):
         # Initiate the moves list
@@ -416,7 +412,6 @@ class Board:
 
         return moves
 
-
     def getBishopMoves(self, coord):
 
         # Initiate the moves list
@@ -440,21 +435,17 @@ class Board:
 
         return moves
 
-
-    def getQueenMoves():
+    def getQueenMoves(self, coord):
         pass
-
 
     def getKingMoves(self, coord):
         pass
 
-
-    def isValid(): # Je mag jezelf niet check zetten, move moet valide zijn,....
+    def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         pass
 
-
     def move(self, startRow, startColumn, endRow, endColumn):
-        #check if the move is on a piece and is a valid move
+        # check if the move is on a piece and is a valid move
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
             piece = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
@@ -462,9 +453,8 @@ class Board:
         else:
             logging.warning('That is not a valid move')
 
-
     def notationToCords(self, notation):
-        #strip the input of spaces
+        # strip the input of spaces
         notation = notation.strip()
         notation = notation.lower()
         if len(notation) == 4:
@@ -479,7 +469,6 @@ class Board:
             return startCord, endCord
         else:
             logging.warning('That is not a valid move')
-
 
     def __str__(self):
         result = ""
