@@ -468,6 +468,22 @@ class Board:
         else:
             logging.warning('That is not a valid move')
 
+    # TODO refactor this with notationToCords
+    def notationMove(self, notation):
+        # strip the input of spaces
+        notation = notation.strip()
+        notation = notation.lower()
+        if len(notation) == 4:
+            startColumn = filesToColumns[notation[0]]
+            startRow = ranksToRows[notation[1]]
+            endColumn = filesToColumns[notation[2]]
+            endRow = ranksToRows[notation[3]]
+
+        if "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
+            self.move(startRow, startColumn, endRow, endColumn)
+        else:
+            logging.warning('That is not a valid move')
+
     def __str__(self):
         result = ""
         for row in range(len(self.board)):
