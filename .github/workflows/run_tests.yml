@@ -1,23 +1,19 @@
 name: Code Checks
 
 # Controls when the action will run.
-on:
-  [push, pull_request]
+on: [push, pull_request]
 
-  # # Allows you to run this workflow manually from the Actions tab
-  # workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   tests:
-    name: Run unittests
-    # The type of runner that the job will run on
+    name: Run UnitTests
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Code
       - uses: actions/checkout@v2
       - name: Install dependencies
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
