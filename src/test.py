@@ -18,7 +18,7 @@ from Testboards import Testboards as TB
 
 class Testboard(unittest.TestCase):
     # Knight moves
-        # White Knight Moves
+    # White Knight Moves
     def test_UnrestrictedWhiteKnight(self):
         board = Board()
         board.board = TB.BlankBoard
