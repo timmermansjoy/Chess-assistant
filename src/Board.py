@@ -1,4 +1,4 @@
-# import logging
+import logging
 import numpy as np
 from extra import Coordinate
 
@@ -50,12 +50,10 @@ class Board:
             elif piece == "K":
                 moves = self.getKingMoves(coord)
             else:
-                pass
-                # logging.warning(piece + " is not a valid piece ??")  # maybe throw an error instead
+                logging.warning(piece + " is not a valid piece ??")  # maybe throw an error instead
             return moves
         else:
-            pass
-            # logging.warning(piece + " is not a valid piece ??")
+            logging.warning(piece + " is not a valid piece ??")
             return None
 
     # compiles to machine code
