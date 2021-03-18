@@ -76,7 +76,7 @@ class Board:
             moves.append(Coordinate(coord.row + step, coord.column))
 
             # If the square in front of the pawn is empty and it has not yet moved, it can move two squares up (or down for black) IF that square is empty
-            if coord.row == 3.5 + (-2.5*step) and self.board[coord.row + (step * 2)][coord.column] == ".":
+            if coord.row == 3.5 + (-2.5 * step) and self.board[coord.row + (step * 2)][coord.column] == ".":
                 moves.append(Coordinate(coord.row + (2 * step), coord.column))
 
         # If the pawn is not on the left edge of the board, check to see if it can capture a piece one square to the right and one square up (or down for black)

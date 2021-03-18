@@ -6,17 +6,17 @@ from Testboards import Testboards as TB
 
 class Testboard(unittest.TestCase):
 
-    #Basic structure per piece:
-        #1 test with unrestricted movement
-        #1 test with the option to take a piece and regular movement
-        #1 test with both the option to take an enemy piece and restricted movement by a friendly piece
-    #Basic structure per test:
-        #create a Board-object and give it a Board.board
-        #if needed, edit the board with the piece you want to test
-        #create a "Results"-array with all the expected moves
-        #create an "actual"-string using board.getPossibleMoves()
-        #verify all moves in "Results" are present in "actual"
-        #verify the length of "actual" (exactely 5 characters per possible moves)
+    # Basic structure per piece:
+    # 1 test with unrestricted movement
+    # 1 test with the option to take a piece and regular movement
+    # 1 test with both the option to take an enemy piece and restricted movement by a friendly piece
+    # Basic structure per test:
+    # create a Board-object and give it a Board.board
+    # if needed, edit the board with the piece you want to test
+    # create a "Results"-array with all the expected moves
+    # create an "actual"-string using board.getPossibleMoves()
+    # verify all moves in "Results" are present in "actual"
+    # verify the length of "actual" (exactely 5 characters per possible moves)
     def test_knightTesting(self):
         board = Board()
         board.board = TB.knightAccessTest
