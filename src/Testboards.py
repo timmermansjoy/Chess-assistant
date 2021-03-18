@@ -1,5 +1,8 @@
+import numpy as np
+
+
 class Testboards:
-    noMoveForPawn = [
+    noMoveForPawn = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -8,9 +11,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", ".", "P"],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
-    ]
+    ])
 
-    oneMoveForPawn = [
+    oneMoveForPawn = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -19,9 +22,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", ".", "."],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", ".", "N", "R"]
-    ]
+    ])
 
-    captureForPawn = [
+    captureForPawn = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", ".", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -30,9 +33,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "p", "."],
         ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
 
-    noCaptureForPawn = [
+    noCaptureForPawn = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -41,9 +44,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
 
-    rookAccessTest = [
+    rookAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -52,9 +55,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
 
-    knightAccessTest = [
+    knightAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -63,9 +66,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
 
-    bishopAccessTest = [
+    bishopAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -74,8 +77,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
-    TwoPawnTakeOptions = [
+    ])
+
+    TwoPawnTakeOptions = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -84,8 +88,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
-    OneTakeOneMoveOption = [
+    ])
+
+    OneTakeOneMoveOption = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -94,9 +99,9 @@ class Testboards:
         [".", ".", ".", ".", ".", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
 
-    BlackTwoPawnTakeOptions = [
+    BlackTwoPawnTakeOptions = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -105,8 +110,9 @@ class Testboards:
         [".", ".", "P", ".", "P", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
-    BlackOneTakeOneMoveOption = [
+    ])
+
+    BlackOneTakeOneMoveOption = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -115,4 +121,4 @@ class Testboards:
         [".", ".", "p", ".", "P", ".", "P", "."],
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
-    ]
+    ])
