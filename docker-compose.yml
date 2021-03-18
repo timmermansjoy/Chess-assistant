@@ -9,8 +9,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: Python
-    volumes:
-      - .:/Chess
     #  ports:
     #    - "8080:80"
     networks:
