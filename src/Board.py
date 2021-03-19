@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from extra import Coordinate
+from src.extra import Coordinate
 
 ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
 rowsToRanks = {v: k for k, v in ranksToRows.items()}
@@ -27,6 +27,11 @@ class Board:
         self.blackARookMoved = False
         self.blackHRookMoved = False
         self.moveLog = []
+
+    def clearBoard(self):
+        for row in range(len(self.board)):
+            for column in range(len(self.board[0])):
+                self.board[row][column]= "."
 
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
