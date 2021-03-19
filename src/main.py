@@ -1,5 +1,5 @@
-from Board import *
-from Testboards import Testboards as TB
+from board import *
+from testboards import Testboards as TB
 
 
 def main():
