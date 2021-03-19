@@ -434,7 +434,7 @@ class Board:
         return moves
 
     def getQueenMoves(self, coord):
-        
+
         # Initiate the moves list
         moves = []
 
@@ -447,7 +447,6 @@ class Board:
         canMoveUR = canMoveUp and canMoveRight
         canMoveDR = canMoveDown and canMoveRight
         canMoveDL = canMoveDown and canMoveLeft
-        
 
         # For each horizontal and vertical diretion, see if the queen can move there.
         # If this is the case, add the moves to the moves list
@@ -459,7 +458,7 @@ class Board:
             moves.extend(self.getVertical(coord, 1))
         if canMoveLeft:
             moves.extend(self.getHorizontal(coord, -1))
-        
+
         # For each diagonal direction, see if the queen can move there
         # If this is the case, add the moves to the moves list
         if canMoveUL:
@@ -470,10 +469,8 @@ class Board:
             moves.extend(self.getDiagonalNorthWest(coord, 1))
         if canMoveDL:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
-        
-        return moves
-        
 
+        return moves
 
     def getKingMoves(self, coord):
         pass
@@ -484,9 +481,8 @@ class Board:
     def move(self, startRow, startColumn, endRow, endColumn):
         # check if the move is on a piece and is a valid move
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
-            piece = self.board[startRow][startColumn]
+            self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
-            self.board[endRow][endColumn] = piece
         else:
             logging.warning('That is not a valid move')
 
