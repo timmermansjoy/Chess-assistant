@@ -154,7 +154,7 @@ class Board:
         pathBlocked = False
 
         # The first possible move is the square it is currently standing on
-        current = start.row
+        current = start.row + step
 
         # For vertical moves, the column will not change
         col = start.column
@@ -166,8 +166,6 @@ class Board:
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
         while not pathBlocked and current != end:
-            current += step
-
             # Get the value of the target square
             target = self.board[current][col]
 
@@ -200,6 +198,7 @@ class Board:
             # If the piece occupying the square is of the piece's own color, the piece can not move there and the path is blocked
             else:
                 pathBlocked = True
+            current += step
 
         return moves
 
