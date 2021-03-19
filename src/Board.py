@@ -31,7 +31,7 @@ class Board:
     def clearBoard(self):
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
-                self.board[row][column]= "."
+                self.board[row][column] = "."
 
     def getPossibleMoves(self, row, column):
         piece = self.board[row][column]
