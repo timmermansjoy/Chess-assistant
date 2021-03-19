@@ -20,7 +20,8 @@ jobs:
           pip install -r requirements.txt
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: pytest src/test.py
+        # run: pytest src/test.py
+        run: python src/test.py
 
   linter:
     name: Indentation Linter
