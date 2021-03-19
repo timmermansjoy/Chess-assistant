@@ -6,6 +6,7 @@ ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
 rowsToRanks = {v: k for k, v in ranksToRows.items()}
 filesToColumns = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
 columnsToFiles = {v: k for k, v in filesToColumns.items()}
+pieces = ["r", "n", "b", "q", "k", "p"]
 
 
 class Board:
@@ -523,6 +524,19 @@ class Board:
             self.move(startRow, startColumn, endRow, endColumn)
         else:
             logging.warning('That is not a valid move')
+
+    # TODO same refactor
+    def placePieceOnNotation(self, piece, notation):
+        if piece.lower() in pieces:
+            notation = notation.strip()
+            notation = notation.lower()
+            if len(notation) == 2:
+                Column = filesToColumns[notation[0]]
+                Row = ranksToRows[notation[1]]
+                if Row <= 7 and Column <= 7:
+                    self.board[Row][Column] = piece
+        else:
+            logging.warning("not a valid piece")
 
     def __str__(self):
         result = ""

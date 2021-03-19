@@ -135,6 +135,17 @@ class Testboard(unittest.TestCase):
         self.assertEqual('.', self.board.board[7][1])
         self.assertEqual('N', self.board.board[5][2])
 
+    def test_clearingBoard(self):
+        self.board.clearBoard()
+        for i in self.board.board:
+            for j in i:
+                self.assertEqual(j, ".")
+
+    def test_placePiece(self):
+        self.assertEqual(self.board.board[3][1], '.')
+        self.board.placePieceOnNotation('k', 'b5')
+        self.assertEqual(self.board.board[3][1], 'k')
+
 
 if __name__ == '__main__':
     unittest.main()

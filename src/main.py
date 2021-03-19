@@ -8,9 +8,9 @@ def main():
     board.board = TB.queenMoves
     print(board)
     print(board.getPossibleMoves(3, 3))
-    # print(board.notationToCords("b1c3"))
-    # board.move(7, 1, 5, 2)
-    # print(board)
+    board.placePieceOnNotation('K', 'b5')
+    print(board.getPossibleMoves(3, 3))
+    print(board)
 
 
 if __name__ == "__main__":

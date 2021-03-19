@@ -1,7 +1,6 @@
 import unittest
-
-from src.Board import Board
-from src.Testboards import Testboards as TB
+from board import *
+from testboards import Testboards as TB
 
 
 # Basic structure per piece:
@@ -141,6 +140,11 @@ class Testboard(unittest.TestCase):
         for i in self.board.board:
             for j in i:
                 self.assertEqual(j, ".")
+
+    def test_placePiece(self):
+        self.assertEqual(self.board.board[3][1], '.')
+        self.board.placePieceOnNotation('k', 'b5')
+        self.assertEqual(self.board.board[3][1], 'k')
 
 
 if __name__ == '__main__':
