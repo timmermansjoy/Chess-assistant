@@ -142,5 +142,6 @@ class Testboard(unittest.TestCase):
             for j in i:
                 self.assertEqual(j, ".")
 
+
 if __name__ == '__main__':
     unittest.main()
