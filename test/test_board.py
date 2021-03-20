@@ -21,10 +21,8 @@ class Testboard(unittest.TestCase):
         self.board = Board()
 
     # Knight moves
-    # White Knight Moves
-
     def test_UnrestrictedWhiteKnight(self):
-        self.board.board = TB.BlankBoard
+        self.board.clearBoard()
         self.board.board[4][3] = "N"
         actual = str(self.board.getPossibleMoves(4, 3))
         results = ["2:2", "2:4", "3:5", "5:5", "6:4", "6:2", "5:1", "3:1"]
@@ -33,7 +31,7 @@ class Testboard(unittest.TestCase):
         self.assertEqual(40, len(actual))
 
     def test_CapturingWhiteKnight(self):
-        self.board.board = TB.BlankBoard2
+        self.board.clearBoard()
         self.board.board[4][3] = "N"
         self.board.board[2][2] = 'n'
         actual = str(self.board.getPossibleMoves(4, 3))
@@ -43,7 +41,7 @@ class Testboard(unittest.TestCase):
         self.assertEqual(40, len(actual))
 
     def test_RestrictedWhiteKnight(self):
-        self.board.board = TB.BlankBoard1
+        self.board.clearBoard()
         self.board.board[4][3] = "N"
         self.board.board[2][2] = 'n'
         self.board.board[2][4] = 'n'
@@ -55,14 +53,73 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(30, len(actual))
 
-    # Black Knight Moves
-    def test_knightTesting(self):
-        self.board.board = TB.knightAccessTest
-        self.assertEqual("[2:4, 3:5, 5:5, 6:4, 6:2, 5:1, 3:1, 2:2]", str(self.board.getPossibleMoves(4, 3)))
+    def test_UnrestrictedBlackKnight(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "n"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["2:2", "2:4", "3:5", "5:5", "6:4", "6:2", "5:1", "3:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(40, len(actual))
 
-    def test_RookTesting(self):
-        self.board.board = TB.rookAccessTest
-        self.assertEqual("[5:3, 3:3, 2:3, 1:3, 4:4, 4:5, 4:6, 4:7, 4:2, 4:1, 4:0]", str(self.board.getPossibleMoves(4, 3)))
+    def test_CapturingBlackKnight(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "n"
+        self.board.board[2][2] = 'N'
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["2:2", "2:4", "3:5", "5:5", "6:4", "6:2", "5:1", "3:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(40, len(actual))
+
+    def test_RestrictedBlackKnight(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "n"
+        self.board.board[2][2] = 'N'
+        self.board.board[2][4] = 'N'
+        self.board.board[3][5] = 'n'
+        self.board.board[5][5] = 'n'
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["2:2", "2:4", "6:4", "6:2", "5:1", "3:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(30, len(actual))
+
+    # Rook Testing
+    # White Rook Test
+    def test_UnrestrictedRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "R"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["4:4", "4:5", "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "R"
+        self.board.board[3][3] = "n"
+        self.board.board[4][4] = "p"
+        self.board.board[4][2] = "r"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:3", "4:4", "4:2", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "R"
+        self.board.board[3][3] = "N"
+        self.board.board[4][4] = "P"
+        self.board.board[4][2] = "R"
+        self.board.board[5][3] = "r"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["5:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
 
     def test_bishopTesting(self):
         self.board.board = TB.bishopAccessTest
@@ -128,6 +185,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
 
+    # board tests
     def test_NotationMoveKnight(self):
         self.assertEqual('N', self.board.board[7][1])
         self.assertEqual('.', self.board.board[5][2])
