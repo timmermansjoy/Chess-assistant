@@ -489,7 +489,7 @@ class Board:
             self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
         else:
-            logging.warning('That is not a valid move')
+            raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
     def notationToCords(self, notation):
         # strip the input of spaces
@@ -506,7 +506,7 @@ class Board:
             endCord = Coordinate(endRow, endColumn)
             return startCord, endCord
         else:
-            logging.warning('That is not a valid move')
+            raise Exception(notation, 'is not a valid move')
 
     # TODO refactor this with notationToCords
     def notationMove(self, notation):
@@ -522,7 +522,7 @@ class Board:
         if "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
             self.move(startRow, startColumn, endRow, endColumn)
         else:
-            logging.warning('That is not a valid move')
+            raise Exception(notation, 'is not a valid move')
 
     # TODO same refactor
     def placePieceOnNotation(self, piece, notation):
@@ -534,8 +534,10 @@ class Board:
                 Row = ranksToRows[notation[1]]
                 if Row <= 7 and Column <= 7:
                     self.board[Row][Column] = piece
+            else:
+                raise Exception(notation, 'is not inside the board')
         else:
-            logging.warning("not a valid piece")
+            raise Exception(piece, 'is not a valid piece')
 
     def __str__(self):
         result = ""

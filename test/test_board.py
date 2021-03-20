@@ -204,6 +204,18 @@ class Testboard(unittest.TestCase):
         self.board.placePieceOnNotation('k', 'b5')
         self.assertEqual(self.board.board[3][1], 'k')
 
+    # method 1 of testing exceptions
+    def test_placeWrongPiece(self):
+        self.assertRaises(Exception, lambda: self.board.placePieceOnNotation('H', 'b5'))
+
+    # method 2 of testing exceptions
+    def test_placeOutsideBoard(self):
+        with self.assertRaises(Exception):
+            self.board.placePieceOnNotation('Q', 'm5')
+
+        with self.assertRaises(Exception):
+            self.board.placePieceOnNotation('k', 'a99')
+
 
 if __name__ == '__main__':
     unittest.main()
