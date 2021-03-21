@@ -478,7 +478,96 @@ class Board:
         return moves
 
     def getKingMoves(self, coord):
-        pass
+        #initiate the moves list
+        moves = []
+
+        row = coord.row
+        col = coord.column
+
+        if row > 0:
+            # check if king can move to:
+            # Top Left
+            if col > 0:
+                target = self.board[row - 1][col - 1]
+                if target == ".":
+                    moves.append(Coordinate(row - 1, col - 1))
+                elif self.whiteMove and target.islower():
+                    moves.append(Coordinate(row - 1, col - 1))
+                elif not self.whiteMove and target.isupper():
+                    moves.append(Coordinate(row - 1, col - 1))
+
+
+            # Top Middle
+            target = self.board[row - 1][col]
+            if target == ".":
+                moves.append(Coordinate(row - 1, col))
+            elif self.whiteMove and target.islower():
+                moves.append(Coordinate(row - 1, col))
+            elif not self.whiteMove and target.isupper():
+                moves.append(Coordinate(row - 1, col))
+
+            # Top Right
+            if col < 7:
+                target = self.board[row - 1][col + 1]
+                if target == ".":
+                    moves.append(Coordinate(row - 1, col + 1))
+                elif self.whiteMove and target.islower():
+                    moves.append(Coordinate(row - 1, col + 1))
+                elif not self.whiteMove and target.isupper():
+                    moves.append(Coordinate(row - 1, col + 1))
+        
+        if row < 7:
+            # BOTTOM LEFT
+            if col > 0:
+                target = self.board[row + 1][col - 1]
+                if target == ".":
+                    moves.append(Coordinate(row + 1, col - 1))
+                elif self.whiteMove and target.islower():
+                    moves.append(Coordinate(row + 1, col - 1))
+                elif not self.whiteMove and target.isupper():
+                    moves.append(Coordinate(row + 1, col - 1))
+
+            # BOTTOM MIDDLE
+            target = self.board[row + 1][col]
+            if target == ".":
+                moves.append(Coordinate(row + 1, col))
+            elif self.whiteMove and target.islower():
+                moves.append(Coordinate(row + 1, col))
+            elif not self.whiteMove and target.isupper():
+                moves.append(Coordinate(row + 1, col))
+
+            # BOTTOM RIGHT
+            if row < 7:
+                target = self.board[row + 1][col + 1]
+                if target == ".":
+                    moves.append(Coordinate(row + 1, col + 1))
+                elif self.whiteMove and target.islower():
+                    moves.append(Coordinate(row + 1, col + 1))
+                elif not self.whiteMove and target.isupper():
+                    moves.append(Coordinate(row + 1, col + 1))
+        # MIDDLE LEFT
+        if col > 0:
+            target = self.board[row][col - 1]
+            if target == ".":
+                moves.append(Coordinate(row, col - 1))
+            elif self.whiteMove and target.islower():
+                moves.append(Coordinate(row, col - 1))
+            elif not self.whiteMove and target.isupper():
+                moves.append(Coordinate(row, col - 1))
+
+        # MIDDLE RIGHT
+        if col < 7:
+            target = self.board[row][col + 1]
+            if target == ".":
+                moves.append(Coordinate(row, col + 1))
+            elif self.whiteMove and target.islower():
+                moves.append(Coordinate(row, col + 1))
+            elif not self.whiteMove and target.isupper():
+                moves.append(Coordinate(row, col + 1))
+
+        
+
+        return moves
 
     def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         pass

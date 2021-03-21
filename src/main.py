@@ -5,12 +5,11 @@ from testboards import Testboards as TB
 def main():
     board = Board()
     # board.board = TB.BlackOneTakeOneMoveOption
-    board.board = TB.queenMoves
+    board.board = TB.kingNoMovesLeft
     print(board)
-    print(board.getPossibleMoves(3, 3))
-    board.placePieceOnNotation('K', 'b5')
-    print(board.getPossibleMoves(3, 3))
-    print(board)
+    print(board.getPossibleMoves(3, 0))
+    
+
 
 
 if __name__ == "__main__":
