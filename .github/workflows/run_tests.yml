@@ -21,8 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .
+          pip install -e '.[development]'
       - name: Run the tests with pytest suite
         run: python -m pytest test
 
