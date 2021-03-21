@@ -8,8 +8,6 @@ def main():
     board.board = TB.kingNoMovesLeft
     print(board)
     print(board.getPossibleMoves(3, 0))
-    
-
 
 
 if __name__ == "__main__":
