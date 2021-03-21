@@ -28,7 +28,6 @@ jobs:
   linter:
     name: Indentation Linter
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -46,6 +45,8 @@ jobs:
           python -m pylint --disable=all -e W0311 --jobs=0 --indent-string='    ' **/*.py
 
   autopep8:
+    name: autopep8 formatter
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -61,4 +62,4 @@ jobs:
           body: This is an auto-generated PR with fixes by autopep8.
           labels: autopep8, automated pr
           reviewers: timmermansjoy
-          branch: autopep8-patches
+          branch: main

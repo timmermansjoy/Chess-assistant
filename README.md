@@ -42,6 +42,14 @@ docker-compose run python
 
 and then just use python inside the container
 
+## Handy findings
+
+To have less clutter in your project you can remove the `.pyc` files and move them to another place in python versions > 3.8
+
+```bash
+ export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache/"
+```
+
 ## TODO
 
 - implement ROS container
