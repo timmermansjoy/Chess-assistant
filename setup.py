@@ -1,17 +1,30 @@
-import setuptools
+#!/usr/bin/env python3
 
-setuptools.setup(
-    name="PXL chess",  # Replace with your own username
-    version="0.0.1",
-    author="Joy Timmermans",
-    author_email="joy.timmermans@student.pxl.be",
-    description="A chess package made for Research project",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
-    python_requires=">=3.6",
-)
+import os
+from setuptools import setup
+
+directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+setup(name='PXL chess',
+      version='0.0.1',
+      description='A chess package made for Research project.',
+      author='Joy Timmermans',
+      license='MIT',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
+      package_dir={"": "src"},
+      #   packages=setup.find_packages(where="src"),
+      platforms=['any'],
+      classifiers=[
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+      ],
+      install_requires=['numpy'],
+      python_requires='>=3.6',
+      extras_require={
+          'development': ["pytest", "autopep8"]
+      },
+      include_package_data=True)
