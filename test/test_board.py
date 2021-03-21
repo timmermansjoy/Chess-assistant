@@ -200,9 +200,9 @@ class Testboard(unittest.TestCase):
                 self.assertEqual(j, ".")
 
     def test_placePiece(self):
-        self.assertEqual(self.board.board[3][1], '.')
+        assert(self.board.board[3][1]) == '.'
         self.board.placePieceOnNotation('k', 'b5')
-        self.assertEqual(self.board.board[3][1], 'k')
+        assert(self.board.board[3][1]) == 'k'
 
     # method 1 of testing exceptions
     def test_placeWrongPiece(self):
