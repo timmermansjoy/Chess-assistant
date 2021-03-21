@@ -4,15 +4,32 @@
 
 This project helps you with the help of computer vision and Ai with the optimal move to make in chess
 
-## install requirements
+## Requirements
 
-To install requirements you have to run
+To use this project it is required to install the dependencies with
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
-of that doesnt work use `pip3` this is because you also have python 2 installed
+For develoment it is required to run.
+
+```bash
+pip install -e ".[development]"
+```
+
+If that doesnt work use `pip3` this is because you also have python 2 installed
+
+## Advise
+
+When developing in python it is best to create a virtual environment. to do this, run:
+
+```bash
+python3 -m venv .venv
+```
+
+this creates a `.venv` directory in your project. VScode will prompt you if you want to use this environment already.
+To use this environment in the terminal you have to use `. .venv/bin/activate` and to leave this enviorment just type `deactivate`
 
 ## Docker
 
