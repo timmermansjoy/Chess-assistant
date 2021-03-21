@@ -1,4 +1,3 @@
-import logging
 import numpy as np
 from extra import Coordinate
 
@@ -56,11 +55,10 @@ class Board:
             elif piece == "K":
                 moves = self.getKingMoves(coord)
             else:
-                logging.warning(piece + " is not a valid piece ??")  # maybe throw an error instead
+                raise Exception(piece + " is not a valid piece ??")  # maybe throw an error instead
             return moves
         else:
-            logging.warning(piece + " is not a valid piece ??")
-            return None
+            raise Exception(piece + " is not a valid piece ??")
 
     # compiles to machine code
     def getPawnMoves(self, coord):
@@ -478,7 +476,7 @@ class Board:
         return moves
 
     def getKingMoves(self, coord):
-        #initiate the moves list
+        # initiate the moves list
         moves = []
 
         row = coord.row
@@ -495,7 +493,6 @@ class Board:
                     moves.append(Coordinate(row - 1, col - 1))
                 elif not self.whiteMove and target.isupper():
                     moves.append(Coordinate(row - 1, col - 1))
-
 
             # Top Middle
             target = self.board[row - 1][col]
@@ -515,7 +512,7 @@ class Board:
                     moves.append(Coordinate(row - 1, col + 1))
                 elif not self.whiteMove and target.isupper():
                     moves.append(Coordinate(row - 1, col + 1))
-        
+
         if row < 7:
             # BOTTOM LEFT
             if col > 0:
@@ -564,8 +561,6 @@ class Board:
                 moves.append(Coordinate(row, col + 1))
             elif not self.whiteMove and target.isupper():
                 moves.append(Coordinate(row, col + 1))
-
-        
 
         return moves
 

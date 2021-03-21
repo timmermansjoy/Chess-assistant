@@ -1,7 +1,7 @@
 name: Code Checks
 
 # Controls when the action will run.
-on: [push, pull_request]
+on: [push]
 
 jobs:
   tests:
@@ -27,6 +27,7 @@ jobs:
           pip install -e '.[development]'
       - name: Run the tests with pytest suite
         run: python -m pytest test
+        # run: python -m -n auto pytest test
 
   linter:
     name: Indentation Linter

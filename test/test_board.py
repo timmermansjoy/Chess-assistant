@@ -161,7 +161,6 @@ class Testboard(unittest.TestCase):
         self.assertEqual(10, len(actual))
 
         # Black Pawn moves
-
     def test_BlackPawnNoTakeOptions(self):
         actual = str(self.board.getPossibleMoves(1, 3))
         results = ["3:3", "2:3"]
@@ -185,7 +184,17 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
 
+    # King Test
+
+    def test_MoveKing(self):
+        self.board.board = TB.kingMoves
+        actual = str(self.board.getPossibleMoves(3, 4))
+        results = ["2:3", "2:4", "2:5", "4:3", "4:4", "4:5", "3:3", "3:5"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(40, len(actual))
     # board tests
+
     def test_NotationMoveKnight(self):
         self.assertEqual('N', self.board.board[7][1])
         self.assertEqual('.', self.board.board[5][2])
