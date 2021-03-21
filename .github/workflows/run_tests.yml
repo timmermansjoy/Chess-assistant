@@ -13,15 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
       - name: Setup python
-      - uses: actions/setup-python@v2
+        uses: actions/setup-python@v2
         with:
           python-version: ${{matrix.python-version}}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e '.[development]'
+          pip install -r requirements.txt
+          pip install -e .
       - name: Run the tests with pytest suite
         run: python -m pytest test
 
