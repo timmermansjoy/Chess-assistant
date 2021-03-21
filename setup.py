@@ -25,6 +25,6 @@ setup(name='PXL chess',
       install_requires=['numpy'],
       python_requires='>=3.6',
       extras_require={
-          'development': ["pytest", "autopep8"]
+          'development': ["pytest", "pytest-xdist", "autopep8"]
       },
       include_package_data=True)
