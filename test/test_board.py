@@ -7,6 +7,7 @@ from testboards import Testboards as TB
 # 1 test with unrestricted movement
 # 1 test with the option to take a piece and regular movement
 # 1 test with both the option to take an enemy piece and restricted movement by a friendly piece
+# TODO: tests with pieces on the edge of the board
 # Basic structure per test:
 # create a Board-object and give it a Board.board
 # if needed, edit the board with the piece you want to test
@@ -53,6 +54,8 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(30, len(actual))
 
+    # Black knight moves
+
     def test_UnrestrictedBlackKnight(self):
         self.board.clearBoard()
         self.board.board[4][3] = "n"
@@ -87,7 +90,7 @@ class Testboard(unittest.TestCase):
 
     # Rook Testing
     # White Rook Test
-    def test_UnrestrictedRookTesting(self):
+    def test_UnrestrictedWhiteRookTesting(self):
         self.board.clearBoard()
         self.board.board[4][3] = "R"
         actual = str(self.board.getPossibleMoves(4, 3))
@@ -96,7 +99,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
-    def test_CapturingRookTesting(self):
+    def test_CapturingWhiteRookTesting(self):
         self.board.clearBoard()
         self.board.board[4][3] = "R"
         self.board.board[3][3] = "n"
@@ -108,7 +111,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
-    def test_RestrictedRookTesting(self):
+    def test_RestrictedWhiteRookTesting(self):
         self.board.clearBoard()
         self.board.board[4][3] = "R"
         self.board.board[3][3] = "N"
@@ -121,20 +124,43 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
-    def test_bishopTesting(self):
-        self.board.board = TB.bishopAccessTest
-        results = ["3:4", "2:5", "5:2", "6:1", "5:4", "6:5", "3:2", "2:1"]
+        # Black Rook Test
+
+    def test_UnrestrictedBlackRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "r"
         actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["4:4", "4:5", "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
         for i in results:
             self.assertIn(i, actual)
-        self.assertEqual(len(actual), 40)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingBlackRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "r"
+        self.board.board[3][3] = "N"
+        self.board.board[4][4] = "P"
+        self.board.board[4][2] = "R"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:3", "4:4", "4:2", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedBlackRookTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "r"
+        self.board.board[3][3] = "n"
+        self.board.board[4][4] = "p"
+        self.board.board[4][2] = "r"
+        self.board.board[5][3] = "R"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["5:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
 
     # Pawn Moves
-    def test_PawnMoves(self):
-        board = Board()
-        self.assertEqual("[2:7, 3:7]", str(self.board.getPossibleMoves(1, 7)))
-        del board
-
         # White Pawn moves
 
     def test_WhitePawnNoTakeOptions(self):
@@ -161,6 +187,7 @@ class Testboard(unittest.TestCase):
         self.assertEqual(10, len(actual))
 
         # Black Pawn moves
+
     def test_BlackPawnNoTakeOptions(self):
         actual = str(self.board.getPossibleMoves(1, 3))
         results = ["3:3", "2:3"]
@@ -184,6 +211,78 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
 
+    # Bishop Testing
+    # White Bishop moves
+    def test_UnrestrictedWhiteBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "B"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "7:0", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingWhiteBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "B"
+        self.board.board[1][0] = "b"
+        self.board.board[0][7] = "b"
+        self.board.board[6][1] = "b"
+        self.board.board[7][6] = "b"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedWhiteBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "B"
+        self.board.board[1][0] = "B"
+        self.board.board[0][7] = "B"
+        self.board.board[6][1] = "B"
+        self.board.board[7][6] = "b"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "5:2", "5:4", "6:5", "7:6", "3:2", "2:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    #Black Bishop moves
+    def test_UnrestrictedBlackBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "b"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "7:0", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingBlackBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "b"
+        self.board.board[1][0] = "B"
+        self.board.board[0][7] = "B"
+        self.board.board[6][1] = "B"
+        self.board.board[7][6] = "B"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedBlackBishopTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "b"
+        self.board.board[1][0] = "b"
+        self.board.board[0][7] = "b"
+        self.board.board[6][1] = "b"
+        self.board.board[7][6] = "B"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "5:2", "5:4", "6:5", "7:6", "3:2", "2:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
     # King Test
 
     def test_MoveKing(self):
@@ -193,6 +292,7 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(40, len(actual))
+
     # board tests
 
     def test_NotationMoveKnight(self):
@@ -209,9 +309,9 @@ class Testboard(unittest.TestCase):
                 self.assertEqual(j, ".")
 
     def test_placePiece(self):
-        assert(self.board.board[3][1]) == '.'
+        assert (self.board.board[3][1]) == '.'
         self.board.placePieceOnNotation('k', 'b5')
-        assert(self.board.board[3][1]) == 'k'
+        assert (self.board.board[3][1]) == 'k'
 
     # method 1 of testing exceptions
     def test_placeWrongPiece(self):
