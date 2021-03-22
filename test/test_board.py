@@ -161,7 +161,7 @@ class Testboard(unittest.TestCase):
         self.assertEqual(len(results) * 5, len(actual))
 
     # Pawn Moves
-        # White Pawn moves
+    # White Pawn moves
 
     def test_WhitePawnNoTakeOptions(self):
         actual = str(self.board.getPossibleMoves(6, 3))
@@ -248,7 +248,7 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
-    #Black Bishop moves
+    # Black Bishop moves
     def test_UnrestrictedBlackBishopTesting(self):
         self.board.clearBoard()
         self.board.board[4][3] = "b"
@@ -283,6 +283,7 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
+
     # King Test
 
     def test_MoveKing(self):

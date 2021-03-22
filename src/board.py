@@ -37,7 +37,7 @@ class Board:
         piece = self.board[row][column]
         if piece != ".":
             # commenting out a part of the coordinate processing because it's messing with everything and pawns have become broken enough to do ANYTHING SEND HELP
-            #coord = Coordinate(int(self.ranksToRows[str(row)]), column)
+            # coord = Coordinate(int(self.ranksToRows[str(row)]), column)
             coord = Coordinate(row, column)
             self.whiteMove = piece.isupper()
             piece = piece.upper()
@@ -90,14 +90,16 @@ class Board:
             if self.whiteMove:
 
                 # If this is the case, add the capturing move to the moves list
-                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][coord.column - 1].islower():
+                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
+                    coord.column - 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
             # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
             else:
 
                 # If this is the case, add the capturing move to the moves list
-                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][coord.column - 1].isupper():
+                if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
+                    coord.column - 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
         # If the pawn is not on the right edge of the board, check to see if it can capture a piece one square to the left and one square up (or down for black)
@@ -107,14 +109,16 @@ class Board:
             if self.whiteMove:
 
                 # If this is the case, add the capturing move to the moves list
-                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].islower():
+                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
+                    coord.column + 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
                 # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
             else:
 
                 # If this is the case, add the capturing move to the moves list
-                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][coord.column + 1].isupper():
+                if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
+                    coord.column + 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
                 # TODO: en passant
         return moves
@@ -144,7 +148,7 @@ class Board:
 
     def getVertical(self, start, step):
 
-       # Initiate the moves list
+        # Initiate the moves list
         moves = []
 
         # Only if the path of the piece is not blocked by either a piece of its own color or a piece of the opponent's color,
@@ -419,19 +423,19 @@ class Board:
         moves = []
 
         # If the bishop is not on the upper or right edge of the board, get the UR moves
-        if coord.column < 7:
+        if coord.column < 7 & coord.row > 0:
             moves.extend(self.getDiagonalNorthEast(coord, 1))
 
         # If the bishop is not on the lower or left edge of the board, get the possible DL moves
-        if coord.column > 0:
+        if coord.column > 0 & coord.row < 7:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
 
         # If the bishop is not on the left or top edge of the board, get the possible UL moves
-        if coord.row < 7:
+        if coord.column > 0 & coord.row > 0:
             moves.extend(self.getDiagonalNorthWest(coord, 1))
 
         # If the bishop is not on the lower or right edge of the board, get the possible DR moves
-        if coord.row > 0:
+        if coord.column < 7 & coord.row < 7:
             moves.extend(self.getDiagonalNorthWest(coord, -1))
 
         return moves
@@ -569,7 +573,8 @@ class Board:
 
     def move(self, startRow, startColumn, endRow, endColumn):
         # check if the move is on a piece and is a valid move
-        if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
+        if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
+                self.getPossibleMoves(startRow, startColumn)):
             self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
         else:
