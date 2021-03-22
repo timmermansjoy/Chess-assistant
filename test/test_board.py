@@ -284,6 +284,92 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+    # Queen Tests
+    # White Queen Tests
+    def test_UnrestrictedWhiteQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "Q"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "7:0", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0", "4:4",
+                   "4:5", "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingWhiteQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "Q"
+        self.board.board[1][0] = "b"
+        self.board.board[0][7] = "b"
+        self.board.board[6][1] = "b"
+        self.board.board[7][6] = "b"
+        self.board.board[4][0] = "b"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0", "4:4", "4:5",
+                   "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedWhiteQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "Q"
+        self.board.board[4][4] = "B"
+        self.board.board[4][2] = "B"
+        self.board.board[5][3] = "B"
+        self.board.board[5][4] = "B"
+        self.board.board[5][2] = "B"
+        self.board.board[3][3] = "B"
+        self.board.board[3][4] = "b"
+        self.board.board[3][2] = "b"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "3:2"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    # Black Queen Tests
+    def test_UnrestrictedBlackQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "q"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "7:0", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0", "4:4",
+                   "4:5", "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_CapturingBlackQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "q"
+        self.board.board[1][0] = "B"
+        self.board.board[0][7] = "B"
+        self.board.board[6][1] = "B"
+        self.board.board[7][6] = "B"
+        self.board.board[4][0] = "B"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "2:5", "1:6", "0:7", "5:2", "6:1", "5:4", "6:5", "7:6", "3:2", "2:1", "1:0", "4:4", "4:5",
+                   "4:6", "4:7", "4:2", "4:1", "4:0", "0:3", "1:3", "2:3", "3:3", "5:3", "6:3", "7:3"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
+    def test_RestrictedBlackQueenTesting(self):
+        self.board.clearBoard()
+        self.board.board[4][3] = "q"
+        self.board.board[4][4] = "q"
+        self.board.board[4][2] = "q"
+        self.board.board[5][3] = "q"
+        self.board.board[5][4] = "b"
+        self.board.board[5][2] = "p"
+        self.board.board[3][3] = "n"
+        self.board.board[3][4] = "B"
+        self.board.board[3][2] = "B"
+        actual = str(self.board.getPossibleMoves(4, 3))
+        results = ["3:4", "3:2"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
     # King Test
 
     def test_MoveKing(self):
