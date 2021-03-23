@@ -696,14 +696,14 @@ class Board:
                     if playerIsWhite & self.board[row][column].isupper():
                         thesemoves = self.getPossibleMoves(row, column)
                         for i in thesemoves:
-                            if i not in moves:
+                            if i.__str__() not in str(moves):
                                 moves.append(i)
                     if not playerIsWhite & self.board[row][column].islower():
                         thesemoves = self.getPossibleMoves(row, column)
                         for i in thesemoves:
-                            if i not in moves:
+                            if i.__str__() not in str(moves):
                                 moves.append(i)
-        return moves
+        return list(dict.fromkeys(moves))
 
 
 
