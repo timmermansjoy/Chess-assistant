@@ -613,23 +613,40 @@ class Board:
                 raise Exception(notation, 'is not inside the board')
         else:
             raise Exception(piece, 'is not a valid piece')
-
+    #TODO: implement en passant
     def getAllAttackedFields(self, playerIsWhite):
         moves = []
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 if self.board[row][column] != ".":
                     if playerIsWhite and self.board[row][column].isupper():
-                        thesemoves = self.getPossibleMoves(row, column)
+                        if self.board[row][column] != "P":
+                            thesemoves = self.getPossibleMoves(row, column)
+                        if self.board[row][column] == "P":
+                            thesemoves = self.getPawnThreat(row-1, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
                     if not playerIsWhite and self.board[row][column].islower():
-                        thesemoves = self.getPossibleMoves(row, column)
+                        if self.board[row][column] != "p":
+                            thesemoves = self.getPossibleMoves(row, column)
+                        if self.board[row][column] == "p":
+                            thesemoves = self.getPawnThreat(row+1, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
         return list(dict.fromkeys(moves))
+
+    def getPawnThreat(self, row, column):
+        moves = []
+        if column != 0:
+            move = Coordinate(row, column-1)
+            moves.append(move)
+        if column != 7:
+            move = Coordinate(row, column+1)
+            moves.append(move)
+        return moves
+
 
     def __str__(self):
         result = ""
@@ -638,3 +655,5 @@ class Board:
                 result += self.board[row][column] + " "
             result += "\n"
         return result
+
+
