@@ -311,8 +311,8 @@ class Board:
         pathBlocked = False
 
         # Define the starting square of the piece that plans to move diagonally
-        currentColumn = start.column
-        currentRow = start.row
+        currentColumn = start.column + step
+        currentRow = start.row + step
 
         # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
         # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
@@ -322,9 +322,6 @@ class Board:
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
         while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
-            currentRow += step
-            currentColumn += step
-
             # Get the value of the target square
             target = self.board[currentRow][currentColumn]
 
@@ -357,6 +354,8 @@ class Board:
             # If the piece occupying the square is of the piece's own color, the rook can
             else:
                 pathBlocked = True
+            currentRow += step
+            currentColumn += step
 
         return moves
 
@@ -368,8 +367,8 @@ class Board:
         pathBlocked = False
 
         # Define the starting square of the piece that plans to move diagonally
-        currentColumn = start.column
-        currentRow = start.row
+        currentColumn = start.column + step
+        currentRow = start.row - step
 
         # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
         # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
@@ -379,9 +378,6 @@ class Board:
         # While the path is not blocked and we have not yet reached the end square,
         # increase or decrease the value of the current square and see if the piece can move there
         while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
-            currentRow -= step
-            currentColumn += step
-
             # Get the value of the target square
             target = self.board[currentRow][currentColumn]
 
@@ -414,6 +410,8 @@ class Board:
             # If the piece occupying the square is of the piece's own color, the bishop can
             else:
                 pathBlocked = True
+            currentRow -= step
+            currentColumn += step
 
         return moves
 
