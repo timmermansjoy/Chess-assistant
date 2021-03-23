@@ -16,7 +16,7 @@ from testboards import Testboards as TB
 # verify all moves in "Results" are present in "actual"
 # verify the length of "actual" (exactly 5 characters per possible moves)
 
-class Testboard(unittest.TestCase):
+class TestboardKnights(unittest.TestCase):
 
     def setUp(self):
         self.board = Board()
@@ -87,6 +87,12 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(30, len(actual))
+
+
+class TestboardRook(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
 
     # Rook Testing
     # White Rook Test
@@ -160,6 +166,12 @@ class Testboard(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+
+class TestboardPawns(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
+
     # Pawn Moves
     # White Pawn moves
 
@@ -185,7 +197,7 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
-    
+
     def test_WhitePawnEnPassentLeft(self):
         self.board.board = TB.enPassentStartBoard1
         self.whiteMove = False
@@ -195,7 +207,7 @@ class Testboard(unittest.TestCase):
         for i in result:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
-    
+
     def test_WhitePawnEnPassentRight(self):
         self.board.board = TB.enPassentStartBoard1
         self.whiteMove = False
@@ -205,14 +217,14 @@ class Testboard(unittest.TestCase):
         for i in result:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
-    
+
     def test_WhitePawnNoEnPassentLeft(self):
         self.board.board = TB.noEnPassentStartBoard1
         self.whiteMove = False
         self.board.move(0, 0, 1, 0)
         actual = str(self.board.getPossibleMoves(3, 1))
-        result = ["2:1"] 
-        for i in result: 
+        result = ["2:1"]
+        for i in result:
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
 
@@ -221,8 +233,8 @@ class Testboard(unittest.TestCase):
         self.whiteMove = False
         self.board.move(0, 3, 1, 2)
         actual = str(self.board.getPossibleMoves(3, 1))
-        result = ["2:1"] 
-        for i in result: 
+        result = ["2:1"]
+        for i in result:
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
 
@@ -260,7 +272,7 @@ class Testboard(unittest.TestCase):
         for i in result:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
-    
+
     def test_BlackPawnEnPassentRight(self):
         self.board.board = TB.enPassentStartBoard2
         self.whiteMove = True
@@ -280,8 +292,8 @@ class Testboard(unittest.TestCase):
         for i in result:
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
-    
-    def test_BlackPawnNoEnPassentLeft(self):
+
+    def test_BlackPawnNoEnPassentLeft2(self):
         self.board.board = TB.noEnPassentStartBoard4
         self.whiteMove = True
         self.board.move(7, 3, 6, 3)
@@ -290,6 +302,12 @@ class Testboard(unittest.TestCase):
         for i in result:
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
+
+
+class TestboardBishops(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
 
     # Bishop Testing
     # White Bishop moves
@@ -363,6 +381,12 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
+
+
+class TestboardQueen(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
 
     # Queen Tests
     # White Queen Tests
@@ -450,7 +474,14 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
+
     # King Test
+
+
+class TestboardKing(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
 
     def test_MoveKing(self):
         self.board.board = TB.kingMoves
@@ -461,6 +492,12 @@ class Testboard(unittest.TestCase):
         self.assertEqual(40, len(actual))
 
     # board tests
+
+
+class TestboardMiscTests(unittest.TestCase):
+
+    def setUp(self):
+        self.board = Board()
 
     def test_NotationMoveKnight(self):
         self.assertEqual('N', self.board.board[7][1])
