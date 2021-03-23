@@ -21,7 +21,7 @@ class Board:
             ["R", "N", "B", "Q", "K", "B", "N", "R"],
         ])
 
-        self.whiteMove = True
+        self.isWhitePiece = True
         self.whiteARookMoved = False
         self.whiteHRookMoved = False
         self.blackARookMoved = False
@@ -39,7 +39,7 @@ class Board:
             # commenting out a part of the coordinate processing because it's messing with everything and pawns have become broken enough to do ANYTHING SEND HELP
             # coord = Coordinate(int(self.ranksToRows[str(row)]), column)
             coord = Coordinate(row, column)
-            self.whiteMove = piece.isupper()
+            self.isWhitePiece = piece.isupper()
             piece = piece.upper()
             moves = []
             if piece == "P":
@@ -70,7 +70,7 @@ class Board:
         step = 1
 
         # If it is white's move the pawn should move up, so the row must decrease with one, multiplying the step by -1 will make sure this is done correctly
-        if self.whiteMove:
+        if self.isWhitePiece:
             step *= -1
 
         # Check to see if there is a piece on the square in front of the pawn
@@ -87,7 +87,7 @@ class Board:
         if coord.column > 0:
 
             # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
-            if self.whiteMove:
+            if self.isWhitePiece:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
@@ -106,7 +106,7 @@ class Board:
         if coord.column < 7:
 
             # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
-            if self.whiteMove:
+            if self.isWhitePiece:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
@@ -129,7 +129,7 @@ class Board:
             lastMoveEndCoord = self.moveLog[-1][1]
 
             # If the pawn is a white piece, it should be on row 3.
-            if coord.row == 3 and piece.isupper():
+            if coord.row == 3 and self.isWhitePiece:
 
                 # If this is the case, see if the last move was done with a pawn (of the opposite colour) and if the pawn was also placed on row 3.
                 if self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
@@ -149,7 +149,7 @@ class Board:
                         moves.append(Coordinate(coord.row - 1, coord.column + 1))
         
             # If the pawn is a black piece, it should be on row 4.
-            elif coord.row == 4 and piece.islower():
+            elif coord.row == 4 and not self.isWhitePiece:
 
                 # If this is the case, see if the last move was done with a pawn (of the opposite colour) and if the pawn was also placed on row 4.
                 if self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4: 
@@ -225,7 +225,7 @@ class Board:
 
             # If the square is not empty, and it's white's turn, the piece can only move to this square
             # if a black piece is currently standing on it
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
 
                 # If this is the case, add the capturing move to moves list
                 moves.append(Coordinate(current, col))
@@ -235,7 +235,7 @@ class Board:
 
             # If the square is not empty, and it's black's turn, the piece can only move to this square
             # if a white piece is currently standing on it
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(current, col))
@@ -284,7 +284,7 @@ class Board:
 
             # If the square is not empty, and it's white's turn, the piece can only move to this square
             # if a black piece is currently standing on it
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(row, current))
@@ -294,7 +294,7 @@ class Board:
 
             # If the square is not empty, and it's black's turn, the piece can only move to this square
             # if a white piece is currently standing on it
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(row, current))
@@ -340,9 +340,9 @@ class Board:
                     moves.append(target)
 
                 # Else, if it's white's move and the target square contains a black piece, or the other way around, add the capturing move to the moves list
-                elif self.whiteMove and square.islower():
+                elif self.isWhitePiece and square.islower():
                     moves.append(target)
-                elif not self.whiteMove and square.isupper():
+                elif not self.isWhitePiece and square.isupper():
                     moves.append(target)
 
         return moves
@@ -379,7 +379,7 @@ class Board:
 
             # If the square is not empty, and it's white's turn, the piece can only move to this square
             # if a black piece is currently standing on it
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
@@ -389,7 +389,7 @@ class Board:
 
             # If the square is not empty, and it's black's turn, the piece can only move to this square
             # if a white piece is currently standing on it
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
@@ -435,7 +435,7 @@ class Board:
 
             # If the square is not empty, and it's white's turn, the piece can only move to this square
             # if a black piece is currently standing on it
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
@@ -445,7 +445,7 @@ class Board:
 
             # If the square is not empty, and it's black's turn, the piece can only move to this square
             # if a white piece is currently standing on it
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
 
                 # If this is the case, add the capturing move to the moves list
                 moves.append(Coordinate(currentRow, currentColumn))
@@ -543,18 +543,18 @@ class Board:
                 target = self.board[row - 1][col - 1]
                 if target == ".":
                     moves.append(Coordinate(row - 1, col - 1))
-                elif self.whiteMove and target.islower():
+                elif self.isWhitePiece and target.islower():
                     moves.append(Coordinate(row - 1, col - 1))
-                elif not self.whiteMove and target.isupper():
+                elif not self.isWhitePiece and target.isupper():
                     moves.append(Coordinate(row - 1, col - 1))
 
             # Top Middle
             target = self.board[row - 1][col]
             if target == ".":
                 moves.append(Coordinate(row - 1, col))
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
                 moves.append(Coordinate(row - 1, col))
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
                 moves.append(Coordinate(row - 1, col))
 
             # Top Right
@@ -562,9 +562,9 @@ class Board:
                 target = self.board[row - 1][col + 1]
                 if target == ".":
                     moves.append(Coordinate(row - 1, col + 1))
-                elif self.whiteMove and target.islower():
+                elif self.isWhitePiece and target.islower():
                     moves.append(Coordinate(row - 1, col + 1))
-                elif not self.whiteMove and target.isupper():
+                elif not self.isWhitePiece and target.isupper():
                     moves.append(Coordinate(row - 1, col + 1))
 
         if row < 7:
@@ -573,18 +573,18 @@ class Board:
                 target = self.board[row + 1][col - 1]
                 if target == ".":
                     moves.append(Coordinate(row + 1, col - 1))
-                elif self.whiteMove and target.islower():
+                elif self.isWhitePiece and target.islower():
                     moves.append(Coordinate(row + 1, col - 1))
-                elif not self.whiteMove and target.isupper():
+                elif not self.isWhitePiece and target.isupper():
                     moves.append(Coordinate(row + 1, col - 1))
 
             # BOTTOM MIDDLE
             target = self.board[row + 1][col]
             if target == ".":
                 moves.append(Coordinate(row + 1, col))
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
                 moves.append(Coordinate(row + 1, col))
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
                 moves.append(Coordinate(row + 1, col))
 
             # BOTTOM RIGHT
@@ -592,18 +592,18 @@ class Board:
                 target = self.board[row + 1][col + 1]
                 if target == ".":
                     moves.append(Coordinate(row + 1, col + 1))
-                elif self.whiteMove and target.islower():
+                elif self.isWhitePiece and target.islower():
                     moves.append(Coordinate(row + 1, col + 1))
-                elif not self.whiteMove and target.isupper():
+                elif not self.isWhitePiece and target.isupper():
                     moves.append(Coordinate(row + 1, col + 1))
         # MIDDLE LEFT
         if col > 0:
             target = self.board[row][col - 1]
             if target == ".":
                 moves.append(Coordinate(row, col - 1))
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
                 moves.append(Coordinate(row, col - 1))
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
                 moves.append(Coordinate(row, col - 1))
 
         # MIDDLE RIGHT
@@ -611,9 +611,9 @@ class Board:
             target = self.board[row][col + 1]
             if target == ".":
                 moves.append(Coordinate(row, col + 1))
-            elif self.whiteMove and target.islower():
+            elif self.isWhitePiece and target.islower():
                 moves.append(Coordinate(row, col + 1))
-            elif not self.whiteMove and target.isupper():
+            elif not self.isWhitePiece and target.isupper():
                 moves.append(Coordinate(row, col + 1))
 
         return moves
@@ -640,7 +640,7 @@ class Board:
                 if startColumn == 7 and startRow == 7 and not self.whiteHRookMoved:
                     self.whiteHRookMoved = True
             self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
-            self.whiteMove = not self.whiteMove
+            self.isWhitePlayerTurn= not self.isWhitePlayerTurn
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
