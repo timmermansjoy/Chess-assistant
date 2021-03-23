@@ -8,7 +8,9 @@ def main():
     board.board = TB.kingNoMovesLeft
     print(board)
     print(board.getPossibleMoves(3, 0))
-
+    board.board = TB.kingMoves
+    print(board.getAllAttackedFields(False))
+    print(board.getAllAttackedFields(True))
 
 if __name__ == "__main__":
     main()
