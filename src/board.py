@@ -419,22 +419,28 @@ class Board:
 
         # Initiate the moves list
         moves = []
+        # reusing some code from Queen because it's genius and it works
+        canMoveUp = coord.row > 0
+        canMoveRight = coord.column < 7
+        canMoveDown = coord.row < 7
+        canMoveLeft = coord.column > 0
 
-        # If the bishop is not on the upper or right edge of the board, get the UR moves
-        if coord.column < 7 & coord.row > 0:
+        canMoveUL = canMoveUp and canMoveLeft
+        canMoveUR = canMoveUp and canMoveRight
+        canMoveDR = canMoveDown and canMoveRight
+        canMoveDL = canMoveDown and canMoveLeft
+
+        # For each diagonal direction, see if the queen can move there
+        # If this is the case, add the moves to the moves list
+        if canMoveUL:
+            moves.extend(self.getDiagonalNorthWest(coord, -1))
+        if canMoveUR:
             moves.extend(self.getDiagonalNorthEast(coord, 1))
-
-        # If the bishop is not on the lower or left edge of the board, get the possible DL moves
-        if coord.column > 0 & coord.row < 7:
+        if canMoveDR:
+            moves.extend(self.getDiagonalNorthWest(coord, 1))
+        if canMoveDL:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
 
-        # If the bishop is not on the left or top edge of the board, get the possible UL moves
-        if coord.column > 0 & coord.row > 0:
-            moves.extend(self.getDiagonalNorthWest(coord, 1))
-
-        # If the bishop is not on the lower or right edge of the board, get the possible DR moves
-        if coord.column < 7 & coord.row < 7:
-            moves.extend(self.getDiagonalNorthWest(coord, -1))
 
         return moves
 
