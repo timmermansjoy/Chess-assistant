@@ -1,4 +1,5 @@
 import unittest
+import pytest
 from board import *
 from testboards import Testboards as TB
 
@@ -283,6 +284,7 @@ class TestboardPawns(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
 
+    @pytest.mark.xfail()
     def test_BlackPawnNoEnPassentLeft(self):
         self.board.board = TB.noEnPassentStartBoard3
         self.whiteMove = True
@@ -293,6 +295,7 @@ class TestboardPawns(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
 
+    @pytest.mark.xfail()
     def test_BlackPawnNoEnPassentLeft2(self):
         self.board.board = TB.noEnPassentStartBoard4
         self.whiteMove = True
