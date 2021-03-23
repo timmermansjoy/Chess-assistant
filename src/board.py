@@ -681,13 +681,14 @@ class Board:
         moves = []
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
+
                 if self.board[row][column] != ".":
-                    if playerIsWhite & self.board[row][column].isupper():
+                    if playerIsWhite and self.board[row][column].isupper():
                         thesemoves = self.getPossibleMoves(row, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
-                    if not playerIsWhite & self.board[row][column].islower():
+                    if not playerIsWhite and self.board[row][column].islower():
                         thesemoves = self.getPossibleMoves(row, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
