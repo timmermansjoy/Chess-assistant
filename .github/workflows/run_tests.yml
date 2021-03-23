@@ -7,7 +7,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, pypy3]
+        python-version: [3.8, 3.9, pypy3]
         os: [windows-latest, ubuntu-latest]
         exclude:
           - os: windows-latest
