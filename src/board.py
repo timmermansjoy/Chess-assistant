@@ -42,7 +42,7 @@ class Board:
             directions['left'] = True
         if coord.column < 7:
             directions['right'] = True
-        
+
         directions['upLeft'] = directions['up'] + directions['left']
         directions['upRight'] = directions['up'] + directions['right']
         directions['downRight'] = directions['down'] + directions['right']
@@ -490,7 +490,7 @@ class Board:
         # Initiate the moves list
         moves = []
 
-        # Get the directions the piece can move to 
+        # Get the directions the piece can move to
         directions = self.getDirections(coord)
 
         # For each diagonal direction, see if the queen can move there
@@ -584,7 +584,7 @@ class Board:
                 target = self.board[row + 1][col + 1]
                 if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
                     moves.append(Coordinate(row + 1, col + 1))
-            
+
         # MIDDLE LEFT
         if directions['left']:
             target = self.board[row][col - 1]
@@ -605,8 +605,6 @@ class Board:
         col = coord.column
         if coord in moves:
             print("move is not valid")
-
-
 
     def move(self, startRow, startColumn, endRow, endColumn):
         # check if the move is on a piece and is a valid move
