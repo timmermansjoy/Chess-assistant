@@ -120,7 +120,53 @@ class Board:
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
                     coord.column + 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
-                # TODO: en passant
+
+        # EN PASSENT
+        piece = self.board[coord.row][coord.column]
+
+        # Get the last move from the moveLog
+        if len(self.moveLog) > 0:
+            lastMoveEndCoord = self.moveLog[-1][1]
+
+            # If the pawn is a white piece, it should be on row 3.
+            if coord.row == 3 and piece.isupper():
+
+                # If this is the case, see if the last move was done with a pawn (of the opposite colour) and if the pawn was also placed on row 3.
+                if self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+
+                    # If this is the case, see if the black pawn is one square to the left of the white pawn.
+                    if lastMoveEndCoord.column == coord.column - 1:
+
+                        # If so, the en passent move can be made!
+                        print("En Passant!!")
+                        moves.append(Coordinate(coord.row - 1, coord.column - 1))
+                
+                    # If this is the case, see if the black pawn is one square to the right of the white pawn.
+                    if lastMoveEndCoord.column == coord.column + 1:
+
+                        # If so, the en passent move can be made!
+                        print("En Passent!!")
+                        moves.append(Coordinate(coord.row - 1, coord.column + 1))
+        
+            # If the pawn is a black piece, it should be on row 4.
+            elif coord.row == 4 and piece.islower():
+
+                # If this is the case, see if the last move was done with a pawn (of the opposite colour) and if the pawn was also placed on row 4.
+                if self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4: 
+
+                    # If this is the case, see if the black pawn is one square to the left of the white pawn.
+                    if lastMoveEndCoord.column == coord.column - 1:
+
+                        # If so, the en passent move can be made!
+                        print("En Passant!!")
+                        moves.append(Coordinate(coord.row + 1, coord.column - 1))
+                
+                    # If this is the case, see if the black pawn is one square to the right of the white pawn.
+                    if lastMoveEndCoord.column == coord.column + 1: 
+
+                        # If so, the en passent move can be made!
+                        print("En Passant!!")
+                        moves.append(Coordinate(coord.row + 1, coord.column + 1))
         return moves
 
     def getRookMoves(self, coord):
@@ -581,6 +627,20 @@ class Board:
                 self.getPossibleMoves(startRow, startColumn)):
             self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
+
+            piece = self.board[startRow][startColumn]
+            if piece.islower():
+                if startColumn == 0 and startRow == 0 and not self.blackARookMoved:
+                    self.blackARookMoved = True
+                if startColumn == 7 and startRow == 0 and not self.blackHRookMoved: 
+                    self.blackHRookMoved = True
+            else: 
+                if startColumn == 0 and startRow == 7 and not self.whiteARookMoved: 
+                    self.whiteARookMoved = True
+                if startColumn == 7 and startRow == 7 and not self.whiteHRookMoved:
+                    self.whiteHRookMoved = True
+            self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
+            self.whiteMove = not self.whiteMove
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 

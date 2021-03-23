@@ -185,6 +185,46 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
+    
+    def test_WhitePawnEnPassentLeft(self):
+        self.board.board = TB.enPassentStartBoard1
+        self.whiteMove = False
+        self.board.move(1, 0, 3, 0)
+        actual = str(self.board.getPossibleMoves(3, 1))
+        result = ["2:1", "2:0"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
+    
+    def test_WhitePawnEnPassentRight(self):
+        self.board.board = TB.enPassentStartBoard1
+        self.whiteMove = False
+        self.board.move(1, 2, 3, 2)
+        actual = str(self.board.getPossibleMoves(3, 1))
+        result = ["2:1", "2:2"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
+    
+    def test_WhitePawnNoEnPassentLeft(self):
+        self.board.board = TB.noEnPassentStartBoard1
+        self.whiteMove = False
+        self.board.move(0, 0, 1, 0)
+        actual = str(self.board.getPossibleMoves(3, 1))
+        result = ["2:1"] 
+        for i in result: 
+            self.assertIn(i, actual)
+        self.assertEqual(5, len(actual))
+
+    def test_WhitePawnNoEnPassentRight(self):
+        self.board.board = TB.noEnPassentStartBoard2
+        self.whiteMove = False
+        self.board.move(0, 3, 1, 2)
+        actual = str(self.board.getPossibleMoves(3, 1))
+        result = ["2:1"] 
+        for i in result: 
+            self.assertIn(i, actual)
+        self.assertEqual(5, len(actual))
 
         # Black Pawn moves
 
@@ -210,6 +250,46 @@ class Testboard(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
+
+    def test_BlackPawnEnPassentLeft(self):
+        self.board.board = TB.enPassentStartBoard2
+        self.whiteMove = True
+        self.board.move(6, 1, 4, 1)
+        actual = str(self.board.getPossibleMoves(4, 2))
+        result = ["5:2", "5:1"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
+    
+    def test_BlackPawnEnPassentRight(self):
+        self.board.board = TB.enPassentStartBoard2
+        self.whiteMove = True
+        self.board.move(6, 3, 4, 3)
+        actual = str(self.board.getPossibleMoves(4, 2))
+        result = ["5:2", "5:3"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(10, len(actual))
+
+    def test_BlackPawnNoEnPassentLeft(self):
+        self.board.board = TB.noEnPassentStartBoard3
+        self.whiteMove = True
+        self.board.move(7, 2, 5, 0)
+        actual = str(self.board.getPossibleMoves(4, 2))
+        result = ["5:2"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(5, len(actual))
+    
+    def test_BlackPawnNoEnPassentLeft(self):
+        self.board.board = TB.noEnPassentStartBoard4
+        self.whiteMove = True
+        self.board.move(7, 3, 6, 3)
+        actual = str(self.board.getPossibleMoves(4, 2))
+        result = ["5:2"]
+        for i in result:
+            self.assertIn(i, actual)
+        self.assertEqual(5, len(actual))
 
     # Bishop Testing
     # White Bishop moves
