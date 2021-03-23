@@ -43,10 +43,10 @@ class Board:
         if coord.column < 7:
             directions['right'] = True
         
-        directions['upLeft'] = directions['up'] + directions['left']
-        directions['upRight'] = directions['up'] + directions['right']
-        directions['downRight'] = directions['down'] + directions['right']
-        directions['downLeft'] = directions['down'] + directions['left']
+        directions['upLeft'] = directions['up'] and directions['left']
+        directions['upRight'] = directions['up'] and directions['right']
+        directions['downRight'] = directions['down'] and directions['right']
+        directions['downLeft'] = directions['down'] and directions['left']
 
         return directions
 

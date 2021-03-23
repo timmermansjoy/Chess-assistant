@@ -293,7 +293,7 @@ class TestboardPawns(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
 
-    def test_BlackPawnNoEnPassentLeft2(self):
+    def test_BlackPawnNoEnPassentRight(self):
         self.board.board = TB.noEnPassentStartBoard4
         self.whiteMove = True
         self.board.move(7, 3, 6, 3)
