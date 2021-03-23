@@ -389,7 +389,7 @@ class Board:
 
         # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
         # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
-        verticalEnd = 8 if step > 0 else -1
+        verticalEnd = 8 if step < 0 else -1
         horizontalEnd = 8 if step > 0 else -1
 
         # While the path is not blocked and we have not yet reached the end square,
