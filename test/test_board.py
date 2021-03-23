@@ -575,7 +575,11 @@ class TestboardGetAllAttackedFields(unittest.TestCase):
         self.board.board[5][5] = "r"
         self.board.board[6][6] = "B"
         actual = str(self.board.getAllAttackedFields(True))
-        print(actual)
+        results = ["1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "0:1", "0:2", "0:3", "0:4", "5:2", "6:2", "7:2", "5:5",
+                   "7:5", "5:7", "7:7"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
 
 
 if __name__ == '__main__':
