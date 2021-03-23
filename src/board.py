@@ -42,7 +42,7 @@ class Board:
             directions['left'] = True
         if coord.column < 7:
             directions['right'] = True
-        
+
         directions['upLeft'] = directions['up'] + directions['left']
         directions['upRight'] = directions['up'] + directions['right']
         directions['downRight'] = directions['down'] + directions['right']
@@ -490,7 +490,7 @@ class Board:
         # Initiate the moves list
         moves = []
 
-        # Get the directions the piece can move to 
+        # Get the directions the piece can move to
         directions = self.getDirections(coord)
 
         # For each diagonal direction, see if the queen can move there
@@ -551,38 +551,6 @@ class Board:
         if directions['up']:
             # Check if king can move to:
             # Top Left
-<<<<<<< HEAD
-            if col > 0:
-                if self.isValid(Coordinate(row - 1,col - 1)):
-                    target = self.board[row - 1][col - 1]
-                    if target == ".":
-                        moves.append(Coordinate(row - 1, col - 1))
-                    elif self.isWhitePiece and target.islower():
-                        moves.append(Coordinate(row - 1, col - 1))
-                    elif not self.isWhitePiece and target.isupper():
-                        moves.append(Coordinate(row - 1, col - 1))
-
-            # Top Middle
-            if self.isValid(Coordinate(row - 1,col)):
-                target = self.board[row - 1][col]
-                if target == ".":
-                    moves.append(Coordinate(row - 1, col))
-                elif self.isWhitePiece and target.islower():
-                    moves.append(Coordinate(row - 1, col))
-                elif not self.isWhitePiece and target.isupper():
-                    moves.append(Coordinate(row - 1, col))
-
-            # Top Right
-            if col < 7:
-                if self.isValid(Coordinate(row - 1,col + 1)):
-                    target = self.board[row - 1][col + 1]
-                    if target == ".":
-                        moves.append(Coordinate(row - 1, col + 1))
-                    elif self.isWhitePiece and target.islower():
-                        moves.append(Coordinate(row - 1, col + 1))
-                    elif not self.isWhitePiece and target.isupper():
-                        moves.append(Coordinate(row - 1, col + 1))
-=======
             if directions['left']:
                 target = self.board[row - 1][col - 1]
                 if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
@@ -598,63 +566,9 @@ class Board:
                 target = self.board[row - 1][col + 1]
                 if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
                     moves.append(Coordinate(row - 1, col + 1))
->>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
 
         if directions['down']:
             # BOTTOM LEFT
-<<<<<<< HEAD
-            if col > 0:
-                if self.isValid(Coordinate(row + 1,col - 1)):
-                    target = self.board[row + 1][col - 1]
-                    if target == ".":
-                        moves.append(Coordinate(row + 1, col - 1))
-                    elif self.isWhitePiece and target.islower():
-                        moves.append(Coordinate(row + 1, col - 1))
-                    elif not self.isWhitePiece and target.isupper():
-                        moves.append(Coordinate(row + 1, col - 1))
-
-            # BOTTOM MIDDLE
-            if self.isValid(Coordinate(row + 1,col)):
-                target = self.board[row + 1][col]
-                if target == ".":
-                    moves.append(Coordinate(row + 1, col))
-                elif self.isWhitePiece and target.islower():
-                    moves.append(Coordinate(row + 1, col))
-                elif not self.isWhitePiece and target.isupper():
-                    moves.append(Coordinate(row + 1, col))
-
-            # BOTTOM RIGHT
-            if row < 7:
-                if self.isValid(Coordinate(row + 1,col + 1)):
-                    target = self.board[row + 1][col + 1]
-                    if target == ".":
-                        moves.append(Coordinate(row + 1, col + 1))
-                    elif self.isWhitePiece and target.islower():
-                        moves.append(Coordinate(row + 1, col + 1))
-                    elif not self.isWhitePiece and target.isupper():
-                        moves.append(Coordinate(row + 1, col + 1))
-        # MIDDLE LEFT
-        if col > 0:
-            if self.isValid(Coordinate(row,col - 1)):
-                target = self.board[row][col - 1]
-                if target == ".":
-                    moves.append(Coordinate(row, col - 1))
-                elif self.isWhitePiece and target.islower():
-                    moves.append(Coordinate(row, col - 1))
-                elif not self.isWhitePiece and target.isupper():
-                    moves.append(Coordinate(row, col - 1))
-
-        # MIDDLE RIGHT
-        if col < 7:
-            if self.isValid(Coordinate(row,col + 1)):
-                target = self.board[row][col + 1]
-                if target == ".":
-                    moves.append(Coordinate(row, col + 1))
-                elif self.isWhitePiece and target.islower():
-                    moves.append(Coordinate(row, col + 1))
-                elif not self.isWhitePiece and target.isupper():
-                    moves.append(Coordinate(row, col + 1))
-=======
             if directions['left']:
                 target = self.board[row + 1][col - 1]
                 if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
@@ -670,7 +584,7 @@ class Board:
                 target = self.board[row + 1][col + 1]
                 if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
                     moves.append(Coordinate(row + 1, col + 1))
-            
+
         # MIDDLE LEFT
         if directions['left']:
             target = self.board[row][col - 1]
@@ -682,7 +596,6 @@ class Board:
             target = self.board[row][col + 1]
             if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
                 moves.append(Coordinate(row, col + 1))
->>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
 
         return moves
 
@@ -692,8 +605,6 @@ class Board:
         col = coord.column
         if coord in moves:
             print("move is not valid")
-
-
 
     def move(self, startRow, startColumn, endRow, endColumn):
         # check if the move is on a piece and is a valid move
@@ -771,15 +682,6 @@ class Board:
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 if self.board[row][column] != ".":
-<<<<<<< HEAD
-                    if playerIsWhite and self.board[row][column].isupper():
-                        moves.extend(self.getPossibleMoves(row,column))
-                    if not playerIsWhite and self.board[row][column].islower():
-                        moves.extend(self.getPossibleMoves(row,column))
-        return moves
-
-
-=======
                     if playerIsWhite & self.board[row][column].isupper():
                         thesemoves = self.getPossibleMoves(row, column)
                         for i in thesemoves:
@@ -791,7 +693,6 @@ class Board:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
         return list(dict.fromkeys(moves))
->>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
 
     def __str__(self):
         result = ""
