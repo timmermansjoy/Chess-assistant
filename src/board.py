@@ -47,7 +47,7 @@ class Board:
             directions['left'] = True
         if coord.column < 7:
             directions['right'] = True
-        
+
         directions['upLeft'] = directions['up'] and directions['left']
         directions['upRight'] = directions['up'] and directions['right']
         directions['downRight'] = directions['down'] and directions['right']
@@ -411,7 +411,8 @@ class Board:
                 raise Exception(notation, 'is not inside the board')
         else:
             raise Exception(piece, 'is not a valid piece')
-    #TODO: implement en passant
+    # TODO: implement en passant
+
     def getAllAttackedFields(self, playerIsWhite):
         moves = []
         for row in range(len(self.board)):
@@ -421,7 +422,7 @@ class Board:
                         if self.board[row][column] != "P":
                             thesemoves = self.getPossibleMoves(row, column)
                         if self.board[row][column] == "P":
-                            thesemoves = self.getPawnThreat(row-1, column)
+                            thesemoves = self.getPawnThreat(row - 1, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
@@ -429,7 +430,7 @@ class Board:
                         if self.board[row][column] != "p":
                             thesemoves = self.getPossibleMoves(row, column)
                         if self.board[row][column] == "p":
-                            thesemoves = self.getPawnThreat(row+1, column)
+                            thesemoves = self.getPawnThreat(row + 1, column)
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
@@ -438,13 +439,12 @@ class Board:
     def getPawnThreat(self, row, column):
         moves = []
         if column != 0:
-            move = Coordinate(row, column-1)
+            move = Coordinate(row, column - 1)
             moves.append(move)
         if column != 7:
-            move = Coordinate(row, column+1)
+            move = Coordinate(row, column + 1)
             moves.append(move)
         return moves
-
 
     def __str__(self):
         result = ""
@@ -453,5 +453,3 @@ class Board:
                 result += self.board[row][column] + " "
             result += "\n"
         return result
-
-
