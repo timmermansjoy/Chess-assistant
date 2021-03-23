@@ -233,7 +233,7 @@ class Testboards:
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
 
-    enPassentStartBoard1= np.array([
+    enPassentStartBoard1 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -266,7 +266,7 @@ class Testboards:
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
 
-    noEnPassentStartBoard2= np.array([
+    noEnPassentStartBoard2 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", ".", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -277,7 +277,7 @@ class Testboards:
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
 
-    noEnPassentStartBoard3= np.array([
+    noEnPassentStartBoard3 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -288,7 +288,7 @@ class Testboards:
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
 
-    noEnPassentStartBoard4= np.array([
+    noEnPassentStartBoard4 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
         [".", ".", ".", ".", ".", ".", ".", "."],
@@ -298,6 +298,3 @@ class Testboards:
         ["P", "P", "P", ".", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
-
-
-
