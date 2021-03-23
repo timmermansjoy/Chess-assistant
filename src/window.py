@@ -1,3 +1,4 @@
+
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt
@@ -15,20 +16,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.draw_piece()
 
     def draw_board(self):
+        # variables
         width = int(800 / 8)
         height = int(800 / 8)
+        whitecolor = "#FFFFFF"
+        blackcolor = "#000000"
+
         painter = QtGui.QPainter(self.label.pixmap())
 
         for i in range(8):
             for j in range(8):
                 if (j + i) % 2 == 0:
                     brush = QtGui.QBrush()
-                    brush.setColor(QtGui.QColor("#FFFFFF"))
+                    brush.setColor(QtGui.QColor(whitecolor))
                     brush.setStyle(Qt.SolidPattern)
                     painter.setBrush(brush)
                 else:
                     brush = QtGui.QBrush()
-                    brush.setColor(QtGui.QColor("#000000"))
+                    brush.setColor(QtGui.QColor(blackcolor))
                     brush.setStyle(Qt.SolidPattern)
                     painter.setBrush(brush)
 
@@ -38,15 +43,7 @@ class MainWindow(QtWidgets.QMainWindow):
         painter.end()
 
     def draw_piece(self):
-        brush = QtGui.QBrush()
-        brush.setColor(QtGui.QColor("#2F5A25"))
-        brush.setStyle(Qt.SolidPattern)
-        painter = QtGui.QPainter(self.label.pixmap())
-        painter.setBrush(brush)
-        painter.drawRects(
-            QtCore.QRect(60, 60, 200, 200),
-        )
-        painter.end()
+        pass
 
 
 app = QtWidgets.QApplication(sys.argv)

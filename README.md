@@ -43,6 +43,7 @@ this creates a `.venv` directory in your project. VScode will prompt you if you 
 To use this environment in the terminal you have to use `. .venv/bin/activate` and to leave this enviorment just type `deactivate`
 
 To have less clutter in your project you can remove the `.pyc` files and move them to another place in python versions > 3.8
+Add this to your .bashrc file
 
 ```bash
  export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache/"

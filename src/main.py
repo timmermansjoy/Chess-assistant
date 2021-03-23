@@ -6,11 +6,8 @@ def main():
     board = Board()
     # board.board = TB.BlackOneTakeOneMoveOption
     board.board = TB.kingMoves
-    print(board)
-    print(board.getPossibleMoves(3, 0))
-    board.board = TB.kingMoves
-    print(board.getAllAttackedFields(False))
-    print(board.getAllAttackedFields(True))
+    # print(board)
+    print(board.getKnightMoves.__doc__)
 
 
 if __name__ == "__main__":

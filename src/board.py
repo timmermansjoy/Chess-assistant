@@ -34,9 +34,9 @@ class Board:
     def canCapture(self, target):
         return ((self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()))
 
-    """Returns TRUE for a direction if the piece is not on that edge of the board, else FALSE"""
-
     def getDirections(self, coord):
+        """Returns TRUE for a direction if the piece is not on that edge of the board, else FALSE"""
+
         directions = {'up': False, 'right': False, 'down': False, 'left': False, 'upLeft': False, 'upRight': False, 'downRight': False, 'downLeft': False}
 
         if coord.row > 0:
@@ -60,9 +60,8 @@ class Board:
             for column in range(len(self.board[0])):
                 self.board[row][column] = "."
 
-    """Calls appropriate get moves method for the given coordinate and returns the moves"""
-
     def getPossibleMoves(self, row, column):
+        """Calls appropriate get moves method for the given coordinate and returns the moves"""
         piece = self.board[row][column]
         if piece != ".":
             coord = Coordinate(row, column)
@@ -87,10 +86,9 @@ class Board:
         else:
             raise Exception(piece + " is not a valid piece ??")
 
-    # compiles to machine code
-    """Returns possible moves for a pawn piece"""
-
     def getPawnMoves(self, coord):
+        """Returns possible moves for a pawn piece"""
+
         moves = []
         step = -1 if self.isWhitePiece else 1
         directions = self.getDirections(coord)
@@ -125,9 +123,9 @@ class Board:
                     moves.append(Coordinate(coord.row + 1, coord.column + 1))
         return moves
 
-    """Returns possible moves for a rook piece"""
-
     def getRookMoves(self, coord):
+        """Returns possible moves for a rook piece"""
+
         moves = []
         directions = self.getDirections(coord)
 
@@ -141,9 +139,9 @@ class Board:
             moves.extend(self.getHorizontal(coord, -1))
         return moves
 
-    """Returns possible vertical moves for a piece on coordinate 'start'"""
-
     def getVertical(self, start, step):
+        """Returns possible vertical moves for a piece on coordinate 'start'"""
+
         moves = []
         pathBlocked = False
         current = start.row + step
@@ -163,9 +161,9 @@ class Board:
             current += step
         return moves
 
-    """Returns possible horizontal moves for a piece on coordinate 'start'"""
-
     def getHorizontal(self, start, step):
+        """Returns possible horizontal moves for a piece on coordinate 'start'"""
+
         moves = []
         pathBlocked = False
         current = start.column + step
@@ -185,9 +183,9 @@ class Board:
             current += step
         return moves
 
-    """Returns possible moves for a knight piece"""
-
     def getKnightMoves(self, coord):
+        """Returns possible moves for a knight piece"""
+
         moves = []
         targets = [
             Coordinate(coord.row - 2, coord.column + 1),
@@ -209,9 +207,8 @@ class Board:
                     moves.append(target)
         return moves
 
-    """Returns possible diagonal NW moves for a piece on coordinate 'start'"""
-
     def getDiagonalNorthWest(self, start, step):
+        """Returns possible diagonal NW moves for a piece on coordinate 'start'"""
         moves = []
         pathBlocked = False
         currentColumn = start.column + step
@@ -232,9 +229,9 @@ class Board:
             currentColumn += step
         return moves
 
-    """Returns possible diagonal NE moves for piece on coordinate 'start'"""
-
     def getDiagonalNorthEast(self, start, step):
+        """Returns possible diagonal NE moves for piece on coordinate 'start'"""
+
         moves = []
         pathBlocked = False
         currentColumn = start.column + step
@@ -258,9 +255,9 @@ class Board:
             currentColumn += step
         return moves
 
-    """Returns possible moves for a bishop piece"""
-
     def getBishopMoves(self, coord):
+        """Returns possible moves for a bishop piece"""
+
         moves = []
         directions = self.getDirections(coord)
         if directions['upLeft']:
@@ -273,9 +270,9 @@ class Board:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
         return moves
 
-    """Returns possible moves for a queen piece"""
-
     def getQueenMoves(self, coord):
+        """Returns possible moves for a queen piece"""
+
         moves = []
         directions = self.getDirections(coord)
         if directions['up']:
@@ -296,9 +293,9 @@ class Board:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
         return moves
 
-    """Return possible moves for a king piece"""
-
     def getKingMoves(self, coord):
+        """Return possible moves for a king piece"""
+
         moves = []
         directions = self.getDirections(coord)
         row = coord.row
@@ -344,18 +341,18 @@ class Board:
                 moves.append(Coordinate(row, col + 1))
         return moves
 
-    """Returns whether a move is valid or not"""
-
     def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
+        """Returns whether a move is valid or not"""
+
         moves = self.getAllAttackedFields(coord)
         row = coord.row
         col = coord.column
         if coord in moves:
             print("move is not valid")
 
-    """Moves a piece from the startpoint to the endpoint"""
-
     def move(self, startRow, startColumn, endRow, endColumn):
+        """Moves a piece from the startpoint to the endpoint"""
+
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
                 self.getPossibleMoves(startRow, startColumn)):
 
@@ -377,9 +374,8 @@ class Board:
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
-    """Converts chess notation to coordinates"""
-
     def notationToCords(self, notation):
+        """Converts chess notation to coordinates"""
         notation = notation.strip()
         notation = notation.lower()
         if len(notation) == 4:
@@ -395,9 +391,10 @@ class Board:
             raise Exception(notation, 'is not a valid move')
 
     # TODO refactor this with notationToCords
-    """???"""
 
     def notationMove(self, notation):
+        """Move a piece with peudo chess notation i.e -> c4b6"""
+
         # strip the input of spaces
         notation = notation.strip()
         notation = notation.lower()
