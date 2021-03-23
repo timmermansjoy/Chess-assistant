@@ -557,5 +557,6 @@ class TestboardGetAllAttackedFields(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+
 if __name__ == '__main__':
     unittest.main()

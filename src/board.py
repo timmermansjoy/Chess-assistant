@@ -92,7 +92,7 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
-                    coord.column - 1].islower():
+                        coord.column - 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
             # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
@@ -100,7 +100,7 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
-                    coord.column - 1].isupper():
+                        coord.column - 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
         # If the pawn is not on the right edge of the board, check to see if it can capture a piece one square to the left and one square up (or down for black)
@@ -111,7 +111,7 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
-                    coord.column + 1].islower():
+                        coord.column + 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
                 # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
@@ -119,7 +119,7 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
-                    coord.column + 1].isupper():
+                        coord.column + 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
         # EN PASSENT
@@ -636,7 +636,7 @@ class Board:
                 if startColumn == 7 and startRow == 7 and not self.whiteHRookMoved:
                     self.whiteHRookMoved = True
             self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
-            self.isWhitePlayerTurn= not self.isWhitePlayerTurn
+            self.isWhitePlayerTurn = not self.isWhitePlayerTurn
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
@@ -704,8 +704,6 @@ class Board:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
         return list(dict.fromkeys(moves))
-
-
 
     def __str__(self):
         result = ""
