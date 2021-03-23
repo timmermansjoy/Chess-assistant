@@ -694,9 +694,15 @@ class Board:
             for column in range(len(self.board[0])):
                 if self.board[row][column] != ".":
                     if playerIsWhite & self.board[row][column].isupper():
-                        moves.extend(self.getPossibleMoves(row, column))
+                        thesemoves = self.getPossibleMoves(row, column)
+                        for i in thesemoves:
+                            if i not in moves:
+                                moves.append(i)
                     if not playerIsWhite & self.board[row][column].islower():
-                        moves.extend(self.getPossibleMoves(row, column))
+                        thesemoves = self.getPossibleMoves(row, column)
+                        for i in thesemoves:
+                            if i not in moves:
+                                moves.append(i)
         return moves
 
 
