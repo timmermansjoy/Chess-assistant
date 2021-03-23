@@ -560,6 +560,15 @@ class TestboardGetAllAttackedFields(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+    def test_getAllAttackingFieldsOfStandardBoard(self):
+        print(self.board)
+        actual = str(self.board.getAllAttackedFields(False))
+        results = ["2:0", "2:1", "2:2", "2:3", "2:4", "2:5", "2:6", "2:7", "3:0", "3:1", "3:2", "3:4", "3:5", "3:6",
+                   "3:7"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results) * 5, len(actual))
+
 
 if __name__ == '__main__':
     unittest.main()
