@@ -29,6 +29,27 @@ class Board:
         self.blackHRookMoved = False
         self.moveLog = []
 
+    def getDirections(self, coord):
+        directions = {'up': False, 'right': False, 'down': False, 'left': False, 'upLeft': False, 'upRight': False, 'downRight': False, 'downLeft': False}
+
+        piece = self.board[coord.row][coord.column].upper()
+
+        if coord.row > 0:
+            directions['up'] = True
+        if coord.row < 7:
+            directions['down'] = True
+        if coord.column > 0:
+            directions['left'] = True
+        if coord.column < 7:
+            directions['right'] = True
+        
+        directions['upLeft'] = directions['up'] + directions['left']
+        directions['upRight'] = directions['up'] + directions['right']
+        directions['downRight'] = directions['down'] + directions['right']
+        directions['downLeft'] = directions['down'] + directions['left']
+
+        return directions
+
     def clearBoard(self):
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
@@ -70,6 +91,9 @@ class Board:
         # Set vertical step to one, if it is Black's move the row should be increased with one
         step = 1
 
+        # Get the directions the piece can move to
+        directions = self.getDirections(coord)
+
         # If it is white's move the pawn should move up, so the row must decrease with one, multiplying the step by -1 will make sure this is done correctly
         if self.isWhitePiece:
             step *= -1
@@ -85,14 +109,14 @@ class Board:
                 moves.append(Coordinate(coord.row + (2 * step), coord.column))
 
         # If the pawn is not on the left edge of the board, check to see if it can capture a piece one square to the right and one square up (or down for black)
-        if coord.column > 0:
+        if directions['left']:
 
             # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
             if self.isWhitePiece:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
-                    coord.column - 1].islower():
+                        coord.column - 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
             # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
@@ -100,18 +124,18 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column - 1] != "." and self.board[coord.row + step][
-                    coord.column - 1].isupper():
+                        coord.column - 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column - 1))
 
         # If the pawn is not on the right edge of the board, check to see if it can capture a piece one square to the left and one square up (or down for black)
-        if coord.column < 7:
+        if directions['right']:
 
             # If it is white's move, there must be a lowercase (black) piece on this square for it to capture
             if self.isWhitePiece:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
-                    coord.column + 1].islower():
+                        coord.column + 1].islower():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
                 # If it is black's move, there must be an uppercase (white) piece on this square for it to capture
@@ -119,7 +143,7 @@ class Board:
 
                 # If this is the case, add the capturing move to the moves list
                 if self.board[coord.row + step][coord.column + 1] != "." and self.board[coord.row + step][
-                    coord.column + 1].isupper():
+                        coord.column + 1].isupper():
                     moves.append(Coordinate(coord.row + step, coord.column + 1))
 
         # EN PASSENT
@@ -171,20 +195,23 @@ class Board:
         # Initiate the moves list
         moves = []
 
+        # Get directions the piece can move to
+        directions = self.getDirections(coord)
+
         # If the rook is not on the upper edge of the board, get the possible up moves
-        if coord.column < 7:
+        if directions['right']:
             moves.extend(self.getVertical(coord, 1))
 
         # If the rook is not on the lower edge of the board, get the possible down moves
-        if coord.column > 0:
+        if directions['left']:
             moves.extend(self.getVertical(coord, -1))
 
         # If the rook is not on the right edge of the board, get the possible right moves
-        if coord.row < 7:
+        if directions['down']:
             moves.extend(self.getHorizontal(coord, 1))
 
         # If the rook is not on the left edge of the board, get the possible left moves
-        if coord.row > 0:
+        if directions['up']:
             moves.extend(self.getHorizontal(coord, -1))
 
         return moves
@@ -462,26 +489,19 @@ class Board:
 
         # Initiate the moves list
         moves = []
-        # reusing some code from Queen because it's genius and it works
-        canMoveUp = coord.row > 0
-        canMoveRight = coord.column < 7
-        canMoveDown = coord.row < 7
-        canMoveLeft = coord.column > 0
 
-        canMoveUL = canMoveUp and canMoveLeft
-        canMoveUR = canMoveUp and canMoveRight
-        canMoveDR = canMoveDown and canMoveRight
-        canMoveDL = canMoveDown and canMoveLeft
+        # Get the directions the piece can move to 
+        directions = self.getDirections(coord)
 
         # For each diagonal direction, see if the queen can move there
         # If this is the case, add the moves to the moves list
-        if canMoveUL:
+        if directions['upLeft']:
             moves.extend(self.getDiagonalNorthWest(coord, -1))
-        if canMoveUR:
+        if directions['upRight']:
             moves.extend(self.getDiagonalNorthEast(coord, 1))
-        if canMoveDR:
+        if directions['downRight']:
             moves.extend(self.getDiagonalNorthWest(coord, 1))
-        if canMoveDL:
+        if directions['downLeft']:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
 
         return moves
@@ -491,50 +511,47 @@ class Board:
         # Initiate the moves list
         moves = []
 
-        canMoveUp = coord.row > 0
-        canMoveRight = coord.column < 7
-        canMoveDown = coord.row < 7
-        canMoveLeft = coord.column > 0
-
-        canMoveUL = canMoveUp and canMoveLeft
-        canMoveUR = canMoveUp and canMoveRight
-        canMoveDR = canMoveDown and canMoveRight
-        canMoveDL = canMoveDown and canMoveLeft
+        # Get the directions the piece can move to
+        directions = self.getDirections(coord)
 
         # For each horizontal and vertical diretion, see if the queen can move there.
         # If this is the case, add the moves to the moves list
-        if canMoveUp:
+        if directions['up']:
             moves.extend(self.getVertical(coord, -1))
-        if canMoveRight:
+        if directions['right']:
             moves.extend(self.getHorizontal(coord, 1))
-        if canMoveDown:
+        if directions['down']:
             moves.extend(self.getVertical(coord, 1))
-        if canMoveLeft:
+        if directions['left']:
             moves.extend(self.getHorizontal(coord, -1))
 
         # For each diagonal direction, see if the queen can move there
         # If this is the case, add the moves to the moves list
-        if canMoveUL:
+        if directions['upLeft']:
             moves.extend(self.getDiagonalNorthWest(coord, -1))
-        if canMoveUR:
+        if directions['upRight']:
             moves.extend(self.getDiagonalNorthEast(coord, 1))
-        if canMoveDR:
+        if directions['downRight']:
             moves.extend(self.getDiagonalNorthWest(coord, 1))
-        if canMoveDL:
+        if directions['downLeft']:
             moves.extend(self.getDiagonalNorthEast(coord, -1))
 
         return moves
 
     def getKingMoves(self, coord):
-        # initiate the moves list
+        # Initiate the moves list
         moves = []
+
+        # Get the directions that the piece can move to
+        directions = self.getDirections(coord)
 
         row = coord.row
         col = coord.column
 
-        if row > 0:
-            # check if king can move to:
+        if directions['up']:
+            # Check if king can move to:
             # Top Left
+<<<<<<< HEAD
             if col > 0:
                 if self.isValid(Coordinate(row - 1,col - 1)):
                     target = self.board[row - 1][col - 1]
@@ -565,9 +582,27 @@ class Board:
                         moves.append(Coordinate(row - 1, col + 1))
                     elif not self.isWhitePiece and target.isupper():
                         moves.append(Coordinate(row - 1, col + 1))
+=======
+            if directions['left']:
+                target = self.board[row - 1][col - 1]
+                if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
+                    moves.append(Coordinate(row - 1, col - 1))
 
-        if row < 7:
+            # Top Middle
+            target = self.board[row - 1][col]
+            if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
+                moves.append(Coordinate(row - 1, col))
+
+            # Top Right
+            if directions['right']:
+                target = self.board[row - 1][col + 1]
+                if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()):
+                    moves.append(Coordinate(row - 1, col + 1))
+>>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
+
+        if directions['down']:
             # BOTTOM LEFT
+<<<<<<< HEAD
             if col > 0:
                 if self.isValid(Coordinate(row + 1,col - 1)):
                     target = self.board[row + 1][col - 1]
@@ -619,6 +654,35 @@ class Board:
                     moves.append(Coordinate(row, col + 1))
                 elif not self.isWhitePiece and target.isupper():
                     moves.append(Coordinate(row, col + 1))
+=======
+            if directions['left']:
+                target = self.board[row + 1][col - 1]
+                if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
+                    moves.append(Coordinate(row + 1, col - 1))
+
+            # BOTTOM MIDDLE
+            target = self.board[row + 1][col]
+            if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
+                moves.append(Coordinate(row + 1, col))
+
+            # BOTTOM RIGHT
+            if directions['right']:
+                target = self.board[row + 1][col + 1]
+                if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
+                    moves.append(Coordinate(row + 1, col + 1))
+            
+        # MIDDLE LEFT
+        if directions['left']:
+            target = self.board[row][col - 1]
+            if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
+                moves.append(Coordinate(row, col - 1))
+
+        # MIDDLE RIGHT
+        if directions['right']:
+            target = self.board[row][col + 1]
+            if target == "." or (self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isuppe()):
+                moves.append(Coordinate(row, col + 1))
+>>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
 
         return moves
 
@@ -650,7 +714,7 @@ class Board:
                 if startColumn == 7 and startRow == 7 and not self.whiteHRookMoved:
                     self.whiteHRookMoved = True
             self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
-            self.isWhitePlayerTurn= not self.isWhitePlayerTurn
+            self.isWhitePlayerTurn = not self.isWhitePlayerTurn
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
@@ -707,6 +771,7 @@ class Board:
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 if self.board[row][column] != ".":
+<<<<<<< HEAD
                     if playerIsWhite and self.board[row][column].isupper():
                         moves.extend(self.getPossibleMoves(row,column))
                     if not playerIsWhite and self.board[row][column].islower():
@@ -714,6 +779,19 @@ class Board:
         return moves
 
 
+=======
+                    if playerIsWhite & self.board[row][column].isupper():
+                        thesemoves = self.getPossibleMoves(row, column)
+                        for i in thesemoves:
+                            if i.__str__() not in str(moves):
+                                moves.append(i)
+                    if not playerIsWhite & self.board[row][column].islower():
+                        thesemoves = self.getPossibleMoves(row, column)
+                        for i in thesemoves:
+                            if i.__str__() not in str(moves):
+                                moves.append(i)
+        return list(dict.fromkeys(moves))
+>>>>>>> 1d8b839d4b1c88a20d78e42451b4e2863c1fa764
 
     def __str__(self):
         result = ""
