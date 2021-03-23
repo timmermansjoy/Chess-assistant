@@ -22,6 +22,7 @@ class Board:
         ])
 
         self.isWhitePiece = True
+        self.isWhitePlayerTurn = True
         self.whiteARookMoved = False
         self.whiteHRookMoved = False
         self.blackARookMoved = False
