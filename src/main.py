@@ -7,7 +7,7 @@ def main():
     # board.board = TB.BlackOneTakeOneMoveOption
     board.board = TB.kingMoves
     print(board)
-    print(board.getPossibleMoves(3, 0))
+    print(board.getPossibleMoves(3, 4))
     board.board = TB.kingMoves
     print(board.getAllAttackedFields(False))
     print(board.getAllAttackedFields(True))
