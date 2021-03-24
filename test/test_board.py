@@ -207,19 +207,19 @@ class TestboardRook(unittest.TestCase):
         self.assertEqual(len(results1) * 5, len(actual1))
         # second
         actual2 = str(self.board.getPossibleMoves(0, 7))
-        results2 = ["0:1", "0:2", "0:3", "0:4", "0:5", "0:6","7:7","6:7","5:7","4:7","3:7","2:7","1:7"]
+        results2 = ["0:1", "0:2", "0:3", "0:4", "0:5", "0:6", "7:7", "6:7", "5:7", "4:7", "3:7", "2:7", "1:7"]
         for i in results2:
             self.assertIn(i, actual2)
         self.assertEqual(len(results2) * 5, len(actual2))
         # third
         actual3 = str(self.board.getPossibleMoves(7, 0))
-        results3 = ["7:6","7:5","7:4","7:3","7:2","7:1","1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "0:0"]
+        results3 = ["7:6", "7:5", "7:4", "7:3", "7:2", "7:1", "1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "0:0"]
         for i in results3:
             self.assertIn(i, actual3)
         self.assertEqual(len(results3) * 5, len(actual3))
         # fourth
         actual4 = str(self.board.getPossibleMoves(7, 7))
-        results4 = ["7:6","7:5","7:4","7:3","7:2","7:1","0:7","1:7","2:7","3:7","4:7","5:7","6:7"]
+        results4 = ["7:6", "7:5", "7:4", "7:3", "7:2", "7:1", "0:7", "1:7", "2:7", "3:7", "4:7", "5:7", "6:7"]
         for i in results4:
             self.assertIn(i, actual4)
         self.assertEqual(len(results4) * 5, len(actual4))
@@ -440,6 +440,36 @@ class TestboardBishops(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+    def test_corneredBishops(self):
+        self.board.clearBoard()
+        self.board.board[0][0] = "B"
+        self.board.board[7][7] = "b"
+        self.board.board[0][7] = "b"
+        self.board.board[7][0] = "B"
+        actual1 = str(self.board.getPossibleMoves(0, 0))
+        results1 = ["1:1", "2:2", "3:3", "4:4", "5:5", "6:6", "7:7"]
+        for i in results1:
+            self.assertIn(i, actual1)
+        self.assertEqual(len(results1) * 5, len(actual1))
+        # second
+        actual2 = str(self.board.getPossibleMoves(0, 7))
+        results2 = ["6:1", "5:2", "4:3", "3:4", "2:5", "1:6", "7:0"]
+        for i in results2:
+            self.assertIn(i, actual2)
+        self.assertEqual(len(results2) * 5, len(actual2))
+        # third
+        actual3 = str(self.board.getPossibleMoves(7, 0))
+        results3 = ["6:1", "5:2", "4:3", "3:4", "2:5", "1:6", "0:7"]
+        for i in results3:
+            self.assertIn(i, actual3)
+        self.assertEqual(len(results3) * 5, len(actual3))
+        # fourth
+        actual4 = str(self.board.getPossibleMoves(7, 7))
+        results4 = ["1:1", "2:2", "3:3", "4:4", "5:5", "6:6", "0:0"]
+        for i in results4:
+            self.assertIn(i, actual4)
+        self.assertEqual(len(results4) * 5, len(actual4))
+
 
 class TestboardQueen(unittest.TestCase):
 
@@ -533,6 +563,35 @@ class TestboardQueen(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+    def test_corneredQueen(self):
+        self.board.clearBoard()
+        self.board.board[0][0] = "Q"
+        self.board.board[7][7] = "q"
+        self.board.board[0][7] = "q"
+        self.board.board[7][0] = "Q"
+        actual1 = str(self.board.getPossibleMoves(0, 0))
+        results1 = ["1:1", "2:2", "3:3", "4:4", "5:5", "6:6", "7:7", "0:1", "0:2", "0:3", "0:4", "0:5", "0:6", "1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "0:7"]
+        for i in results1:
+            self.assertIn(i, actual1)
+        self.assertEqual(len(results1) * 5, len(actual1))
+        # second
+        actual2 = str(self.board.getPossibleMoves(0, 7))
+        results2 = ["6:1", "5:2", "4:3", "3:4", "2:5", "1:6", "7:0", "0:1", "0:2", "0:3", "0:4", "0:5", "0:6", "0:0", "6:7", "5:7", "4:7", "3:7", "2:7", "1:7"]
+        for i in results2:
+            self.assertIn(i, actual2)
+        self.assertEqual(len(results2) * 5, len(actual2))
+        # third
+        actual3 = str(self.board.getPossibleMoves(7, 0))
+        results3 = ["6:1", "5:2", "4:3", "3:4", "2:5", "1:6", "0:7", "7:6", "7:5", "7:4", "7:3", "7:2", "7:1", "1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "7:7"]
+        for i in results3:
+            self.assertIn(i, actual3)
+        self.assertEqual(len(results3) * 5, len(actual3))
+        # fourth
+        actual4 = str(self.board.getPossibleMoves(7, 7))
+        results4 = ["1:1", "2:2", "3:3", "4:4", "5:5", "6:6", "0:0", "7:6", "7:5", "7:4", "7:3", "7:2", "7:1", "7:0", "1:7", "2:7", "3:7", "4:7", "5:7", "6:7"]
+        for i in results4:
+            self.assertIn(i, actual4)
+        self.assertEqual(len(results4) * 5, len(actual4))
     # King Test
 
 
