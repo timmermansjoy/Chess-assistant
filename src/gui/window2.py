@@ -24,7 +24,7 @@ grey = (150, 150, 150)
 
 clock = pygame.time.Clock()
 Checkmate = False
-bishopImg = pygame.image.load('src/bishop.png')
+bishopImg = pygame.image.load('src/Bishop.png')
 bishopImg = pygame.transform.scale(bishopImg, (width, width))
 font = pygame.font.SysFont("Arial", 18)
 
