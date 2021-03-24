@@ -130,13 +130,13 @@ class Board:
         directions = self.getDirections(coord)
 
         if directions['right']:
-            moves.extend(self.getVertical(coord, 1))
-        if directions['left']:
-            moves.extend(self.getVertical(coord, -1))
-        if directions['down']:
             moves.extend(self.getHorizontal(coord, 1))
-        if directions['up']:
+        if directions['left']:
             moves.extend(self.getHorizontal(coord, -1))
+        if directions['down']:
+            moves.extend(self.getVertical(coord, 1))
+        if directions['up']:
+            moves.extend(self.getVertical(coord, -1))
         return moves
 
     def getVertical(self, start, step):

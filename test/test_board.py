@@ -89,6 +89,33 @@ class TestboardKnights(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(30, len(actual))
 
+    def test_corneredKnights(self):
+        self.board.clearBoard()
+        self.board.board[0][0] = "n"
+        self.board.board[7][7] = "n"
+        self.board.board[0][7] = "N"
+        self.board.board[7][0] = "N"
+        actual1 = str(self.board.getPossibleMoves(0, 0))
+        results1 = ["2:1", "1:2"]
+        for i in results1:
+            self.assertIn(i, actual1)
+        self.assertEqual(len(results1) * 5, len(actual1))
+        actual2 = str(self.board.getPossibleMoves(0, 7))
+        results2 = ["2:6", "1:5"]
+        for i in results2:
+            self.assertIn(i, actual2)
+        self.assertEqual(len(results2) * 5, len(actual2))
+        actual3 = str(self.board.getPossibleMoves(7, 0))
+        results3 = ["5:1", "6:2"]
+        for i in results3:
+            self.assertIn(i, actual3)
+        self.assertEqual(len(results3) * 5, len(actual3))
+        actual4 = str(self.board.getPossibleMoves(7, 7))
+        results4 = ["5:6", "6:5"]
+        for i in results4:
+            self.assertIn(i, actual4)
+        self.assertEqual(len(results4) * 5, len(actual4))
+
 
 class TestboardRook(unittest.TestCase):
 
@@ -166,6 +193,36 @@ class TestboardRook(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
+
+    def test_corneredRooks(self):
+        self.board.clearBoard()
+        self.board.board[0][0] = "r"
+        self.board.board[7][7] = "R"
+        self.board.board[0][7] = "r"
+        self.board.board[7][0] = "R"
+        actual1 = str(self.board.getPossibleMoves(0, 0))
+        results1 = ["0:1", "0:2", "0:3", "0:4", "0:5", "0:6", "1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "7:0"]
+        for i in results1:
+            self.assertIn(i, actual1)
+        self.assertEqual(len(results1) * 5, len(actual1))
+        # second
+        actual2 = str(self.board.getPossibleMoves(0, 7))
+        results2 = ["0:1", "0:2", "0:3", "0:4", "0:5", "0:6","7:7","6:7","5:7","4:7","3:7","2:7","1:7"]
+        for i in results2:
+            self.assertIn(i, actual2)
+        self.assertEqual(len(results2) * 5, len(actual2))
+        # third
+        actual3 = str(self.board.getPossibleMoves(7, 0))
+        results3 = ["7:6","7:5","7:4","7:3","7:2","7:1","1:0", "2:0", "3:0", "4:0", "5:0", "6:0", "0:0"]
+        for i in results3:
+            self.assertIn(i, actual3)
+        self.assertEqual(len(results3) * 5, len(actual3))
+        # fourth
+        actual4 = str(self.board.getPossibleMoves(7, 7))
+        results4 = ["7:6","7:5","7:4","7:3","7:2","7:1","0:7","1:7","2:7","3:7","4:7","5:7","6:7"]
+        for i in results4:
+            self.assertIn(i, actual4)
+        self.assertEqual(len(results4) * 5, len(actual4))
 
 
 class TestboardPawns(unittest.TestCase):
