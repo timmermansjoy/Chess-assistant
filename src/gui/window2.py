@@ -4,7 +4,7 @@ from board import Board
 
 
 pygame.init()
-
+board = Board()
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
@@ -111,35 +111,11 @@ class TextBox(pygame.sprite.Sprite):
 textBox = TextBox()
 textBox.rect = [display_width * 0.7, display_height * 0.5, 200, 200]
 
-# Main loop
-while not Checkmate:
-    # get all events
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            Checkmate = True
-        if e.type == pygame.QUIT:
-            running = False
-        if e.type == pygame.KEYUP:
-            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
-                shiftDown = False
-        if e.type == pygame.KEYDOWN:
-            textBox.add_chr(pygame.key.name(e.key))
-            if e.key == pygame.K_SPACE:
-                textBox.text += " "
-                textBox.update()
-            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
-                shiftDown = True
-            if e.key == pygame.K_BACKSPACE:
-                textBox.text = textBox.text[:-1]
-                textBox.update()
-            if e.key == pygame.K_RETURN:
-                if len(textBox.text) > 0:
-                    print(textBox.text)
-                    textBox.text = ""
-                    textBox.update()
 
+def create_or_update_board():
+    print("generating board")
+    global board
     gameDisplay.fill(white)
-
     for i in range(8):
         for j in range(8):
             if (j + i) % 2 == 0:
@@ -148,8 +124,7 @@ while not Checkmate:
             else:
                 pygame.draw.rect(gameDisplay, grey,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-    #Populate the board
-    board = Board()
+    # Populate the board
     for i in range(8):
         for j in range(8):
             currentPiece = board.board[i][j]
@@ -179,6 +154,41 @@ while not Checkmate:
                 placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteKnightImg)
             elif currentPiece == "R":
                 placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteRookImg)
+    print("board done")
+
+# Main loop
+while not Checkmate:
+    # get all events
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            Checkmate = True
+        if e.type == pygame.QUIT:
+            running = False
+        if e.type == pygame.KEYUP:
+            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
+                shiftDown = False
+        if e.type == pygame.KEYDOWN:
+            textBox.add_chr(pygame.key.name(e.key))
+            if e.key == pygame.K_SPACE:
+                textBox.text += " "
+                textBox.update()
+            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
+                shiftDown = True
+            if e.key == pygame.K_BACKSPACE:
+                textBox.text = textBox.text[:-1]
+                textBox.update()
+            if e.key == pygame.K_RETURN:
+                create_or_update_board()
+                if len(textBox.text) > 0:
+                    print(textBox.text)
+                    coords = board.notationToCords(textBox.text)
+                    textBox.text = ""
+                    textBox.update()
+                    board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column )
+                    print(board.board)
+                    create_or_update_board()
+
+
 
 
     gameDisplay.blit(update_fps(), (10, 0))

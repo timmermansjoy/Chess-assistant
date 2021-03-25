@@ -8,6 +8,7 @@ def main():
     board.board = TB.kingMoves
     # print(board)
     print(board.getKnightMoves.__doc__)
+    print(board.notationToCords("a2a4"))
 
 
 if __name__ == "__main__":
