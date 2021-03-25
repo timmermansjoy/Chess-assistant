@@ -1,6 +1,5 @@
 import pygame
 
-
 pygame.init()
 
 validChars = "12345678 abcdefgh"
@@ -18,14 +17,26 @@ verticalOffset = 100
 gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.RESIZABLE)
 pygame.display.set_caption('A bit Racey')
 
-black = (0, 0, 0)
+red = (100, 25, 25)
 white = (255, 255, 255)
-grey = (150, 150, 150)
+grey = (200, 200, 200)
 
 clock = pygame.time.Clock()
 Checkmate = False
-bishopImg = pygame.image.load('src/Bishop.png')
-bishopImg = pygame.transform.scale(bishopImg, (width, width))
+#importing pieces
+whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.svg')
+whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
+blackBishopImg = pygame.image.load('src/resources/BlackBishop.svg')
+blackBishopImg = pygame.transform.scale(blackBishopImg, (width, width))
+whiteKingImg = pygame.image.load('src/resources/WhiteKing.svg')
+whiteKingImg = pygame.transform.scale(whiteKingImg, (width, width))
+blackKingImg = pygame.image.load('src/resources/BlackKing.svg')
+blackKingImg = pygame.transform.scale(blackKingImg, (width, width))
+whiteQueenImg = pygame.image.load('src/resources/WhiteQueen.svg')
+whiteQueenImg = pygame.transform.scale(whiteQueenImg, (width, width))
+blackQueenImg = pygame.image.load('src/resources/BlackQueen.svg')
+blackQueenImg = pygame.transform.scale(blackQueenImg, (width, width))
+
 font = pygame.font.SysFont("Arial", 18)
 
 
@@ -36,14 +47,23 @@ def update_fps():
 
 
 def bishop(x, y):
-    gameDisplay.blit(bishopImg, (x, y))
+    placePiece(x, y, whiteBishopImg)
 
+
+def placePiece(x, y, img):
+    gameDisplay.blit(img, (x, y))
+
+def horizontalCoordinate(x):
+    return (x * width) + horizontalOffset
+
+def verticalCoordinate(x):
+    return (x * height) + verticalOffset
 
 x = (width * 6) + horizontalOffset
 y = (height * 1) + verticalOffset
 
 x2 = (width * 3) + horizontalOffset
-y2 = (height * 4) + verticalOffset
+y2 = (height * 3) + verticalOffset
 
 x3 = (width * 0) + horizontalOffset
 y3 = (height * 3) + verticalOffset
@@ -75,7 +95,6 @@ class TextBox(pygame.sprite.Sprite):
 # init the textbox and set the position and size
 textBox = TextBox()
 textBox.rect = [display_width * 0.7, display_height * 0.5, 200, 200]
-
 
 # Main loop
 while not Checkmate:
@@ -109,13 +128,16 @@ while not Checkmate:
     for i in range(8):
         for j in range(8):
             if (j + i) % 2 == 0:
-                pygame.draw.rect(gameDisplay, black, ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                pygame.draw.rect(gameDisplay, red,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
             else:
-                pygame.draw.rect(gameDisplay, white, ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                pygame.draw.rect(gameDisplay, grey,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
 
     bishop(x, y)
     bishop(x2, y2)
     bishop(x3, y3)
+    placePiece(verticalCoordinate(verticalCoordinate(4)), horizontalCoordinate(0), blackKingImg)
 
     gameDisplay.blit(update_fps(), (10, 0))
     gameDisplay.blit(textBox.image, textBox.rect)
@@ -125,7 +147,6 @@ while not Checkmate:
     clock.tick(60)
 
     pygame.display.update()
-
 
 pygame.quit()
 quit()

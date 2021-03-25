@@ -14,7 +14,7 @@ class Menu(QMainWindow):
         lay = QVBoxLayout(self.central_widget)
 
         label = QLabel(self)
-        pixmap = QPixmap('src/Bishop.png')
+        pixmap = QPixmap('src/WhiteBishop.png')
         label.setPixmap(pixmap)
         self.resize(300, 300)
 
