@@ -608,6 +608,17 @@ class TestboardKing(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(40, len(actual))
 
+    def test_UnderThreatKingMoves(self):
+        self.board.clearBoard()
+        self.board.board[0][0] = "K"
+        self.board.board[1][1] = "r"
+        self.board.updateBlackThreat()
+        self.board.updateWhiteThreat()
+        actual = str(self.board.getPossibleMoves(0,0))
+        results = ["1:1"]
+        for i in results:
+            self.assertIn(i, actual)
+        self.assertEqual(len(results)*5, len(actual))
     # board tests
 
 

@@ -28,6 +28,8 @@ class Board:
         self.blackARookMoved = False
         self.blackHRookMoved = False
         self.moveLog = []
+        self.fieldsUnderWhiteThreat = []
+        self.fieldsUnderBlackThreat = []
 
     """Returns TRUE is target is of opposite color, else FALSE."""
 
@@ -298,6 +300,10 @@ class Board:
 
         moves = []
         directions = self.getDirections(coord)
+        if self.board[coord.row][coord.column] == "K":
+            fieldsUnderThreat = self.fieldsUnderBlackThreat
+        else:
+            fieldsUnderThreat = self.fieldsUnderWhiteThreat
         row = coord.row
         col = coord.column
         if directions['up']:
@@ -339,6 +345,13 @@ class Board:
             target = self.board[row][col + 1]
             if target == "." or self.canCapture(target):
                 moves.append(Coordinate(row, col + 1))
+        #TODO: don't ask me why this works, I've tried too many things already. Feel free to unjank
+        for i in moves:
+            for j in fieldsUnderThreat:
+                if (i.row == j.row) & (i.column == j.column):
+                    moves.remove(i)
+                else:
+                    print(str(j) + "does not equal" + str(i))
         return moves
 
     def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
@@ -447,6 +460,12 @@ class Board:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
         return list(dict.fromkeys(moves))
+
+    def updateWhiteThreat(self):
+        self.fieldsUnderWhiteThreat = self.getAllAttackedFields(True)
+
+    def updateBlackThreat(self):
+        self.fieldsUnderBlackThreat = self.getAllAttackedFields(False)
 
     def getPawnThreat(self, row, column):
         moves = []
