@@ -1,4 +1,5 @@
 import pygame
+from board import *
 
 pygame.init()
 
@@ -27,6 +28,18 @@ Checkmate = False
 whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.svg')
 whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
 blackBishopImg = pygame.image.load('src/resources/BlackBishop.svg')
+whiteRookImg = pygame.image.load('src/resources/WhiteRook.svg')
+whiteRookImg = pygame.transform.scale(whiteRookImg, (width, width))
+blackRookImg = pygame.image.load('src/resources/BlackRook.svg')
+blackRookImg = pygame.transform.scale(blackRookImg, (width, width))
+whiteKnightImg = pygame.image.load('src/resources/WhiteKnight.svg')
+whiteKnightImg = pygame.transform.scale(whiteKnightImg, (width, width))
+blackKnightImg = pygame.image.load('src/resources/BlackKnight.svg')
+blackKnightImg = pygame.transform.scale(blackKnightImg, (width, width))
+whitePawnImg = pygame.image.load('src/resources/WhitePawn.svg')
+whitePawnImg = pygame.transform.scale(whitePawnImg, (width, width))
+blackPawnImg = pygame.image.load('src/resources/BlackPawn.svg')
+blackPawnImg = pygame.transform.scale(blackPawnImg, (width, width))
 blackBishopImg = pygame.transform.scale(blackBishopImg, (width, width))
 whiteKingImg = pygame.image.load('src/resources/WhiteKing.svg')
 whiteKingImg = pygame.transform.scale(whiteKingImg, (width, width))
@@ -137,7 +150,11 @@ while not Checkmate:
     bishop(x, y)
     bishop(x2, y2)
     bishop(x3, y3)
-    placePiece(verticalCoordinate(verticalCoordinate(4)), horizontalCoordinate(0), blackKingImg)
+    placePiece(horizontalCoordinate(4), verticalCoordinate(0), blackKingImg)
+    placePiece(horizontalCoordinate(3), verticalCoordinate(0), blackQueenImg)
+    placePiece(horizontalCoordinate(4), verticalCoordinate(7), whiteKingImg)
+    placePiece(horizontalCoordinate(3), verticalCoordinate(7), whiteQueenImg)
+
 
     gameDisplay.blit(update_fps(), (10, 0))
     gameDisplay.blit(textBox.image, textBox.rect)
