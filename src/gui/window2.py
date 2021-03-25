@@ -1,5 +1,7 @@
 import pygame
-from board import *
+
+from board import Board
+
 
 pygame.init()
 
@@ -146,14 +148,37 @@ while not Checkmate:
             else:
                 pygame.draw.rect(gameDisplay, grey,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-
-    bishop(x, y)
-    bishop(x2, y2)
-    bishop(x3, y3)
-    placePiece(horizontalCoordinate(4), verticalCoordinate(0), blackKingImg)
-    placePiece(horizontalCoordinate(3), verticalCoordinate(0), blackQueenImg)
-    placePiece(horizontalCoordinate(4), verticalCoordinate(7), whiteKingImg)
-    placePiece(horizontalCoordinate(3), verticalCoordinate(7), whiteQueenImg)
+    #Populate the board
+    board = Board()
+    for i in range(8):
+        for j in range(8):
+            currentPiece = board.board[i][j]
+            if currentPiece == ".":
+                pass
+            elif currentPiece == "k":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackKingImg)
+            elif currentPiece == "p":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackPawnImg)
+            elif currentPiece == "q":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackQueenImg)
+            elif currentPiece == "b":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackBishopImg)
+            elif currentPiece == "n":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackKnightImg)
+            elif currentPiece == "r":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), blackRookImg)
+            elif currentPiece == "K":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteKingImg)
+            elif currentPiece == "P":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whitePawnImg)
+            elif currentPiece == "Q":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteQueenImg)
+            elif currentPiece == "B":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteBishopImg)
+            elif currentPiece == "N":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteKnightImg)
+            elif currentPiece == "R":
+                placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteRookImg)
 
 
     gameDisplay.blit(update_fps(), (10, 0))

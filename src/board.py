@@ -1,4 +1,5 @@
 import numpy as np
+
 from extra import Coordinate
 
 ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
