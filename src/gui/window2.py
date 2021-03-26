@@ -18,11 +18,12 @@ horizontalOffset = 50
 verticalOffset = 100
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption('A bit Racey')
+font = pygame.font.SysFont("Arial", 18)
+pygame.display.set_caption('Ai chess')
 
-red = (100, 25, 25)
+red = (173, 91, 75)
 white = (255, 255, 255)
-grey = (200, 200, 200)
+grey = (236, 216, 194)
 
 clock = pygame.time.Clock()
 Checkmate = False
@@ -43,7 +44,6 @@ whitePawnImg = pygame.image.load('src/resources/WhitePawn.png')
 whitePawnImg = pygame.transform.scale(whitePawnImg, (width, width))
 blackPawnImg = pygame.image.load('src/resources/BlackPawn.png')
 blackPawnImg = pygame.transform.scale(blackPawnImg, (width, width))
-
 whiteKingImg = pygame.image.load('src/resources/WhiteKing.png')
 whiteKingImg = pygame.transform.scale(whiteKingImg, (width, width))
 blackKingImg = pygame.image.load('src/resources/BlackKing.png')
@@ -53,17 +53,11 @@ whiteQueenImg = pygame.transform.scale(whiteQueenImg, (width, width))
 blackQueenImg = pygame.image.load('src/resources/BlackQueen.png')
 blackQueenImg = pygame.transform.scale(blackQueenImg, (width, width))
 
-font = pygame.font.SysFont("Arial", 18)
-
 
 def update_fps():
     fps = str(int(clock.get_fps()))
-    fps_text = font.render(fps, 1, pygame.Color("coral"))
+    fps_text = font.render(fps, True, pygame.Color("coral"))
     return fps_text
-
-
-def bishop(x, y):
-    placePiece(x, y, whiteBishopImg)
 
 
 def placePiece(x, y, img):
@@ -74,18 +68,8 @@ def horizontalCoordinate(x):
     return (x * width) + horizontalOffset
 
 
-def verticalCoordinate(x):
-    return (x * height) + verticalOffset
-
-
-x = (width * 6) + horizontalOffset
-y = (height * 1) + verticalOffset
-
-x2 = (width * 3) + horizontalOffset
-y2 = (height * 3) + verticalOffset
-
-x3 = (width * 0) + horizontalOffset
-y3 = (height * 3) + verticalOffset
+def verticalCoordinate(y):
+    return (y * height) + verticalOffset
 
 
 class TextBox(pygame.sprite.Sprite):
@@ -93,7 +77,7 @@ class TextBox(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.text = ""
         self.font = font
-        self.image = self.font.render("Enter the position", False, [0, 0, 0])
+        self.image = self.font.render("Enter the position", True, [0, 0, 0])
         self.rect = self.image.get_rect()
 
     def add_chr(self, char):
@@ -109,11 +93,6 @@ class TextBox(pygame.sprite.Sprite):
         self.image = self.font.render(self.text, False, [0, 0, 0])
         self.rect = self.image.get_rect()
         self.rect = old_rect_pos
-
-
-# init the textbox and set the position and size
-textBox = TextBox()
-textBox.rect = [display_width * 0.7, display_height * 0.5, 200, 200]
 
 
 def create_or_update_board():
@@ -163,6 +142,10 @@ def create_or_update_board():
 
 if __name__ == '__main__':
     create_or_update_board()
+    # init the textbox and set the position and size
+    textBox = TextBox()
+    textBox.rect = [display_width * 0.7, display_height * 0.5, 200, 200]
+
     # Main loop
     while not Checkmate:
         # get all events
@@ -196,12 +179,9 @@ if __name__ == '__main__':
                         print(board.board)
                         create_or_update_board()
 
-        gameDisplay.blit(update_fps(), (10, 0))
         gameDisplay.blit(textBox.image, textBox.rect)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                loop = 0
-        clock.tick(60)
+
+        clock.tick(30)
 
         pygame.display.update()
 
