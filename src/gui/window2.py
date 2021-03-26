@@ -156,11 +156,14 @@ def create_or_update_board():
 if __name__ == '__main__':
     create_or_update_board()
     # init the textbox and set the position and size
-    textBox = TextBox()
-    textBox.rect = [display_width * 0.7, display_height * 0.1, 200, 200]
+    inputBox = TextBox()
+    inputBox.rect = [(display_width * 0.7) + 150, display_height * 0.1, 200, 200]
+    inputBox.image = inputBox.font.render("", True, [0, 0, 0])
     moveLog = TextBox()
     moveLog.rect = [display_width * 0.7, (display_height * 0.1) + 25, 200, 200]
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
+    enterThePositionBox = TextBox()
+    enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
 
     # Main loop
     while not Checkmate:
@@ -174,23 +177,23 @@ if __name__ == '__main__':
                 if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                     shiftDown = False
             if e.type == pygame.KEYDOWN:
-                textBox.add_chr(pygame.key.name(e.key))
+                inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:
-                    textBox.text += " "
-                    textBox.update()
+                    inputBox.text += " "
+                    inputBox.update()
                 if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                     shiftDown = True
                 if e.key == pygame.K_BACKSPACE:
-                    textBox.text = ""
-                    textBox.update()
+                    inputBox.text = ""
+                    inputBox.update()
                     create_or_update_board()
                 if e.key == pygame.K_RETURN:
                     create_or_update_board()
-                    if len(textBox.text) > 0:
-                        print(textBox.text)
-                        coords = board.notationToCords(textBox.text)
-                        textBox.text = ""
-                        textBox.update()
+                    if len(inputBox.text) > 0:
+                        print(inputBox.text)
+                        coords = board.notationToCords(inputBox.text)
+                        inputBox.text = ""
+                        inputBox.update()
                         board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                         i = int(len(board.moveLog)/2 - 20)
                         if i<0:
@@ -212,8 +215,9 @@ if __name__ == '__main__':
                             i += 1
                         print(board.board)
 
-        gameDisplay.blit(textBox.image, textBox.rect)
+        gameDisplay.blit(inputBox.image, inputBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
+        gameDisplay.blit(enterThePositionBox.image, enterThePositionBox.rect)
 
         clock.tick(30)
 
