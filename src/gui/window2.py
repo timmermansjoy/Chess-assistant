@@ -60,7 +60,7 @@ def update_fps():
 
 
 def placePiece(x, y, img):
-    gameDisplay.blit(img, (x, y))
+    gameDisplay.blit(img, (x + width, y + height))
 
 
 def horizontalCoordinate(x):
@@ -98,14 +98,25 @@ def create_or_update_board():
     print("generating board")
     global board
     gameDisplay.fill(white)
-    for i in range(8):
-        for j in range(8):
-            if (j + i) % 2 == 0:
+    for i in range(9):
+        for j in range(9):
+            if i==0 and j==0:
+                pygame.draw.rect(gameDisplay, white,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                gameDisplay.blit(font.render('test', True, (0,0,0)), (width, height))
+            elif i==0:
+                pygame.draw.rect(gameDisplay, red,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+            elif j==0:
                 pygame.draw.rect(gameDisplay, red,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
             else:
-                pygame.draw.rect(gameDisplay, grey,
-                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                if (j + i) % 2 == 0:
+                    pygame.draw.rect(gameDisplay, red,
+                                     ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                else:
+                    pygame.draw.rect(gameDisplay, grey,
+                                     ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
     # Populate the board
     for i in range(8):
         for j in range(8):
