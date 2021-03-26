@@ -178,12 +178,15 @@ if __name__ == '__main__':
                         textBox.text = ""
                         textBox.update()
                         board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                        i = 0
+                        i = int(len(board.moveLog)/2 - 20)
+                        if i<0:
+                            i=0
+                        heightParameter = i
                         create_or_update_board()
                         while len(board.moveLog) / 2 >= i:
                             thisLine = TextBox()
-                            thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2)), 200, 200]
-                            content = ""
+                            thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2 - heightParameter)), 200, 200]
+                            content = str(i + 1)
                             if len(board.moveLog) >= 2 * i + 1:
                                 content += str(board.moveLog[2 * i]) + "---"
                                 if len(board.moveLog) >= 2 * i + 2:
