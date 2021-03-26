@@ -23,9 +23,10 @@ pygame.display.set_caption('Ai chess')
 red = (173, 91, 75)
 white = (255, 255, 255)
 grey = (236, 216, 194)
+blue = (0,32,255)
 
 clock = pygame.time.Clock()
-Checkmate = False
+GameOngoing = False
 # importing pieces
 whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.png')
 whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
@@ -93,6 +94,29 @@ class TextBox(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect = old_rect_pos
 
+class Button():
+    def __init__(self, x, y, width, height, color, text):
+        self.text = ""
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+        self.font = font
+        self.text = text
+
+    def makeButton(self, window):
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.height), 0)
+        if self.text != "":
+            text = self.font.render(self.text, True, (0,0,0))
+            window.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2))) #centers text
+
+    def isMouseOver(self, position):
+        #position = pygame.mouse.set_pos() --> position[0] = x, position[1] = y
+        if position[0] > self.x and position[0] < self.x + self.width and position[1] > self.y and position[1] < self.y + self.height:
+            return True
+        else:
+            return False
 
 def create_or_update_board():
     print("generating board")
@@ -164,18 +188,24 @@ if __name__ == '__main__':
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
     enterThePositionBox = TextBox()
     enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
+    drawButton = Button(display_width * 0.7, 250, 150, 100, blue, "Draw") #x, y, width, height, color, text
+    resignButton = Button(display_width * 0.7, 500, 150, 100, red, "Resign")   
 
     # Main loop
-    while not Checkmate:
+    while not GameOngoing:
         # get all events
         for e in pygame.event.get():
+            position = pygame.mouse.get_pos()
             if e.type == pygame.QUIT:
-                Checkmate = True
+                GameOngoing = True
             if e.type == pygame.QUIT:
                 running = False
             if e.type == pygame.KEYUP:
                 if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                     shiftDown = False
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
+                    GameOngoing = True
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:
@@ -218,6 +248,8 @@ if __name__ == '__main__':
         gameDisplay.blit(inputBox.image, inputBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
         gameDisplay.blit(enterThePositionBox.image, enterThePositionBox.rect)
+        drawButton.makeButton(gameDisplay)
+        resignButton.makeButton(gameDisplay)
 
         clock.tick(30)
 
