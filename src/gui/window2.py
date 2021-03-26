@@ -2,7 +2,6 @@ import pygame
 
 from board import Board
 
-
 pygame.init()
 board = Board()
 validChars = "12345678 abcdefgh"
@@ -144,7 +143,10 @@ if __name__ == '__main__':
     create_or_update_board()
     # init the textbox and set the position and size
     textBox = TextBox()
-    textBox.rect = [display_width * 0.7, display_height * 0.5, 200, 200]
+    textBox.rect = [display_width * 0.7, display_height * 0.1, 200, 200]
+    moveLog = TextBox()
+    moveLog.rect = [display_width * 0.7, (display_height * 0.1) + 25, 200, 200]
+    moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
 
     # Main loop
     while not Checkmate:
@@ -176,10 +178,25 @@ if __name__ == '__main__':
                         textBox.text = ""
                         textBox.update()
                         board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                        i = 0
+                        while len(board.moveLog) / 2 >= i:
+                            thisLine = TextBox()
+                            thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2)), 200, 200]
+                            content = ""
+                            if len(board.moveLog) >= 2 * i + 1:
+                                content += str(board.moveLog[2 * i]) + "---"
+                                if len(board.moveLog) >= 2 * i + 2:
+                                    content += str(board.moveLog[2 * i + 1])
+                            thisLine.image = thisLine.font.render(content, True, [0, 0, 0])
+                            thisLine.text = content
+                            thisLine.update()
+                            gameDisplay.blit(thisLine.image, thisLine.rect)
+                            i += 1
                         print(board.board)
                         create_or_update_board()
 
         gameDisplay.blit(textBox.image, textBox.rect)
+        gameDisplay.blit(moveLog.image, moveLog.rect)
 
         clock.tick(30)
 
