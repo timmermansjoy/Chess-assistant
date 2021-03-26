@@ -175,8 +175,9 @@ while not Checkmate:
             if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                 shiftDown = True
             if e.key == pygame.K_BACKSPACE:
-                textBox.text = textBox.text[:-1]
+                textBox.text = ""
                 textBox.update()
+                create_or_update_board()
             if e.key == pygame.K_RETURN:
                 create_or_update_board()
                 if len(textBox.text) > 0:
