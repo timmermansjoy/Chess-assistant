@@ -17,7 +17,7 @@ height = int(600 / 8)
 horizontalOffset = 50
 verticalOffset = 100
 
-gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.RESIZABLE)
+gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A bit Racey')
 
 red = (100, 25, 25)
@@ -26,30 +26,31 @@ grey = (200, 200, 200)
 
 clock = pygame.time.Clock()
 Checkmate = False
-#importing pieces
-whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.svg')
+# importing pieces
+whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.png')
 whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
-blackBishopImg = pygame.image.load('src/resources/BlackBishop.svg')
-whiteRookImg = pygame.image.load('src/resources/WhiteRook.svg')
-whiteRookImg = pygame.transform.scale(whiteRookImg, (width, width))
-blackRookImg = pygame.image.load('src/resources/BlackRook.svg')
-blackRookImg = pygame.transform.scale(blackRookImg, (width, width))
-whiteKnightImg = pygame.image.load('src/resources/WhiteKnight.svg')
-whiteKnightImg = pygame.transform.scale(whiteKnightImg, (width, width))
-blackKnightImg = pygame.image.load('src/resources/BlackKnight.svg')
-blackKnightImg = pygame.transform.scale(blackKnightImg, (width, width))
-whitePawnImg = pygame.image.load('src/resources/WhitePawn.svg')
-whitePawnImg = pygame.transform.scale(whitePawnImg, (width, width))
-blackPawnImg = pygame.image.load('src/resources/BlackPawn.svg')
-blackPawnImg = pygame.transform.scale(blackPawnImg, (width, width))
+blackBishopImg = pygame.image.load('src/resources/BlackBishop.png')
 blackBishopImg = pygame.transform.scale(blackBishopImg, (width, width))
-whiteKingImg = pygame.image.load('src/resources/WhiteKing.svg')
+whiteRookImg = pygame.image.load('src/resources/WhiteRook.png')
+whiteRookImg = pygame.transform.scale(whiteRookImg, (width, width))
+blackRookImg = pygame.image.load('src/resources/BlackRook.png')
+blackRookImg = pygame.transform.scale(blackRookImg, (width, width))
+whiteKnightImg = pygame.image.load('src/resources/WhiteKnight.png')
+whiteKnightImg = pygame.transform.scale(whiteKnightImg, (width, width))
+blackKnightImg = pygame.image.load('src/resources/BlackKnight.png')
+blackKnightImg = pygame.transform.scale(blackKnightImg, (width, width))
+whitePawnImg = pygame.image.load('src/resources/WhitePawn.png')
+whitePawnImg = pygame.transform.scale(whitePawnImg, (width, width))
+blackPawnImg = pygame.image.load('src/resources/BlackPawn.png')
+blackPawnImg = pygame.transform.scale(blackPawnImg, (width, width))
+
+whiteKingImg = pygame.image.load('src/resources/WhiteKing.png')
 whiteKingImg = pygame.transform.scale(whiteKingImg, (width, width))
-blackKingImg = pygame.image.load('src/resources/BlackKing.svg')
+blackKingImg = pygame.image.load('src/resources/BlackKing.png')
 blackKingImg = pygame.transform.scale(blackKingImg, (width, width))
-whiteQueenImg = pygame.image.load('src/resources/WhiteQueen.svg')
+whiteQueenImg = pygame.image.load('src/resources/WhiteQueen.png')
 whiteQueenImg = pygame.transform.scale(whiteQueenImg, (width, width))
-blackQueenImg = pygame.image.load('src/resources/BlackQueen.svg')
+blackQueenImg = pygame.image.load('src/resources/BlackQueen.png')
 blackQueenImg = pygame.transform.scale(blackQueenImg, (width, width))
 
 font = pygame.font.SysFont("Arial", 18)
@@ -68,11 +69,14 @@ def bishop(x, y):
 def placePiece(x, y, img):
     gameDisplay.blit(img, (x, y))
 
+
 def horizontalCoordinate(x):
     return (x * width) + horizontalOffset
 
+
 def verticalCoordinate(x):
     return (x * height) + verticalOffset
+
 
 x = (width * 6) + horizontalOffset
 y = (height * 1) + verticalOffset
@@ -156,50 +160,50 @@ def create_or_update_board():
                 placePiece(horizontalCoordinate(j), verticalCoordinate(i), whiteRookImg)
     print("board done")
 
-# Main loop
-while not Checkmate:
-    # get all events
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            Checkmate = True
-        if e.type == pygame.QUIT:
-            running = False
-        if e.type == pygame.KEYUP:
-            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
-                shiftDown = False
-        if e.type == pygame.KEYDOWN:
-            textBox.add_chr(pygame.key.name(e.key))
-            if e.key == pygame.K_SPACE:
-                textBox.text += " "
-                textBox.update()
-            if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
-                shiftDown = True
-            if e.key == pygame.K_BACKSPACE:
-                textBox.text = ""
-                textBox.update()
-                create_or_update_board()
-            if e.key == pygame.K_RETURN:
-                create_or_update_board()
-                if len(textBox.text) > 0:
-                    print(textBox.text)
-                    coords = board.notationToCords(textBox.text)
+
+if __name__ == '__main__':
+    create_or_update_board()
+    # Main loop
+    while not Checkmate:
+        # get all events
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                Checkmate = True
+            if e.type == pygame.QUIT:
+                running = False
+            if e.type == pygame.KEYUP:
+                if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
+                    shiftDown = False
+            if e.type == pygame.KEYDOWN:
+                textBox.add_chr(pygame.key.name(e.key))
+                if e.key == pygame.K_SPACE:
+                    textBox.text += " "
+                    textBox.update()
+                if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
+                    shiftDown = True
+                if e.key == pygame.K_BACKSPACE:
                     textBox.text = ""
                     textBox.update()
-                    board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column )
-                    print(board.board)
                     create_or_update_board()
+                if e.key == pygame.K_RETURN:
+                    create_or_update_board()
+                    if len(textBox.text) > 0:
+                        print(textBox.text)
+                        coords = board.notationToCords(textBox.text)
+                        textBox.text = ""
+                        textBox.update()
+                        board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                        print(board.board)
+                        create_or_update_board()
 
+        gameDisplay.blit(update_fps(), (10, 0))
+        gameDisplay.blit(textBox.image, textBox.rect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = 0
+        clock.tick(60)
 
+        pygame.display.update()
 
-
-    gameDisplay.blit(update_fps(), (10, 0))
-    gameDisplay.blit(textBox.image, textBox.rect)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            loop = 0
-    clock.tick(60)
-
-    pygame.display.update()
-
-pygame.quit()
-quit()
+    pygame.quit()
+    quit()
