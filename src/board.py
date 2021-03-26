@@ -367,7 +367,7 @@ class Board:
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""
 
-        if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (not self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).isupper() ):
+        if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper() ):
             raise Exception(str(self.board[startRow][startColumn]) , "cannot be played when IsWhitePlayerTurn equals ", self.isWhitePlayerTurn)
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
                 self.getPossibleMoves(startRow, startColumn)):

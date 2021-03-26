@@ -257,9 +257,12 @@ class TestboardPawns(unittest.TestCase):
         self.assertEqual(10, len(actual))
 
     def test_WhitePawnEnPassentLeft(self):
-        self.board.board = TB.enPassentStartBoard1
-        self.whiteMove = False
-        self.board.move(1, 0, 3, 0)
+        #self.board.board = TB.enPassentStartBoard1
+        #self.whiteMove = False
+        self.board.move(6, 1, 4, 1)
+        self.board.move(1, 7, 2, 7)
+        self.board.move(4,1,3,1)
+        self.board.move(1,0,3,0)
         actual = str(self.board.getPossibleMoves(3, 1))
         result = ["2:1", "2:0"]
         for i in result:
@@ -267,8 +270,11 @@ class TestboardPawns(unittest.TestCase):
         self.assertEqual(10, len(actual))
 
     def test_WhitePawnEnPassentRight(self):
-        self.board.board = TB.enPassentStartBoard1
-        self.whiteMove = False
+        #self.board.board = TB.enPassentStartBoard1
+        #self.whiteMove = False
+        self.board.move(6, 1, 4, 1)
+        self.board.move(1, 7, 2, 7)
+        self.board.move(4, 1, 3, 1)
         self.board.move(1, 2, 3, 2)
         actual = str(self.board.getPossibleMoves(3, 1))
         result = ["2:1", "2:2"]
@@ -279,6 +285,7 @@ class TestboardPawns(unittest.TestCase):
     def test_WhitePawnNoEnPassentLeft(self):
         self.board.board = TB.noEnPassentStartBoard1
         self.whiteMove = False
+        self.board.isWhitePlayerTurn = False
         self.board.move(0, 0, 1, 0)
         actual = str(self.board.getPossibleMoves(3, 1))
         result = ["2:1"]
@@ -289,6 +296,7 @@ class TestboardPawns(unittest.TestCase):
     def test_WhitePawnNoEnPassentRight(self):
         self.board.board = TB.noEnPassentStartBoard2
         self.whiteMove = False
+        self.board.isWhitePlayerTurn = False
         self.board.move(0, 3, 1, 2)
         actual = str(self.board.getPossibleMoves(3, 1))
         result = ["2:1"]
