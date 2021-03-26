@@ -261,8 +261,8 @@ class TestboardPawns(unittest.TestCase):
         #self.whiteMove = False
         self.board.move(6, 1, 4, 1)
         self.board.move(1, 7, 2, 7)
-        self.board.move(4,1,3,1)
-        self.board.move(1,0,3,0)
+        self.board.move(4, 1, 3, 1)
+        self.board.move(1, 0, 3, 0)
         actual = str(self.board.getPossibleMoves(3, 1))
         result = ["2:1", "2:0"]
         for i in result:
@@ -622,11 +622,11 @@ class TestboardKing(unittest.TestCase):
         self.board.board[1][1] = "r"
         self.board.updateBlackThreat()
         self.board.updateWhiteThreat()
-        actual = str(self.board.getPossibleMoves(0,0))
+        actual = str(self.board.getPossibleMoves(0, 0))
         results = ["1:1"]
         for i in results:
             self.assertIn(i, actual)
-        self.assertEqual(len(results)*5, len(actual))
+        self.assertEqual(len(results) * 5, len(actual))
     # board tests
 
 
