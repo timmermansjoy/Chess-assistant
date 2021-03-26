@@ -103,13 +103,16 @@ def create_or_update_board():
             if i==0 and j==0:
                 pygame.draw.rect(gameDisplay, white,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-                gameDisplay.blit(font.render('test', True, (0,0,0)), (width, height))
+                gameDisplay.blit(font.render('test', True, (0,0,0)), (width, height+50))
             elif i==0:
-                pygame.draw.rect(gameDisplay, red,
+                pygame.draw.rect(gameDisplay, grey,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                test = str(9-j)
+                gameDisplay.blit(font.render(test, True, (0,0,0)), (width,verticalOffset + height*j +50))
             elif j==0:
                 pygame.draw.rect(gameDisplay, red,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                gameDisplay.blit(font.render(chr(96+i), True, (0,0,0)), (horizontalOffset + width*i, height+50))
             else:
                 if (j + i) % 2 == 0:
                     pygame.draw.rect(gameDisplay, red,
