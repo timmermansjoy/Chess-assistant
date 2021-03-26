@@ -179,6 +179,7 @@ if __name__ == '__main__':
                         textBox.update()
                         board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                         i = 0
+                        create_or_update_board()
                         while len(board.moveLog) / 2 >= i:
                             thisLine = TextBox()
                             thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2)), 200, 200]
@@ -193,7 +194,6 @@ if __name__ == '__main__':
                             gameDisplay.blit(thisLine.image, thisLine.rect)
                             i += 1
                         print(board.board)
-                        create_or_update_board()
 
         gameDisplay.blit(textBox.image, textBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
