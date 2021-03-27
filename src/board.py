@@ -40,7 +40,8 @@ class Board:
     def getDirections(self, coord):
         """Returns TRUE for a direction if the piece is not on that edge of the board, else FALSE"""
 
-        directions = {'up': False, 'right': False, 'down': False, 'left': False, 'upLeft': False, 'upRight': False, 'downRight': False, 'downLeft': False}
+        directions = {'up': False, 'right': False, 'down': False, 'left': False, 'upLeft': False, 'upRight': False,
+                      'downRight': False, 'downLeft': False}
 
         if coord.row > 0:
             directions['up'] = True
@@ -113,13 +114,15 @@ class Board:
 
         if len(self.moveLog) > 0:
             lastMoveEndCoord = self.moveLog[-1][1]
-            if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+            if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][
+                lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
                 if lastMoveEndCoord.column == coord.column - 1:
                     moves.append(Coordinate(coord.row - 1, coord.column - 1))
                 if lastMoveEndCoord.column == coord.column + 1:
                     moves.append(Coordinate(coord.row - 1, coord.column + 1))
 
-            elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
+            elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][
+                lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
                 if lastMoveEndCoord.column == coord.column - 1:
                     moves.append(Coordinate(coord.row + 1, coord.column - 1))
                 if lastMoveEndCoord.column == coord.column + 1:
@@ -367,26 +370,31 @@ class Board:
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""
 
-        if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
-            raise Exception(str(self.board[startRow][startColumn]), "cannot be played when IsWhitePlayerTurn equals ", self.isWhitePlayerTurn)
+        if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (
+                not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
+            raise Exception(str(self.board[startRow][startColumn]), "cannot be played when IsWhitePlayerTurn equals ",
+                            self.isWhitePlayerTurn)
         if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
                 self.getPossibleMoves(startRow, startColumn)):
-
+            originalTarget = self.board[endRow][endColumn]
             self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
             piece = self.board[startRow][startColumn]
-            if piece.islower():
-                if startColumn == 0 and startRow == 0 and not self.blackARookMoved:
-                    self.blackARookMoved = True
-                if startColumn == 7 and startRow == 0 and not self.blackHRookMoved:
-                    self.blackHRookMoved = True
-            else:
-                if startColumn == 0 and startRow == 7 and not self.whiteARookMoved:
-                    self.whiteARookMoved = True
-                if startColumn == 7 and startRow == 7 and not self.whiteHRookMoved:
-                    self.whiteHRookMoved = True
+            if startColumn == 0 and startRow == 0:
+                self.blackARookMoved = True
+            if startColumn == 7 and startRow == 0:
+                self.blackHRookMoved = True
+            if startColumn == 0 and startRow == 7:
+                self.whiteARookMoved = True
+            if startColumn == 7 and startRow == 7:
+                self.whiteHRookMoved = True
             self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
             self.isWhitePlayerTurn = not self.isWhitePlayerTurn
+            if (self.board[endRow][endColumn] == "p" or self.board[endRow][endColumn] == "P") and (
+                    self.board[startRow][endColumn] == "p" or self.board[startRow][endColumn] == "P") and (
+                    originalTarget == "."):
+                self.board[startRow][endColumn] = "."
+            self.promotionCheck(Coordinate(endRow, endColumn))
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
 
@@ -439,6 +447,7 @@ class Board:
                 raise Exception(notation, 'is not inside the board')
         else:
             raise Exception(piece, 'is not a valid piece')
+
     # TODO: implement en passant
 
     def getAllAttackedFields(self, playerIsWhite):
@@ -487,3 +496,10 @@ class Board:
                 result += self.board[row][column] + " "
             result += "\n"
         return result
+
+    #TODO: promotion auto goes into queen, needs fixing
+    def promotionCheck(self, endCoord):
+        if(endCoord.row == 7 and self.board[endCoord.row][endCoord.column] == "p"):
+            self.board[endCoord.row][endCoord.column] = "q"
+        if(endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
+            self.board[endCoord.row][endCoord.column] = "Q"
