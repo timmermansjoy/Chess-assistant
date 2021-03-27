@@ -513,6 +513,7 @@ class Board:
             self.board[endCoord.row][endCoord.column] = "Q"
 
     # TODO: cry - I mean proofread cuz I don't know for shit how to implement a test for this
+    # TODO: current logging of castle risks breaking the parsing for getPawnMoves (see line 116)
     def castling(self, white, queen):  # 2 boolean values
         # check if king is present in the correct spot (potentially redundant) +if a "white" castle takes place on a "white" turn/ "black" castle on "black" turn
         if white and self.board[7][4] == "K" and self.isWhitePlayerTurn:
@@ -576,7 +577,7 @@ class Board:
                 self.board[0][2] = "k"
                 self.board[0][3] = "r"
                 self.board[0][0] = "."
-                self.moveLog.append(["O   -   O"])
+                self.moveLog.append(["O - O"])
 
             else:
                 self.board[0][6] = "k"
