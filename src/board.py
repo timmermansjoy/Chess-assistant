@@ -380,14 +380,22 @@ class Board:
             self.board[endRow][endColumn] = self.board[startRow][startColumn]
             self.board[startRow][startColumn] = "."
             piece = self.board[startRow][startColumn]
-            if startColumn == 0 and startRow == 0:
+            if (startColumn == 0 and startRow == 0) or (endColumn == 0 and endRow == 0):
                 self.blackARookMoved = True
-            if startColumn == 7 and startRow == 0:
+            if (startColumn == 7 and startRow == 0) or (endColumn == 7 and endRow == 0):
                 self.blackHRookMoved = True
-            if startColumn == 0 and startRow == 7:
+            if (startColumn == 0 and startRow == 7) or (endColumn == 0 and endRow == 7):
                 self.whiteARookMoved = True
-            if startColumn == 7 and startRow == 7:
+            if (startColumn == 7 and startRow == 7) or (endColumn == 7 and endRow == 7):
                 self.whiteHRookMoved = True
+            # when a king moves, both sides are no longer permitted to castle
+            if startColumn == 4:
+                if startRow == 0:
+                    self.blackHRookMoved = True
+                    self.blackARookMoved = True
+                if startRow == 7:
+                    self.whiteARookMoved = True
+                    self.whiteHRookMoved = True
             self.moveLog.append([Coordinate(startRow, startColumn), Coordinate(endRow, endColumn)])
             self.isWhitePlayerTurn = not self.isWhitePlayerTurn
             if (self.board[endRow][endColumn] == "p" or self.board[endRow][endColumn] == "P") and (
@@ -497,9 +505,82 @@ class Board:
             result += "\n"
         return result
 
-    #TODO: promotion auto goes into queen, needs fixing
+    # TODO: promotion auto goes into queen, needs fixing
     def promotionCheck(self, endCoord):
-        if(endCoord.row == 7 and self.board[endCoord.row][endCoord.column] == "p"):
+        if (endCoord.row == 7 and self.board[endCoord.row][endCoord.column] == "p"):
             self.board[endCoord.row][endCoord.column] = "q"
-        if(endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
+        if (endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
             self.board[endCoord.row][endCoord.column] = "Q"
+
+    # TODO: cry - I mean proofread cuz I don't know for shit how to implement a test for this
+    def castling(self, white, queen):  # 2 boolean values
+        # check if king is present in the correct spot (potentially redundant) +if a "white" castle takes place on a "white" turn/ "black" castle on "black" turn
+        if white and self.board[7][4] == "K" and self.isWhitePlayerTurn:
+            inBetweenFields = []
+            # define fields that have to be free, meanwhile check for moved rooks on the related side of the board
+            if queen:
+                inBetweenFields.extend([Coordinate(7, 3), Coordinate(7, 2), Coordinate(7, 1)])
+                if self.whiteARookMoved:
+                    raise Exception("this rook already mooved you dummy, alternatively your king did")
+            else:
+                inBetweenFields.extend([Coordinate(7, 5), Coordinate(7, 6)])
+                if self.whiteHRookMoved:
+                    raise Exception("this rook already mooved you dummy, alternatively your king did")
+            # verify path is empty
+            for i in inBetweenFields:
+                if self.board[i.row][i.column] != ".":
+                    raise Exception("this is not a free path to castle on")
+            inBetweenFields.append(Coordinate(7, 4))
+            # verify path isn't under attack
+            for i in inBetweenFields:
+                for j in self.fieldsUnderBlackThreat:
+                    if (i.row == j.row) & (i.column == j.column):
+                        raise Exception("this path or your king is attacked, you can't do that shit here")
+            # actually move pieces
+            self.board[7][4] = "."
+            if queen:
+                self.board[7][2] = "K"
+                self.board[7][3] = "R"
+                self.board[7][0] = "."
+                self.moveLog.append(["O   -   O"])
+            else:
+                self.board[7][6] = "K"
+                self.board[7][5] = "R"
+                self.board[7][7] = "."
+                self.moveLog.append(["O - O - O"])
+            self.isWhitePlayerTurn = False
+        if (not white) and self.board[0][4] == "k" and (not self.isWhitePlayerTurn):
+            inBetweenFields = []
+            # define fields that have to be free, meanwhile check for moved rooks on the related side of the board
+            if queen:
+                inBetweenFields.extend([Coordinate(0, 3), Coordinate(0, 2), Coordinate(0, 1)])
+                if self.blackARookMoved:
+                    raise Exception("this rook already mooved you dummy, alternatively your king did")
+            else:
+                inBetweenFields.extend([Coordinate(0, 5), Coordinate(0, 6)])
+                if self.blackHRookMoved:
+                    raise Exception("this rook already mooved you dummy, alternatively your king did")
+            # verify path is empty
+            for i in inBetweenFields:
+                if self.board[i.row][i.column] != ".":
+                    raise Exception("this is not a free path to castle on")
+            inBetweenFields.append(Coordinate(0, 4))
+            # verify path isn't under attack
+            for i in inBetweenFields:
+                for j in self.fieldsUnderWhiteThreat:
+                    if (i.row == j.row) & (i.column == j.column):
+                        raise Exception("this path or your king is attacked, you can't do that shit here")
+            # actually move pieces
+            self.board[0][4] = "."
+            if queen:
+                self.board[0][2] = "k"
+                self.board[0][3] = "r"
+                self.board[0][0] = "."
+                self.moveLog.append(["O   -   O"])
+
+            else:
+                self.board[0][6] = "k"
+                self.board[0][5] = "r"
+                self.board[0][7] = "."
+                self.moveLog.append(["O - O - O"])
+            self.isWhitePlayerTurn = True

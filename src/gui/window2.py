@@ -26,7 +26,7 @@ grey = (236, 216, 194)
 blue = (0,32,255)
 
 clock = pygame.time.Clock()
-GameOngoing = False
+gameNotOngoing = False
 # importing pieces
 whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.png')
 whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
@@ -188,16 +188,19 @@ if __name__ == '__main__':
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
     enterThePositionBox = TextBox()
     enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
-    drawButton = Button(display_width * 0.7, 250, 150, 100, blue, "Draw") #x, y, width, height, color, text
-    resignButton = Button(display_width * 0.7, 500, 150, 100, red, "Resign")   
-
+    drawButton = Button(display_width * 0.03, 25, 75, 50, blue, "Draw") #x, y, width, height, color, text
+    resignButton = Button(display_width * 0.1, 25, 75, 50, red, "Resign")
+    castleWQButton = Button(display_width * 0.2, 25, 200, 50, red, "White Queen-side castle")
+    castleBQButton = Button(display_width * 0.375, 25, 200, 50, red, "Black Queen-side castle")
+    castleWKButton = Button(display_width * 0.55, 25, 200, 50, red, "White King-side castle")
+    castleBKButton = Button(display_width * 0.725, 25, 200, 50, red, "Black King-side castle")
     # Main loop
-    while not GameOngoing:
+    while not gameNotOngoing:
         # get all events
         for e in pygame.event.get():
             position = pygame.mouse.get_pos()
             if e.type == pygame.QUIT:
-                GameOngoing = True
+                gameNotOngoing = True
             if e.type == pygame.QUIT:
                 running = False
             if e.type == pygame.KEYUP:
@@ -205,7 +208,21 @@ if __name__ == '__main__':
                     shiftDown = False
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
-                    GameOngoing = True
+                    gameNotOngoing = True
+                #TODO: implement 4 castling buttons
+                #TODO: add move logging to castleButtons
+                if castleWKButton.isMouseOver(position):
+                    board.castling(True, False)
+                    create_or_update_board()
+                if castleWQButton.isMouseOver(position):
+                    board.castling(True, True)
+                    create_or_update_board()
+                if castleBKButton.isMouseOver(position):
+                    board.castling(False, False)
+                    create_or_update_board()
+                if castleBQButton.isMouseOver(position):
+                    board.castling(False, True)
+                    create_or_update_board()
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:
@@ -250,7 +267,10 @@ if __name__ == '__main__':
         gameDisplay.blit(enterThePositionBox.image, enterThePositionBox.rect)
         drawButton.makeButton(gameDisplay)
         resignButton.makeButton(gameDisplay)
-
+        castleBKButton.makeButton(gameDisplay)
+        castleBQButton.makeButton(gameDisplay)
+        castleWKButton.makeButton(gameDisplay)
+        castleWQButton.makeButton(gameDisplay)
         clock.tick(30)
 
         pygame.display.update()
