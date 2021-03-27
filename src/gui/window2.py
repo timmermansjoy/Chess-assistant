@@ -1,9 +1,11 @@
 import pygame
 
 from board import Board
+from testboards import Testboards as TB
 
 pygame.init()
 board = Board()
+board.board = TB.Castle
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
@@ -26,7 +28,7 @@ grey = (236, 216, 194)
 blue = (0, 32, 255)
 
 clock = pygame.time.Clock()
-GameOngoing = False
+gameNotOngoing = False
 # importing pieces
 whiteBishopImg = pygame.image.load('src/resources/WhiteBishop.png')
 whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
@@ -77,7 +79,7 @@ class TextBox(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.text = ""
         self.font = font
-        self.image = self.font.render("Enter the position", True, [0, 0, 0])
+        self.image = self.font.render("", True, [0, 0, 0])
         self.rect = self.image.get_rect()
 
     def add_chr(self, char):
@@ -110,7 +112,11 @@ class Button():
         pygame.draw.rect(window, self.color,(self.x, self.y, self.width, self.height), 0)
         if self.text != "":
             text = self.font.render(self.text, True, (0, 0, 0))
+<<<<<<< HEAD
             window.blit(text, ((self.width/2 - text.get_width()/2) + self.x, (self.height/2 - text.get_height()/2) + self.y))  # centers text
+=======
+            window.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))  # centers text
+>>>>>>> 0a845bfc44c53376880ff1b624252f4c66eedd6c
 
     def isMouseOver(self, position):
         # position = pygame.mouse.set_pos() --> position[0] = x, position[1] = y
@@ -127,6 +133,7 @@ def create_or_update_board():
     for i in range(9):
         for j in range(9):
             if i == 0 and j == 0:
+<<<<<<< HEAD
                 pygame.draw.rect(gameDisplay, white,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
                 gameDisplay.blit(font.render('test', True, (0, 0, 0)), (width, height+50))
             elif i == 0:
@@ -135,6 +142,19 @@ def create_or_update_board():
                 gameDisplay.blit(font.render(test, True, (0, 0, 0)),(width, verticalOffset + height*j + 30))
             elif j == 0:
                 pygame.draw.rect(gameDisplay, red,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+=======
+                pygame.draw.rect(gameDisplay, white,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                gameDisplay.blit(font.render('test', True, (0, 0, 0)), (width, height+50))
+            elif i == 0:
+                pygame.draw.rect(gameDisplay, grey,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                test = str(9-j)
+                gameDisplay.blit(font.render(test, True, (0, 0, 0)), (width, verticalOffset + height*j + 30))
+            elif j == 0:
+                pygame.draw.rect(gameDisplay, red,
+                                 ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+>>>>>>> 0a845bfc44c53376880ff1b624252f4c66eedd6c
                 gameDisplay.blit(font.render(chr(96+i), True, (0, 0, 0)), (horizontalOffset + 30 + width*i, height+50))
             else:
                 if (j + i) % 2 == 0:
@@ -186,16 +206,25 @@ if __name__ == '__main__':
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
     enterThePositionBox = TextBox()
     enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
+<<<<<<< HEAD
     drawButton = Button(display_width * 0.80, 650, 150, 100, blue, "Draw")  # x, y, width, height, color, text
     resignButton = Button(display_width * 0.65, 650, 150, 100, red, "Resign")
 
+=======
+    drawButton = Button(display_width * 0.03, 25, 75, 50, blue, "Draw")  # x, y, width, height, color, text
+    resignButton = Button(display_width * 0.1, 25, 75, 50, red, "Resign")
+    castleWQButton = Button(display_width * 0.2, 25, 200, 50, red, "White Queen-side castle")
+    castleBQButton = Button(display_width * 0.375, 25, 200, 50, red, "Black Queen-side castle")
+    castleWKButton = Button(display_width * 0.55, 25, 200, 50, red, "White King-side castle")
+    castleBKButton = Button(display_width * 0.725, 25, 200, 50, red, "Black King-side castle")
+>>>>>>> 0a845bfc44c53376880ff1b624252f4c66eedd6c
     # Main loop
-    while not GameOngoing:
+    while not gameNotOngoing:
         # get all events
         for e in pygame.event.get():
             position = pygame.mouse.get_pos()
             if e.type == pygame.QUIT:
-                GameOngoing = True
+                gameNotOngoing = True
             if e.type == pygame.QUIT:
                 running = False
             if e.type == pygame.KEYUP:
@@ -203,7 +232,19 @@ if __name__ == '__main__':
                     shiftDown = False
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
-                    GameOngoing = True
+                    gameNotOngoing = True
+                if castleWKButton.isMouseOver(position):
+                    board.castling(True, False)
+                    create_or_update_board()
+                if castleWQButton.isMouseOver(position):
+                    board.castling(True, True)
+                    create_or_update_board()
+                if castleBKButton.isMouseOver(position):
+                    board.castling(False, False)
+                    create_or_update_board()
+                if castleBQButton.isMouseOver(position):
+                    board.castling(False, True)
+                    create_or_update_board()
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:
@@ -248,7 +289,10 @@ if __name__ == '__main__':
         gameDisplay.blit(enterThePositionBox.image, enterThePositionBox.rect)
         drawButton.makeButton(gameDisplay)
         resignButton.makeButton(gameDisplay)
-
+        castleBKButton.makeButton(gameDisplay)
+        castleBQButton.makeButton(gameDisplay)
+        castleWKButton.makeButton(gameDisplay)
+        castleWQButton.makeButton(gameDisplay)
         clock.tick(30)
 
         pygame.display.update()
