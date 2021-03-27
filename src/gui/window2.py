@@ -1,9 +1,11 @@
 import pygame
 
 from board import Board
+from testboards import Testboards as TB
 
 pygame.init()
 board = Board()
+board.board = TB.Castle
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
@@ -23,7 +25,7 @@ pygame.display.set_caption('Ai chess')
 red = (173, 91, 75)
 white = (255, 255, 255)
 grey = (236, 216, 194)
-blue = (0,32,255)
+blue = (0, 32, 255)
 
 clock = pygame.time.Clock()
 gameNotOngoing = False
@@ -77,7 +79,7 @@ class TextBox(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.text = ""
         self.font = font
-        self.image = self.font.render("Enter the position", True, [0, 0, 0])
+        self.image = self.font.render("", True, [0, 0, 0])
         self.rect = self.image.get_rect()
 
     def add_chr(self, char):
@@ -94,6 +96,7 @@ class TextBox(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect = old_rect_pos
 
+
 class Button():
     def __init__(self, x, y, width, height, color, text):
         self.text = ""
@@ -108,15 +111,16 @@ class Button():
     def makeButton(self, window):
         pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.height), 0)
         if self.text != "":
-            text = self.font.render(self.text, True, (0,0,0))
-            window.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2))) #centers text
+            text = self.font.render(self.text, True, (0, 0, 0))
+            window.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))  # centers text
 
     def isMouseOver(self, position):
-        #position = pygame.mouse.set_pos() --> position[0] = x, position[1] = y
+        # position = pygame.mouse.set_pos() --> position[0] = x, position[1] = y
         if position[0] > self.x and position[0] < self.x + self.width and position[1] > self.y and position[1] < self.y + self.height:
             return True
         else:
             return False
+
 
 def create_or_update_board():
     print("generating board")
@@ -124,19 +128,19 @@ def create_or_update_board():
     gameDisplay.fill(white)
     for i in range(9):
         for j in range(9):
-            if i==0 and j==0:
+            if i == 0 and j == 0:
                 pygame.draw.rect(gameDisplay, white,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-                gameDisplay.blit(font.render('test', True, (0,0,0)), (width, height+50))
-            elif i==0:
+                gameDisplay.blit(font.render('test', True, (0, 0, 0)), (width, height+50))
+            elif i == 0:
                 pygame.draw.rect(gameDisplay, grey,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
                 test = str(9-j)
-                gameDisplay.blit(font.render(test, True, (0,0,0)), (width,verticalOffset + height*j +30))
-            elif j==0:
+                gameDisplay.blit(font.render(test, True, (0, 0, 0)), (width, verticalOffset + height*j + 30))
+            elif j == 0:
                 pygame.draw.rect(gameDisplay, red,
                                  ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-                gameDisplay.blit(font.render(chr(96+i), True, (0,0,0)), (horizontalOffset + 30 + width*i, height+50))
+                gameDisplay.blit(font.render(chr(96+i), True, (0, 0, 0)), (horizontalOffset + 30 + width*i, height+50))
             else:
                 if (j + i) % 2 == 0:
                     pygame.draw.rect(gameDisplay, red,
@@ -188,7 +192,7 @@ if __name__ == '__main__':
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
     enterThePositionBox = TextBox()
     enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
-    drawButton = Button(display_width * 0.03, 25, 75, 50, blue, "Draw") #x, y, width, height, color, text
+    drawButton = Button(display_width * 0.03, 25, 75, 50, blue, "Draw")  # x, y, width, height, color, text
     resignButton = Button(display_width * 0.1, 25, 75, 50, red, "Resign")
     castleWQButton = Button(display_width * 0.2, 25, 200, 50, red, "White Queen-side castle")
     castleBQButton = Button(display_width * 0.375, 25, 200, 50, red, "Black Queen-side castle")
@@ -209,8 +213,6 @@ if __name__ == '__main__':
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
                     gameNotOngoing = True
-                #TODO: implement 4 castling buttons
-                #TODO: add move logging to castleButtons
                 if castleWKButton.isMouseOver(position):
                     board.castling(True, False)
                     create_or_update_board()
@@ -243,8 +245,8 @@ if __name__ == '__main__':
                         inputBox.update()
                         board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                         i = int(len(board.moveLog)/2 - 20)
-                        if i<0:
-                            i=0
+                        if i < 0:
+                            i = 0
                         heightParameter = i
                         create_or_update_board()
                         while len(board.moveLog) / 2 >= i:

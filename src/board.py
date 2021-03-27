@@ -113,20 +113,19 @@ class Board:
                 moves.append(Coordinate(coord.row + step, coord.column + 1))
 
         if len(self.moveLog) > 0:
-            lastMoveEndCoord = self.moveLog[-1][1]
-            if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][
-                lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
-                if lastMoveEndCoord.column == coord.column - 1:
-                    moves.append(Coordinate(coord.row - 1, coord.column - 1))
-                if lastMoveEndCoord.column == coord.column + 1:
-                    moves.append(Coordinate(coord.row - 1, coord.column + 1))
+            if not("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
+                lastMoveEndCoord = self.moveLog[-1][1]
+                if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+                    if lastMoveEndCoord.column == coord.column - 1:
+                        moves.append(Coordinate(coord.row - 1, coord.column - 1))
+                    if lastMoveEndCoord.column == coord.column + 1:
+                        moves.append(Coordinate(coord.row - 1, coord.column + 1))
 
-            elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][
-                lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
-                if lastMoveEndCoord.column == coord.column - 1:
-                    moves.append(Coordinate(coord.row + 1, coord.column - 1))
-                if lastMoveEndCoord.column == coord.column + 1:
-                    moves.append(Coordinate(coord.row + 1, coord.column + 1))
+                elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
+                    if lastMoveEndCoord.column == coord.column - 1:
+                        moves.append(Coordinate(coord.row + 1, coord.column - 1))
+                    if lastMoveEndCoord.column == coord.column + 1:
+                        moves.append(Coordinate(coord.row + 1, coord.column + 1))
         return moves
 
     def getRookMoves(self, coord):
@@ -543,12 +542,12 @@ class Board:
                 self.board[7][2] = "K"
                 self.board[7][3] = "R"
                 self.board[7][0] = "."
-                self.moveLog.append(["O   -   O"])
+                self.moveLog.append(["O - O - O"])
             else:
                 self.board[7][6] = "K"
                 self.board[7][5] = "R"
                 self.board[7][7] = "."
-                self.moveLog.append(["O - O - O"])
+                self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = False
         if (not white) and self.board[0][4] == "k" and (not self.isWhitePlayerTurn):
             inBetweenFields = []
@@ -577,11 +576,11 @@ class Board:
                 self.board[0][2] = "k"
                 self.board[0][3] = "r"
                 self.board[0][0] = "."
-                self.moveLog.append(["O - O"])
+                self.moveLog.append(["O - O - O"])
 
             else:
                 self.board[0][6] = "k"
                 self.board[0][5] = "r"
                 self.board[0][7] = "."
-                self.moveLog.append(["O - O - O"])
+                self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = True
