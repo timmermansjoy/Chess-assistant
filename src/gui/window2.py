@@ -11,7 +11,7 @@ shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
 
 display_width = 1200
-display_height = 800
+display_height = 1000
 
 width = int(600 / 8)
 height = int(600 / 8)
@@ -90,12 +90,11 @@ class TextBox(pygame.sprite.Sprite):
             self.text += shiftChars[validChars.index(char)]
         self.update()
 
-    def update(self):
+    def update(self, color=[0,0,0]):
         old_rect_pos = self.rect
-        self.image = self.font.render(self.text, False, [0, 0, 0])
+        self.image = self.font.render(self.text, False, color)
         self.rect = self.image.get_rect()
         self.rect = old_rect_pos
-
 
 class Button():
     def __init__(self, x, y, width, height, color, text):
@@ -109,7 +108,7 @@ class Button():
         self.text = text
 
     def makeButton(self, window):
-        pygame.draw.rect(window, self.color,(self.x, self.y, self.width, self.height), 0)
+        pygame.draw.rect(window, self.color, (self.x, self.y, self.width, self.height), 0)
         if self.text != "":
             text = self.font.render(self.text, True, (0, 0, 0))
             window.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))  # centers text
@@ -122,6 +121,26 @@ class Button():
             return False
 
 
+def make_move():
+    i = int(len(board.moveLog)/2 - 20)
+    if i < 0:
+        i = 0
+    heightParameter = i
+    create_or_update_board()
+    while len(board.moveLog) / 2 >= i:
+        thisLine = TextBox()
+        thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2 - heightParameter)), 200, 200]
+        content = str(i + 1)
+        if len(board.moveLog) >= 2 * i + 1:
+            content += str(board.moveLog[2 * i]) + "---"
+            if len(board.moveLog) >= 2 * i + 2:
+                content += str(board.moveLog[2 * i + 1])
+        thisLine.image = thisLine.font.render(content, True, [0, 0, 0])
+        thisLine.text = content
+        thisLine.update()
+        gameDisplay.blit(thisLine.image, thisLine.rect)
+        i += 1
+                            
 def create_or_update_board():
     print("generating board")
     global board
@@ -146,6 +165,7 @@ def create_or_update_board():
                     pygame.draw.rect(gameDisplay, red,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
                 else:
                     pygame.draw.rect(gameDisplay, grey,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+    #if len(board.moveLog) != 0 and board.moveLog
 
     # Populate the board
     for i in range(8):
@@ -189,6 +209,11 @@ if __name__ == '__main__':
     moveLog = TextBox()
     moveLog.rect = [display_width * 0.7, (display_height * 0.1) + 25, 200, 200]
     moveLog.image = moveLog.font.render("Move Log", True, [0, 0, 0])
+    errorBlock = TextBox()
+    errorBlock.rect = [(display_width * 0.1), (display_height * 0.85), 200, 200]
+    errorBlock.image = errorBlock.font.render("qdzazdzeqfdq", True, [255, 0, 0])
+    errorLabel = Button(display_width * 0.1, display_height * 0.8, 75, 50, [255, 255, 255], "Error Log:")  # x, y, width, height, color, text
+
     enterThePositionBox = TextBox()
     enterThePositionBox.rect = [(display_width * 0.7), display_height * 0.1, 200, 200]
     drawButton = Button(display_width * 0.03, 25, 75, 50, blue, "Draw")  # x, y, width, height, color, text
@@ -242,29 +267,19 @@ if __name__ == '__main__':
                         coords = board.notationToCords(inputBox.text)
                         inputBox.text = ""
                         inputBox.update()
-                        board.move(coords[0].row, coords[0].column,coords[1].row, coords[1].column)
-                        i = int(len(board.moveLog)/2 - 20)
-                        if i < 0:
-                            i = 0
-                        heightParameter = i
-                        create_or_update_board()
-                        while len(board.moveLog) / 2 >= i:
-                            thisLine = TextBox()
-                            thisLine.rect = [display_width * 0.7, (display_height * 0.1) + (25 * (i + 2 - heightParameter)), 200, 200]
-                            content = str(i + 1)
-                            if len(board.moveLog) >= 2 * i + 1:
-                                content += str(board.moveLog[2 * i]) + "---"
-                                if len(board.moveLog) >= 2 * i + 2:
-                                    content += str(board.moveLog[2 * i + 1])
-                            thisLine.image = thisLine.font.render(content, True, [0, 0, 0])
-                            thisLine.text = content
-                            thisLine.update()
-                            gameDisplay.blit(thisLine.image, thisLine.rect)
-                            i += 1
+                        try:                             
+                            board.move(coords[0].row, coords[0].column,coords[1].row, coords[1].column)
+                            make_move()
+                        except Exception as e:
+                            print(str(e))
+                            errorBlock.text = str(e)
+                            errorBlock.update([255,0,0])
+                        
                         print(board.board)
-
         gameDisplay.blit(inputBox.image, inputBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
+        gameDisplay.blit(errorBlock.image, errorBlock.rect)
+        errorLabel.makeButton(gameDisplay)
         gameDisplay.blit(enterThePositionBox.image, enterThePositionBox.rect)
         drawButton.makeButton(gameDisplay)
         resignButton.makeButton(gameDisplay)
@@ -275,6 +290,5 @@ if __name__ == '__main__':
         clock.tick(30)
 
         pygame.display.update()
-
     pygame.quit()
     quit()
