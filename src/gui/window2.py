@@ -5,7 +5,7 @@ from testboards import Testboards as TB
 
 pygame.init()
 board = Board()
-board.board = TB.Castle
+#board.board = TB.Castle
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
@@ -253,7 +253,7 @@ if __name__ == '__main__':
                     if castleBQButton.isMouseOver(position):
                         board.castling(False, True)
                         create_or_update_board()
-                    print( "yes man, correct castle")
+                    print("yes man, correct castle")
                 except Exception as ex:
                     print(str(ex))
                     errorBlock.text = str(ex)

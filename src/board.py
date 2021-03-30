@@ -34,7 +34,6 @@ class Board:
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
 
-
     def canCapture(self, target):
         """Returns TRUE is target is of opposite color, else FALSE."""
 
@@ -119,14 +118,14 @@ class Board:
             if not ("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
                 lastMoveEndCoord = self.moveLog[-1][1]
                 if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][
-                    lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+                        lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row - 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
                         moves.append(Coordinate(coord.row - 1, coord.column + 1))
 
                 elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][
-                    lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
+                        lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row + 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
@@ -405,7 +404,7 @@ class Board:
                 self.board[startRow][endColumn] = "."
             self.promotionCheck(Coordinate(endRow, endColumn))
         else:
-            raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
+            raise Exception(startRow, startColumn, endRow, endColumn, 'is not a valid move')
         self.updateWhiteThreat()
         self.updateBlackThreat()
 
