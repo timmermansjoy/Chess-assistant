@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 
 from extra import Coordinate
@@ -32,9 +34,10 @@ class Board:
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
 
-    """Returns TRUE is target is of opposite color, else FALSE."""
 
     def canCapture(self, target):
+        """Returns TRUE is target is of opposite color, else FALSE."""
+
         return ((self.isWhitePiece and target.islower()) or (not self.isWhitePiece and target.isupper()))
 
     def getDirections(self, coord):
@@ -350,13 +353,14 @@ class Board:
             target = self.board[row][col + 1]
             if target == "." or self.canCapture(target):
                 moves.append(Coordinate(row, col + 1))
-        # TODO: don't ask me why this works, I've tried too many things already. Feel free to unjank
+        # TODO: refactor?
         for i in moves:
             for j in fieldsUnderThreat:
                 if (i.row == j.row) & (i.column == j.column):
                     moves.remove(i)
         return moves
 
+    # TODO: this currently isn't used ???????????????????????
     def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         """Returns whether a move is valid or not"""
 
@@ -364,7 +368,7 @@ class Board:
         row = coord.row
         col = coord.column
         if coord in moves:
-            print("move is not valid")
+            logging.warning("move is not valid")
 
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""

@@ -254,9 +254,9 @@ if __name__ == '__main__':
                         board.castling(False, True)
                         create_or_update_board()
                     print( "yes man, correct castle")
-                except Exception as g:
-                    print(str(e))
-                    errorBlock.text = str(g)
+                except Exception as ex:
+                    print(str(ex))
+                    errorBlock.text = str(ex)
                     errorBlock.update([255, 0, 0])
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
@@ -277,11 +277,10 @@ if __name__ == '__main__':
                             coords = board.notationToCords(inputBox.text)
                             board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                             make_move()
-                        except Exception as g:
-                            print(type(g))
-                            traceback.print_exc()
-                            print(str(g))
-                            errorBlock.text = str(g)
+                        except Exception as ex:
+                            print(type(ex))
+                            print(str(ex))
+                            errorBlock.text = str(ex)
                             errorBlock.update([255, 0, 0])
                         inputBox.text = ""
                         inputBox.update()
