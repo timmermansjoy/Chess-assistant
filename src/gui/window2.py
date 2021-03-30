@@ -5,7 +5,7 @@ from testboards import Testboards as TB
 
 pygame.init()
 board = Board()
-board.board = TB.Castle
+#board.board = TB.Castle
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False

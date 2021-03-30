@@ -405,7 +405,7 @@ class Board:
                 self.board[startRow][endColumn] = "."
             self.promotionCheck(Coordinate(endRow, endColumn))
         else:
-            raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
+            raise Exception(startRow, startColumn, endRow, endColumn, 'is not a valid move')
         self.updateWhiteThreat()
         self.updateBlackThreat()
 
