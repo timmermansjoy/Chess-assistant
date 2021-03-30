@@ -237,20 +237,27 @@ if __name__ == '__main__':
                 if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                     shiftDown = False
             if e.type == pygame.MOUSEBUTTONDOWN:
-                if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
-                    gameNotOngoing = True
-                if castleWKButton.isMouseOver(position):
-                    board.castling(True, False)
-                    create_or_update_board()
-                if castleWQButton.isMouseOver(position):
-                    board.castling(True, True)
-                    create_or_update_board()
-                if castleBKButton.isMouseOver(position):
-                    board.castling(False, False)
-                    create_or_update_board()
-                if castleBQButton.isMouseOver(position):
-                    board.castling(False, True)
-                    create_or_update_board()
+                create_or_update_board()
+                try:
+                    if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
+                        gameNotOngoing = True
+                    if castleWKButton.isMouseOver(position):
+                        board.castling(True, False)
+                        create_or_update_board()
+                    if castleWQButton.isMouseOver(position):
+                        board.castling(True, True)
+                        create_or_update_board()
+                    if castleBKButton.isMouseOver(position):
+                        board.castling(False, False)
+                        create_or_update_board()
+                    if castleBQButton.isMouseOver(position):
+                        board.castling(False, True)
+                        create_or_update_board()
+                    print( "yes man, correct castle")
+                except Exception as g:
+                    print(str(e))
+                    errorBlock.text = str(g)
+                    errorBlock.update([255, 0, 0])
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:

@@ -549,7 +549,7 @@ class Board:
                 self.board[7][7] = "."
                 self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = False
-        if (not white) and self.board[0][4] == "k" and (not self.isWhitePlayerTurn):
+        elif (not white) and self.board[0][4] == "k" and (not self.isWhitePlayerTurn):
             inBetweenFields = []
             # define fields that have to be free, meanwhile check for moved rooks on the related side of the board
             if queen:
@@ -584,3 +584,5 @@ class Board:
                 self.board[0][7] = "."
                 self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = True
+        else:
+            raise Exception("I think it's not your turn, sir. PUT THE PIECES DOWN, SIR")
