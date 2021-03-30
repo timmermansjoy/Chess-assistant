@@ -113,15 +113,17 @@ class Board:
                 moves.append(Coordinate(coord.row + step, coord.column + 1))
 
         if len(self.moveLog) > 0:
-            if not("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
+            if not ("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
                 lastMoveEndCoord = self.moveLog[-1][1]
-                if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+                if coord.row == 3 and self.isWhitePiece and self.board[lastMoveEndCoord.row][
+                    lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row - 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
                         moves.append(Coordinate(coord.row - 1, coord.column + 1))
 
-                elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
+                elif coord.row == 4 and not self.isWhitePiece and self.board[lastMoveEndCoord.row][
+                    lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row + 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
@@ -353,8 +355,6 @@ class Board:
             for j in fieldsUnderThreat:
                 if (i.row == j.row) & (i.column == j.column):
                     moves.remove(i)
-                else:
-                    print(str(j) + "does not equal" + str(i))
         return moves
 
     def isValid(self, coord):  # Je mag jezelf niet check zetten, move moet valide zijn,....
@@ -368,7 +368,6 @@ class Board:
 
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""
-
         if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (
                 not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
             raise Exception("It is not your turn! Let the other player make their move first!")
@@ -403,6 +402,8 @@ class Board:
             self.promotionCheck(Coordinate(endRow, endColumn))
         else:
             raise Exception(startRow, endRow, endRow, endColumn, 'is not a valid move')
+        self.updateWhiteThreat()
+        self.updateBlackThreat()
 
     def notationToCords(self, notation):
         """Converts chess notation to coordinates"""
