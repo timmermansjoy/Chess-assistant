@@ -253,7 +253,7 @@ if __name__ == '__main__':
                     if castleBQButton.isMouseOver(position):
                         board.castling(False, True)
                         create_or_update_board()
-                    print( "yes man, correct castle")
+                    print("yes man, correct castle")
                 except Exception as ex:
                     print(str(ex))
                     errorBlock.text = str(ex)
