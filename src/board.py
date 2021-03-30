@@ -408,6 +408,7 @@ class Board:
         self.updateWhiteThreat()
         self.updateBlackThreat()
 
+    #todo: does not log which piece has moved. vb. if bishop moves from square c1 to e3. the output will be c1 e3, but has to be Bc1 e3.
     def GetChessNotation(self):
         result = ""
         count = 1
