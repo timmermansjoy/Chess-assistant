@@ -482,7 +482,7 @@ class Board:
                         for i in thesemoves:
                             if i.__str__() not in str(moves):
                                 moves.append(i)
-        return list(dict.fromkeys(moves))
+        return list(moves)
 
     def updateWhiteThreat(self):
         self.fieldsUnderWhiteThreat = self.getAllAttackedFields(True)
@@ -538,7 +538,7 @@ class Board:
             # verify path isn't under attack
             for i in inBetweenFields:
                 for j in self.fieldsUnderBlackThreat:
-                    if (i.row == j.row) & (i.column == j.column):
+                    if i.__eq__(j):
                         raise Exception("this path or your king is attacked, you can't do that shit here")
             # actually move pieces
             self.board[7][4] = "."
@@ -572,7 +572,7 @@ class Board:
             # verify path isn't under attack
             for i in inBetweenFields:
                 for j in self.fieldsUnderWhiteThreat:
-                    if (i.row == j.row) & (i.column == j.column):
+                    if i.__eq__(j):
                         raise Exception("this path or your king is attacked, you can't do that shit here")
             # actually move pieces
             self.board[0][4] = "."
