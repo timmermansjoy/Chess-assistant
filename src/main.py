@@ -11,9 +11,11 @@ def main():
     board.move(7, 6, 5, 5)
     board.move(0, 5, 5, 0)
     board.board[2][3] = "B"
-    board.move(5, 3, 4, 2)
-    print(board.fieldsUnderWhiteThreat)
-    print(board.getAllAttackedFields(True))
+    board.castling(True, False)
+    print(board.moveLog)
+    print(board.GetChessNotation())
+    # print(board.fieldsUnderWhiteThreat)
+    # print(board.getAllAttackedFields(True))
     print(board)
 
 

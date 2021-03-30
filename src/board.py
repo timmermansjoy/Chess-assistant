@@ -409,6 +409,21 @@ class Board:
         self.updateWhiteThreat()
         self.updateBlackThreat()
 
+    def GetChessNotation(self):
+        result = ""
+        count = 1
+        for i in self.moveLog:
+            result += str(count) + ". " 
+            for j in i:
+                if isinstance(j, Coordinate):
+                    result += str(columnsToFiles.get(j.column)) + str(8 - j.row) + " "
+                else:
+                    result += j
+            result += "\n"
+            count += 1
+        return result
+            
+
     def notationToCords(self, notation):
         """Converts chess notation to coordinates"""
         notation = notation.strip()
