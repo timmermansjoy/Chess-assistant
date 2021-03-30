@@ -1,7 +1,7 @@
 # AI2 Chess Assistant
 
 <p align="center">
-  <img width="300px" src="https://github.com/PXLAIRobotics/RP2021G02/blob/main/src/resources/Hikaru.png">
+  <img width="500px" src="https://github.com/PXLAIRobotics/RP2021G02/blob/main/src/resources/Hikaru.png">
 </p>
 
 
