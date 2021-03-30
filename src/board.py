@@ -409,17 +409,21 @@ class Board:
         """Converts chess notation to coordinates"""
         notation = notation.strip()
         notation = notation.lower()
-        if len(notation) == 4:
-            startColumn = filesToColumns[notation[0]]
-            startRow = ranksToRows[notation[1]]
-            endColumn = filesToColumns[notation[2]]
-            endRow = ranksToRows[notation[3]]
-        if "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
-            startCord = Coordinate(startRow, startColumn)
-            endCord = Coordinate(endRow, endColumn)
-            return startCord, endCord
-        else:
-            raise Exception(notation, 'is not a valid move')
+        try:
+            if len(notation) == 4:
+                startColumn = filesToColumns[notation[0]]
+                startRow = ranksToRows[notation[1]]
+                endColumn = filesToColumns[notation[2]]
+                endRow = ranksToRows[notation[3]]
+                if "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn)):
+                    startCord = Coordinate(startRow, startColumn)
+                    endCord = Coordinate(endRow, endColumn)
+                    return startCord, endCord
+            else:
+                raise Exception(notation, 'is not a valid move')
+        except KeyError as ke:
+            raise Exception("the coordinates you passed were not valid coordinates, please try again")
+        raise Exception("don't ask, you did something wrong")
 
     # TODO refactor this with notationToCords
 

@@ -1,5 +1,5 @@
 import pygame
-
+import traceback
 from board import Board
 from testboards import Testboards as TB
 
@@ -273,17 +273,18 @@ if __name__ == '__main__':
                     create_or_update_board()
                     if len(inputBox.text) > 0:
                         print(inputBox.text)
-                        coords = board.notationToCords(inputBox.text)
-                        inputBox.text = ""
-                        inputBox.update()
                         try:
+                            coords = board.notationToCords(inputBox.text)
                             board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                             make_move()
-                        except Exception as e:
-                            print(str(e))
-                            errorBlock.text = str(e)
+                        except Exception as g:
+                            print(type(g))
+                            traceback.print_exc()
+                            print(str(g))
+                            errorBlock.text = str(g)
                             errorBlock.update([255, 0, 0])
-
+                        inputBox.text = ""
+                        inputBox.update()
                         print(board.board)
         gameDisplay.blit(inputBox.image, inputBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
