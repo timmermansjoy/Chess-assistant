@@ -359,26 +359,25 @@ class Board:
         return moves
 
     # TODO: this currently isn't used ???????????????????????
-    def isCheck(self, white, startRow, startColumn, endRow , endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
+    def isCheck(self, white, startRow, startColumn, endRow, endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         """Returns whether a move is valid or not"""
         copy_board = deepcopy(self.board)
         copy_board[endRow][endColumn] = copy_board[startRow][startColumn]
         copy_board[startRow][startColumn] = "."
-        attacked_fields = self.getAllAttackedFields(white,copy_board)
+        attacked_fields = self.getAllAttackedFields(white, copy_board)
         if white:
             king = "k"
         else:
             king = "K"
         for row in range(8):
-                for col in range(8):
-                    if copy_board[row][col] == king:
-                        kingPos = Coordinate(row, col)
-                        break
+            for col in range(8):
+                if copy_board[row][col] == king:
+                    kingPos = Coordinate(row, col)
+                    break
         for field in attacked_fields:
             if (kingPos.row == field.row) and (kingPos.column == field.column):
                 return True
         return False
-            
 
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""
@@ -422,12 +421,12 @@ class Board:
         self.updateWhiteThreat()
         self.updateBlackThreat()
 
-    #todo: does not log which piece has moved. vb. if bishop moves from square c1 to e3. the output will be c1 e3, but has to be Bc1 e3.
+    # todo: does not log which piece has moved. vb. if bishop moves from square c1 to e3. the output will be c1 e3, but has to be Bc1 e3.
     def GetChessNotation(self):
         result = ""
         count = 1
         for i in self.moveLog:
-            result += str(count) + ". " 
+            result += str(count) + ". "
             for j in i:
                 if isinstance(j, Coordinate):
                     result += str(columnsToFiles.get(j.column)) + str(8 - j.row) + " "
@@ -436,7 +435,6 @@ class Board:
             result += "\n"
             count += 1
         return result
-            
 
     def notationToCords(self, notation):
         """Converts chess notation to coordinates"""
