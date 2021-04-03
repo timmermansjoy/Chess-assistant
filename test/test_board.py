@@ -823,5 +823,6 @@ class CastleTests(unittest.TestCase):
         with self.assertRaises(Exception):
             self.board.castling(False, False)
 
+
 if __name__ == '__main__':
     unittest.main()
