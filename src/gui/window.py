@@ -3,24 +3,29 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt
 
+display_width = 1200
+display_height = 1000
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.label = QtWidgets.QLabel()
-        canvas = QtGui.QPixmap(900, 900)
+        canvas = QtGui.QPixmap(660, 660)
+        canvas.fill(QtGui.QColor("#ffffff"))
         self.label.setPixmap(canvas)
         self.setCentralWidget(self.label)
+        self.setStyleSheet("background-color: white;")
+        self.setGeometry(0,0,display_width, display_height)
         self.draw_board()
         self.draw_piece()
 
     def draw_board(self):
         # variables
-        width = int(800 / 8)
-        height = int(800 / 8)
-        whitecolor = "#FFFFFF"
-        blackcolor = "#000000"
+        width = int(600 / 8)
+        height = int(600 / 8)
+        whitecolor = "#ecd8c2" #White on a normal chess board
+        redcolor = "#ad5b4b" #Black on a normal chess board
 
         painter = QtGui.QPainter(self.label.pixmap())
 
@@ -33,7 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     painter.setBrush(brush)
                 else:
                     brush = QtGui.QBrush()
-                    brush.setColor(QtGui.QColor(blackcolor))
+                    brush.setColor(QtGui.QColor(redcolor))
                     brush.setStyle(Qt.SolidPattern)
                     painter.setBrush(brush)
 

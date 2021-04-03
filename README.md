@@ -1,5 +1,10 @@
 # AI2 Chess Assistant
 
+<p align="center">
+  <img width="500px" src="https://github.com/PXLAIRobotics/RP2021G02/blob/main/src/resources/Hikaru.png">
+</p>
+
+
 ## About
 
 This project helps you with the help of computer vision and Ai with the optimal move to make in chess

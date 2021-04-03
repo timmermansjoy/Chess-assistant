@@ -1,11 +1,11 @@
 import pygame
-
+import traceback
 from board import Board
 from testboards import Testboards as TB
 
 pygame.init()
 board = Board()
-board.board = TB.Castle
+#board.board = TB.Castle
 validChars = "12345678 abcdefgh"
 shiftChars = '12345678 ABCDEFGH'
 shiftDown = False
@@ -90,11 +90,12 @@ class TextBox(pygame.sprite.Sprite):
             self.text += shiftChars[validChars.index(char)]
         self.update()
 
-    def update(self, color=[0,0,0]):
+    def update(self, color=[0, 0, 0]):
         old_rect_pos = self.rect
         self.image = self.font.render(self.text, False, color)
         self.rect = self.image.get_rect()
         self.rect = old_rect_pos
+
 
 class Button():
     def __init__(self, x, y, width, height, color, text):
@@ -140,7 +141,8 @@ def make_move():
         thisLine.update()
         gameDisplay.blit(thisLine.image, thisLine.rect)
         i += 1
-                            
+
+
 def create_or_update_board():
     print("generating board")
     global board
@@ -162,10 +164,10 @@ def create_or_update_board():
                 gameDisplay.blit(font.render(chr(96+i), True, (0, 0, 0)), (horizontalOffset + 30 + width*i, height+50))
             else:
                 if (j + i) % 2 == 0:
-                    pygame.draw.rect(gameDisplay, red,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+                    pygame.draw.rect(gameDisplay, red, ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
                 else:
-                    pygame.draw.rect(gameDisplay, grey,((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
-    #if len(board.moveLog) != 0 and board.moveLog
+                    pygame.draw.rect(gameDisplay, grey, ((width * i) + horizontalOffset, (height * j) + verticalOffset, width, height), 0)
+    # if len(board.moveLog) != 0 and board.moveLog
 
     # Populate the board
     for i in range(8):
@@ -235,20 +237,27 @@ if __name__ == '__main__':
                 if e.key in [pygame.K_RSHIFT, pygame.K_LSHIFT]:
                     shiftDown = False
             if e.type == pygame.MOUSEBUTTONDOWN:
-                if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
-                    gameNotOngoing = True
-                if castleWKButton.isMouseOver(position):
-                    board.castling(True, False)
-                    create_or_update_board()
-                if castleWQButton.isMouseOver(position):
-                    board.castling(True, True)
-                    create_or_update_board()
-                if castleBKButton.isMouseOver(position):
-                    board.castling(False, False)
-                    create_or_update_board()
-                if castleBQButton.isMouseOver(position):
-                    board.castling(False, True)
-                    create_or_update_board()
+                create_or_update_board()
+                try:
+                    if drawButton.isMouseOver(position) or resignButton.isMouseOver(position):
+                        gameNotOngoing = True
+                    if castleWKButton.isMouseOver(position):
+                        board.castling(True, False)
+                        create_or_update_board()
+                    if castleWQButton.isMouseOver(position):
+                        board.castling(True, True)
+                        create_or_update_board()
+                    if castleBKButton.isMouseOver(position):
+                        board.castling(False, False)
+                        create_or_update_board()
+                    if castleBQButton.isMouseOver(position):
+                        board.castling(False, True)
+                        create_or_update_board()
+                    print("yes man, correct castle")
+                except Exception as ex:
+                    print(str(ex))
+                    errorBlock.text = str(ex)
+                    errorBlock.update([255, 0, 0])
             if e.type == pygame.KEYDOWN:
                 inputBox.add_chr(pygame.key.name(e.key))
                 if e.key == pygame.K_SPACE:
@@ -264,17 +273,17 @@ if __name__ == '__main__':
                     create_or_update_board()
                     if len(inputBox.text) > 0:
                         print(inputBox.text)
-                        coords = board.notationToCords(inputBox.text)
+                        try:
+                            coords = board.notationToCords(inputBox.text)
+                            board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                            make_move()
+                        except Exception as ex:
+                            print(type(ex))
+                            print(str(ex))
+                            errorBlock.text = str(ex)
+                            errorBlock.update([255, 0, 0])
                         inputBox.text = ""
                         inputBox.update()
-                        try:                             
-                            board.move(coords[0].row, coords[0].column,coords[1].row, coords[1].column)
-                            make_move()
-                        except Exception as e:
-                            print(str(e))
-                            errorBlock.text = str(e)
-                            errorBlock.update([255,0,0])
-                        
                         print(board.board)
         gameDisplay.blit(inputBox.image, inputBox.rect)
         gameDisplay.blit(moveLog.image, moveLog.rect)
