@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt
 display_width = 1200
 display_height = 1000
 
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -16,7 +17,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.label.setPixmap(canvas)
         self.setCentralWidget(self.label)
         self.setStyleSheet("background-color: white;")
-        self.setGeometry(0,0,display_width, display_height)
+        self.setGeometry(0, 0, display_width, display_height)
         self.draw_board()
         self.draw_piece()
 
@@ -24,8 +25,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # variables
         width = int(600 / 8)
         height = int(600 / 8)
-        whitecolor = "#ecd8c2" #White on a normal chess board
-        redcolor = "#ad5b4b" #Black on a normal chess board
+        whitecolor = "#ecd8c2"  # White on a normal chess board
+        redcolor = "#ad5b4b"  # Black on a normal chess board
 
         painter = QtGui.QPainter(self.label.pixmap())
 
