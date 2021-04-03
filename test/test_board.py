@@ -770,9 +770,7 @@ class CastleTests(unittest.TestCase):
             self.board.castling(True, False)
 
     def test_castleFailsWhileAttackedKingWhite(self):
-        print("\n", self.board)
         self.board.board[4][3] = "n"
-        print(self.board)
         self.board.move(6, 6, 5, 6)
         self.board.move(4, 3, 5, 5)
         with self.assertRaises(Exception):
