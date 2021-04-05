@@ -26,7 +26,7 @@ class CastleTests(unittest.TestCase):
         ])
         for i in range(8):
             for j in range(8):
-                self.assertEquals(resultBoard[i][j], self.board.board[i][j], str(i) + str(j))
+                self.assertEqual(resultBoard[i][j], self.board.board[i][j], str(i) + str(j))
 
     def test_castleFailsAfterKMoveWhite(self):
         self.board.move(7, 4, 6, 4)
