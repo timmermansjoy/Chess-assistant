@@ -3,6 +3,7 @@ import pytest
 from board import *
 from testboards import Testboards as TB
 
+
 class TestboardKing(unittest.TestCase):
 
     def setUp(self):

@@ -43,6 +43,8 @@ class TestboardWhiteKnights(unittest.TestCase):
         self.assertEqual(30, len(actual))
 
     # Black knight moves
+
+
 class TestboardBlackKnights(unittest.TestCase):
 
     def setUp(self):

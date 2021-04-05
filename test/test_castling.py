@@ -180,7 +180,7 @@ class CastleTests(unittest.TestCase):
             self.board.castling(False, False)
 
     def test_WhitecastleFailsOnOpponentsTurn(self):
-        self.board.move(7, 3, 5,3)
+        self.board.move(7, 3, 5, 3)
         with self.assertRaises(Exception):
             self.board.castling(True, True)
 
