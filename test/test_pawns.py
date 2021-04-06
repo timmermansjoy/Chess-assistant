@@ -35,9 +35,8 @@ class TestboardWhitePawns(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
 
-
-
         # Black Pawn moves
+
 
 class TestboardBlackPawns(unittest.TestCase):
 
@@ -66,6 +65,7 @@ class TestboardBlackPawns(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(10, len(actual))
+
 
 class TestboardPawnsEnPassant(unittest.TestCase):
 
@@ -160,7 +160,16 @@ class TestboardPawnsEnPassant(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(5, len(actual))
 
-
+    def test_PromitionCheck(self):
+        self.board.clearBoard()
+        self.board.board[1][0] = "P"
+        self.board.board[6][0] = "p"
+        self.board.board[1][7] = "k"
+        self.board.board[6][7] = "K"
+        self.board.move(1, 0, 0, 0)
+        self.board.move(6, 0, 7, 0)
+        self.assertEqual("Q", self.board.board[0][0])
+        self.assertEqual("q", self.board.board[7][0])
 
 
 if __name__ == '__main__':

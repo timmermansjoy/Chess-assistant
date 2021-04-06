@@ -4,7 +4,6 @@ from board import *
 from testboards import Testboards as TB
 
 
-
 class TestboardWhiteBishops(unittest.TestCase):
 
     def setUp(self):
@@ -47,6 +46,7 @@ class TestboardWhiteBishops(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+
 class TestboardBlackBishops(unittest.TestCase):
 
     def setUp(self):
@@ -88,6 +88,7 @@ class TestboardBlackBishops(unittest.TestCase):
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
 
+
 class TestboardMiscBishops(unittest.TestCase):
 
     def setUp(self):
@@ -122,8 +123,6 @@ class TestboardMiscBishops(unittest.TestCase):
         for i in results4:
             self.assertIn(i, actual4)
         self.assertEqual(len(results4) * 5, len(actual4))
-
-
 
 
 if __name__ == '__main__':

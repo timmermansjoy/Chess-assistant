@@ -3,6 +3,7 @@ import pytest
 from board import *
 from testboards import Testboards as TB
 
+
 class TestboardGetAllAttackedFields(unittest.TestCase):
 
     def setUp(self):
@@ -52,7 +53,6 @@ class TestboardGetAllAttackedFields(unittest.TestCase):
         for i in results:
             self.assertIn(i, actual)
         self.assertEqual(len(results) * 5, len(actual))
-
 
 
 if __name__ == '__main__':

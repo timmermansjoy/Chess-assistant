@@ -18,7 +18,6 @@ from testboards import Testboards as TB
 # verify the length of "actual" (exactly 5 characters per possible moves)
 
 
-
 class TestboardMiscTests(unittest.TestCase):
 
     def setUp(self):
@@ -53,8 +52,6 @@ class TestboardMiscTests(unittest.TestCase):
 
         with self.assertRaises(Exception):
             self.board.placePieceOnNotation('k', 'a99')
-
-
 
 
 if __name__ == '__main__':
