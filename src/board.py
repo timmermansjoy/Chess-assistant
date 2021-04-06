@@ -138,16 +138,16 @@ class Board:
         directions = self.getDirections(coord)
 
         if directions['right']:
-            moves.extend(self.getHorizontal(coord, 1, board))
+            moves.extend(self.__getHorizontal(coord, 1, board))
         if directions['left']:
-            moves.extend(self.getHorizontal(coord, -1, board))
+            moves.extend(self.__getHorizontal(coord, -1, board))
         if directions['down']:
-            moves.extend(self.getVertical(coord, 1, board))
+            moves.extend(self.__getVertical(coord, 1, board))
         if directions['up']:
-            moves.extend(self.getVertical(coord, -1, board))
+            moves.extend(self.__getVertical(coord, -1, board))
         return moves
 
-    def getVertical(self, start, step, board):
+    def __getVertical(self, start, step, board):
         """Returns possible vertical moves for a piece on coordinate 'start'"""
 
         moves = []
@@ -169,7 +169,7 @@ class Board:
             current += step
         return moves
 
-    def getHorizontal(self, start, step, board):
+    def __getHorizontal(self, start, step, board):
         """Returns possible horizontal moves for a piece on coordinate 'start'"""
 
         moves = []
@@ -215,7 +215,7 @@ class Board:
                     moves.append(target)
         return moves
 
-    def getDiagonalNorthWest(self, start, step, board):
+    def __getDiagonalNorthWest(self, start, step, board):
         """Returns possible diagonal NW moves for a piece on coordinate 'start'"""
         moves = []
         pathBlocked = False
@@ -237,7 +237,7 @@ class Board:
             currentColumn += step
         return moves
 
-    def getDiagonalNorthEast(self, start, step, board):
+    def __getDiagonalNorthEast(self, start, step, board):
         """Returns possible diagonal NE moves for piece on coordinate 'start'"""
 
         moves = []
@@ -269,13 +269,13 @@ class Board:
         moves = []
         directions = self.getDirections(coord)
         if directions['upLeft']:
-            moves.extend(self.getDiagonalNorthWest(coord, -1, board))
+            moves.extend(self.__getDiagonalNorthWest(coord, -1, board))
         if directions['upRight']:
-            moves.extend(self.getDiagonalNorthEast(coord, 1, board))
+            moves.extend(self.__getDiagonalNorthEast(coord, 1, board))
         if directions['downRight']:
-            moves.extend(self.getDiagonalNorthWest(coord, 1, board))
+            moves.extend(self.__getDiagonalNorthWest(coord, 1, board))
         if directions['downLeft']:
-            moves.extend(self.getDiagonalNorthEast(coord, -1, board))
+            moves.extend(self.__getDiagonalNorthEast(coord, -1, board))
         return moves
 
     def getQueenMoves(self, coord, board):
@@ -284,21 +284,21 @@ class Board:
         moves = []
         directions = self.getDirections(coord)
         if directions['up']:
-            moves.extend(self.getVertical(coord, -1, board))
+            moves.extend(self.__getVertical(coord, -1, board))
         if directions['right']:
-            moves.extend(self.getHorizontal(coord, 1, board))
+            moves.extend(self.__getHorizontal(coord, 1, board))
         if directions['down']:
-            moves.extend(self.getVertical(coord, 1, board))
+            moves.extend(self.__getVertical(coord, 1, board))
         if directions['left']:
-            moves.extend(self.getHorizontal(coord, -1, board))
+            moves.extend(self.__getHorizontal(coord, -1, board))
         if directions['upLeft']:
-            moves.extend(self.getDiagonalNorthWest(coord, -1, board))
+            moves.extend(self.__getDiagonalNorthWest(coord, -1, board))
         if directions['upRight']:
-            moves.extend(self.getDiagonalNorthEast(coord, 1, board))
+            moves.extend(self.__getDiagonalNorthEast(coord, 1, board))
         if directions['downRight']:
-            moves.extend(self.getDiagonalNorthWest(coord, 1, board))
+            moves.extend(self.__getDiagonalNorthWest(coord, 1, board))
         if directions['downLeft']:
-            moves.extend(self.getDiagonalNorthEast(coord, -1, board))
+            moves.extend(self.__getDiagonalNorthEast(coord, -1, board))
         return moves
 
     def getKingMoves(self, coord, board):
@@ -621,3 +621,15 @@ class Board:
             self.isWhitePlayerTurn = True
         else:
             raise Exception("I think it's not your turn, sir. PUT THE PIECES DOWN, SIR")
+
+    def undo(self, N_undo=1):
+        """naïve undo n moves that have been made"""
+        numberOfMoves = len(self.moveLog)
+        for i in range(N_undo):
+
+            endPoint, StartPoint = self.moveLog[-1]
+
+            self.board[endPoint.row][endPoint.column] = self.board[StartPoint.row][StartPoint.column]
+            self.board[StartPoint.row][StartPoint.column] = "."
+            self.moveLog.pop(-1)
+            self.isWhitePiece = not(self.isWhitePlayerTurn)
