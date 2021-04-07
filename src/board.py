@@ -30,6 +30,7 @@ class Board:
         self.blackARookMoved = False
         self.blackHRookMoved = False
         self.moveLog = []
+        self.squareLog = []
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
 
@@ -385,8 +386,8 @@ class Board:
                 not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
             raise Exception("It is not your turn! Let the other player make their move first!")
         if not self.isCheck(not self.isWhitePlayerTurn, startRow, startColumn, endRow, endColumn):
-            if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
-                    self.getPossibleMoves(startRow, startColumn, self.board)):
+            if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn, self.board)):
+                self.squareLog.append(self.board[endRow][endColumn])
                 originalTarget = self.board[endRow][endColumn]
                 self.board[endRow][endColumn] = self.board[startRow][startColumn]
                 self.board[startRow][startColumn] = "."
@@ -624,12 +625,10 @@ class Board:
 
     def undo(self, N_undo=1):
         """naïve undo n moves that have been made"""
-        numberOfMoves = len(self.moveLog)
         for i in range(N_undo):
-
             endPoint, StartPoint = self.moveLog[-1]
-
             self.board[endPoint.row][endPoint.column] = self.board[StartPoint.row][StartPoint.column]
-            self.board[StartPoint.row][StartPoint.column] = "."
+            self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1]
             self.moveLog.pop(-1)
+            self.squareLog.pop(-1)
             self.isWhitePiece = not(self.isWhitePlayerTurn)
