@@ -1,4 +1,4 @@
-name: Code Checks
+name: code_checks
 
 # Controls when the action will run.
 on: [push]
