@@ -34,6 +34,7 @@ class Board:
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
 
+#TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), __getVertical, __getHorizontal, getDiagonal
     def canCapture(self, target):
         """Returns TRUE is target is of opposite color, else FALSE."""
 
@@ -42,17 +43,8 @@ class Board:
     def getDirections(self, coord):
         """Returns TRUE for a direction if the piece is not on that edge of the board, else FALSE"""
 
-        directions = {'up': False, 'right': False, 'down': False, 'left': False, 'upLeft': False, 'upRight': False,
-                      'downRight': False, 'downLeft': False}
-
-        if coord.row > 0:
-            directions['up'] = True
-        if coord.row < 7:
-            directions['down'] = True
-        if coord.column > 0:
-            directions['left'] = True
-        if coord.column < 7:
-            directions['right'] = True
+        directions = {'up': coord.row > 0, 'right': coord.column < 7, 'down': coord.row < 7, 'left': coord.column > 0,
+                      'upLeft': False, 'upRight': False, 'downRight': False, 'downLeft': False}
 
         directions['upLeft'] = directions['up'] and directions['left']
         directions['upRight'] = directions['up'] and directions['right']
@@ -150,47 +142,11 @@ class Board:
 
     def __getVertical(self, start, step, board):
         """Returns possible vertical moves for a piece on coordinate 'start'"""
-
-        moves = []
-        pathBlocked = False
-        current = start.row + step
-        col = start.column
-        end = 8 if step > 0 else -1
-
-        while not pathBlocked and current != end:
-            target = board[current][col]
-
-            if target == ".":
-                moves.append(Coordinate(current, col))
-            elif self.canCapture(target):
-                moves.append(Coordinate(current, col))
-                pathBlocked = True
-            else:
-                pathBlocked = True
-            current += step
-        return moves
+        return self.getMovesFromDirection(start, 0, step, board)
 
     def __getHorizontal(self, start, step, board):
         """Returns possible horizontal moves for a piece on coordinate 'start'"""
-
-        moves = []
-        pathBlocked = False
-        current = start.column + step
-        row = start.row
-        end = 8 if step > 0 else -1
-
-        while not pathBlocked and current != end:
-            target = board[row][current]
-
-            if target == ".":
-                moves.append(Coordinate(row, current))
-            elif self.canCapture(target):
-                moves.append(Coordinate(row, current))
-                pathBlocked = True
-            else:
-                pathBlocked = True
-            current += step
-        return moves
+        return self.getMovesFromDirection(start, step, 0, board)
 
     def getKnightMoves(self, coord, board):
         """Returns possible moves for a knight piece"""
@@ -218,51 +174,11 @@ class Board:
 
     def __getDiagonalNorthWest(self, start, step, board):
         """Returns possible diagonal NW moves for a piece on coordinate 'start'"""
-        moves = []
-        pathBlocked = False
-        currentColumn = start.column + step
-        currentRow = start.row + step
-        verticalEnd = 8 if step > 0 else -1
-        horizontalEnd = 8 if step > 0 else -1
-
-        while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
-            target = board[currentRow][currentColumn]
-            if target == ".":
-                moves.append(Coordinate(currentRow, currentColumn))
-            elif self.canCapture(target):
-                moves.append(Coordinate(currentRow, currentColumn))
-                pathBlocked = True
-            else:
-                pathBlocked = True
-            currentRow += step
-            currentColumn += step
-        return moves
+        return self.getMovesFromDirection(start, step, step, board)
 
     def __getDiagonalNorthEast(self, start, step, board):
         """Returns possible diagonal NE moves for piece on coordinate 'start'"""
-
-        moves = []
-        pathBlocked = False
-        currentColumn = start.column + step
-        currentRow = start.row - step
-
-        # If the rowStep is > 0, the verticalEnd square is the top most square + 1 (without the + 1 it will not check the last square)
-        # If the columnStep is < 0, the end square is the bottom most square - 1 (without the - 1 it will not check the last square)
-        verticalEnd = 8 if step < 0 else -1
-        horizontalEnd = 8 if step > 0 else -1
-
-        while not pathBlocked and currentRow != verticalEnd and currentColumn != horizontalEnd:
-            target = board[currentRow][currentColumn]
-            if target == ".":
-                moves.append(Coordinate(currentRow, currentColumn))
-            elif self.canCapture(target):
-                moves.append(Coordinate(currentRow, currentColumn))
-                pathBlocked = True
-            else:
-                pathBlocked = True
-            currentRow -= step
-            currentColumn += step
-        return moves
+        return self.getMovesFromDirection(start, step, -step, board)
 
     def getBishopMoves(self, coord, board):
         """Returns possible moves for a bishop piece"""
@@ -359,7 +275,6 @@ class Board:
                     moves.remove(i)
         return moves
 
-    # TODO: this currently isn't used ???????????????????????
     def isCheck(self, white, startRow, startColumn, endRow, endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         """Returns whether a move is valid or not"""
         copy_board = deepcopy(self.board)
@@ -547,8 +462,6 @@ class Board:
         if (endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
             self.board[endCoord.row][endCoord.column] = "Q"
 
-    # TODO: cry - I mean proofread cuz I don't know for shit how to implement a test for this
-    # TODO: current logging of castle risks breaking the parsing for getPawnMoves (see line 116)
     def castling(self, white, queen):  # 2 boolean values
         # check if king is present in the correct spot (potentially redundant) +if a "white" castle takes place on a "white" turn/ "black" castle on "black" turn
         if white and self.board[7][4] == "K" and self.isWhitePlayerTurn:
@@ -632,3 +545,24 @@ class Board:
             self.moveLog.pop(-1)
             self.squareLog.pop(-1)
             self.isWhitePiece = not(self.isWhitePlayerTurn)
+
+    def getMovesFromDirection(self, start, horizontalStep, verticalStep, board):
+        moves = []
+        pathBlocked = False
+        currentColumn = start.column + horizontalStep
+        currentRow = start.row + verticalStep
+        endHorizontal = 8 if horizontalStep > 0 else -1
+        endVertical = 8 if verticalStep > 0 else -1
+
+        while not pathBlocked and currentRow != endVertical and currentColumn != endHorizontal:
+            target = board[currentRow][currentColumn]
+            if target == ".":
+                moves.append(Coordinate(currentRow, currentColumn))
+            elif self.canCapture(target):
+                moves.append(Coordinate(currentRow, currentColumn))
+                pathBlocked = True
+            else:
+                pathBlocked = True
+            currentRow += verticalStep
+            currentColumn += horizontalStep
+        return moves
