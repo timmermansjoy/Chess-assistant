@@ -12,3 +12,6 @@ class Coordinate:
             return (self.row == other.row) and (self.column == other.column)
         else:
             return False
+
+    def __iter__(self):
+        return iter([self.row, self.column])
