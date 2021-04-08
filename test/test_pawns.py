@@ -171,6 +171,18 @@ class TestboardPawnsEnPassant(unittest.TestCase):
         self.assertEqual("Q", self.board.board[0][0])
         self.assertEqual("q", self.board.board[7][0])
 
+    def test_actuallyTakingEnPassant(self):
+        self.board.move(6, 1, 4, 1)
+        self.board.move(1, 7, 2, 7)
+        self.board.move(4, 1, 3, 1)
+        self.board.move(1, 2, 3, 2)
+        self.board.move(3, 1, 2, 2)
+        assert self.board.board[2][2] == "P"
+        assert self.board.board[3][2] == "."
+        assert self.board.board[3][1] == "."
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

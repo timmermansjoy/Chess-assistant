@@ -5,6 +5,7 @@ from extra import Coordinate
 
 def main():
     board = Board()
+    print(board.__str__())
     cord = Coordinate(3, 4)
     row, col = cord
 

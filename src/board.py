@@ -82,7 +82,7 @@ class Board:
                 raise Exception(piece + " is not a valid piece ??")
             return moves
         else:
-            raise Exception(piece + " is not a valid piece ??")
+            raise Exception(piece + " is not a piece ??")
 
     def getPawnMoves(self, coord, board):
         """Returns possible moves for a pawn piece"""
@@ -345,13 +345,17 @@ class Board:
         result = ""
         count = 1
         for i in self.moveLog:
-            result += str(count) + ". "
+            if (count+1) % 2 == 0:
+                if count != 1:
+                    result += "\n"
+                result += str((count + 1) // 2) + ". "
+            else:
+                result += "--- "
             for j in i:
                 if isinstance(j, Coordinate):
                     result += str(columnsToFiles.get(j.column)) + str(8 - j.row) + " "
                 else:
                     result += j
-            result += "\n"
             count += 1
         return result
 
