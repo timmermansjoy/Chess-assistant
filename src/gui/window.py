@@ -4,35 +4,36 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit, QGridLayout
 from PyQt5.QtGui import QPixmap
 
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'ChessGUI'
 
         self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
-        self.whiteBishopImg = self.whiteBishopImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteBishopImg = self.whiteBishopImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackBishopImg = QPixmap('src/resources/BlackBishop.png')
-        self.blackBishopImg = self.blackBishopImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackBishopImg = self.blackBishopImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.whiteRookImg = QPixmap('src/resources/WhiteRook.png')
-        self.whiteRookImg = self.whiteRookImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteRookImg = self.whiteRookImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackRookImg = QPixmap('src/resources/BlackRook.png')
-        self.blackRookImg = self.blackRookImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackRookImg = self.blackRookImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.whiteKnightImg = QPixmap('src/resources/WhiteKnight.png')
-        self.whiteKnightImg = self.whiteKnightImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteKnightImg = self.whiteKnightImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackKnightImg = QPixmap('src/resources/BlackKnight.png')
-        self.blackKnightImg = self.blackKnightImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackKnightImg = self.blackKnightImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.whitePawnImg = QPixmap('src/resources/WhitePawn.png')
-        self.whitePawnImg = self.whitePawnImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whitePawnImg = self.whitePawnImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackPawnImg = QPixmap('src/resources/BlackPawn.png')
-        self.blackPawnImg = self.blackPawnImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackPawnImg = self.blackPawnImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.whiteKingImg = QPixmap('src/resources/WhiteKing.png')
-        self.whiteKingImg = self.whiteKingImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteKingImg = self.whiteKingImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackKingImg = QPixmap('src/resources/BlackKing.png')
-        self.blackKingImg = self.blackKingImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackKingImg = self.blackKingImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.whiteQueenImg = QPixmap('src/resources/WhiteQueen.png')
-        self.whiteQueenImg = self.whiteQueenImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteQueenImg = self.whiteQueenImg.scaled(50, 50, Qt.KeepAspectRatio)
         self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
-        self.blackQueenImg = self.blackQueenImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackQueenImg = self.blackQueenImg.scaled(50, 50, Qt.KeepAspectRatio)
 
         self.height = 1000
         self.width = 1200
@@ -57,19 +58,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 brush.setStyle(Qt.SolidPattern)
                 painter.setPen(QtGui.QPen(Qt.black, 3, Qt.SolidLine))
                 text = ""
-                if i == 0 and j == 0:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
+                if i == 0 and j == 0:
+                    brush.setColor(QtGui.QColor(greycolor))
                     painter.setBrush(brush)
-                elif i == 0:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
+                elif i == 0:
+                    brush.setColor(QtGui.QColor(greycolor))
                     painter.setBrush(brush)
                     text = str(9-j)
-                elif j == 0:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
+                elif j == 0:
+                    brush.setColor(QtGui.QColor(greycolor))
                     painter.setBrush(brush)
                     text = chr(96+i)
-                elif (j + i) % 2 == 0:               
-                    brush.setColor(QtGui.QColor(whitecolor))                    
+                elif (j + i) % 2 == 0:
+                    brush.setColor(QtGui.QColor(whitecolor))
                     painter.setBrush(brush)
                 else:
                     brush.setColor(QtGui.QColor(redcolor))
@@ -96,11 +97,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setStyleSheet("background-color: #FCFFE9;")
 
-
     def draw_piece(self):
         #test = QtGui.QImage('src/resources/WhiteBishop.png')
         label = QtWidgets.QLabel(self)
-        label.setGeometry(60,60,60,60)
+        label.setGeometry(60, 60, 60, 60)
         label.setStyleSheet("background-color: rgba(0,0,0,0%)")
         label.setPixmap(self.whiteBishopImg)
         label.move(600, 250)
@@ -121,5 +121,6 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
+
 
 main()

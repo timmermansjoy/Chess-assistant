@@ -182,7 +182,5 @@ class TestboardPawnsEnPassant(unittest.TestCase):
         assert self.board.board[3][1] == "."
 
 
-
-
 if __name__ == '__main__':
     unittest.main()

@@ -34,7 +34,7 @@ class Board:
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
 
-#TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
+# TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
     def canCapture(self, target):
         """Returns TRUE is target is of opposite color, else FALSE."""
 
@@ -91,13 +91,13 @@ class Board:
         step = -1 if self.isWhitePiece else 1
         directions = self.getDirections(coord)
 
-        #regular move
+        # regular move
         if board[coord.row + step][coord.column] == ".":
             moves.append(Coordinate(coord.row + step, coord.column))
             if coord.row == 3.5 + (-2.5 * step) and board[coord.row + (step * 2)][coord.column] == ".":
                 moves.append(Coordinate(coord.row + (2 * step), coord.column))
 
-        #pawn taking regularly
+        # pawn taking regularly
         if directions['left']:
             target = board[coord.row + step][coord.column - 1]
             if target != "." and self.canCapture(target):
@@ -108,7 +108,7 @@ class Board:
             if target != "." and self.canCapture(target):
                 moves.append(Coordinate(coord.row + step, coord.column + 1))
 
-        #pawn taking en passant
+        # pawn taking en passant
         if len(self.moveLog) > 0:
             if not ("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
                 lastMoveEndCoord = self.moveLog[-1][1]
