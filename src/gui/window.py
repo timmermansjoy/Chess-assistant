@@ -1,14 +1,39 @@
-
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QGridLayout
 from PyQt5.QtGui import QPixmap
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'ChessGUI'
+
+        self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
+        self.whiteBishopImg = self.whiteBishopImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackBishopImg = QPixmap('src/resources/BlackBishop.png')
+        self.blackBishopImg = self.blackBishopImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteRookImg = QPixmap('src/resources/WhiteRook.png')
+        self.whiteRookImg = self.whiteRookImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackRookImg = QPixmap('src/resources/BlackRook.png')
+        self.blackRookImg = self.blackRookImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteKnightImg = QPixmap('src/resources/WhiteKnight.png')
+        self.whiteKnightImg = self.whiteKnightImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackKnightImg = QPixmap('src/resources/BlackKnight.png')
+        self.blackKnightImg = self.blackKnightImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whitePawnImg = QPixmap('src/resources/WhitePawn.png')
+        self.whitePawnImg = self.whitePawnImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackPawnImg = QPixmap('src/resources/BlackPawn.png')
+        self.blackPawnImg = self.blackPawnImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteKingImg = QPixmap('src/resources/WhiteKing.png')
+        self.whiteKingImg = self.whiteKingImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackKingImg = QPixmap('src/resources/BlackKing.png')
+        self.blackKingImg = self.blackKingImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.whiteQueenImg = QPixmap('src/resources/WhiteQueen.png')
+        self.whiteQueenImg = self.whiteQueenImg.scaled(50 , 50, Qt.KeepAspectRatio)
+        self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
+        self.blackQueenImg = self.blackQueenImg.scaled(50 , 50, Qt.KeepAspectRatio)
+
         self.height = 1000
         self.width = 1200
         self.left = 15
@@ -43,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     brush.setColor(QtGui.QColor(greycolor))                    
                     painter.setBrush(brush)
                     text = chr(96+i)
-                elif (j + i) % 2 == 1:               
+                elif (j + i) % 2 == 0:               
                     brush.setColor(QtGui.QColor(whitecolor))                    
                     painter.setBrush(brush)
                 else:
@@ -73,32 +98,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def draw_piece(self):
-        whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
-        whiteBishopImg.scaled(50 , 50)
-        
-        #whiteBishopImg = pygame.transform.scale(whiteBishopImg, (width, width))
-        blackBishopImg = QPixmap('src/resources/BlackBishop.png')
-        #blackBishopImg = pygame.transform.scale(blackBishopImg, (width, width))
-        whiteRookImg = QPixmap('src/resources/WhiteRook.png')
-        #whiteRookImg = pygame.transform.scale(whiteRookImg, (width, width))
-        blackRookImg = QPixmap('src/resources/BlackRook.png')
-        #blackRookImg = pygame.transform.scale(blackRookImg, (width, width))
-        whiteKnightImg = QPixmap('src/resources/WhiteKnight.png')
-        #whiteKnightImg = pygame.transform.scale(whiteKnightImg, (width, width))
-        blackKnightImg = QPixmap('src/resources/BlackKnight.png')
-        #blackKnightImg = pygame.transform.scale(blackKnightImg, (width, width))
-        whitePawnImg = QPixmap('src/resources/WhitePawn.png')
-        #whitePawnImg = pygame.transform.scale(whitePawnImg, (width, width))
-        blackPawnImg = QPixmap('src/resources/BlackPawn.png')
-        #blackPawnImg = pygame.transform.scale(blackPawnImg, (width, width))
-        whiteKingImg = QPixmap('src/resources/WhiteKing.png')
-        #whiteKingImg = pygame.transform.scale(whiteKingImg, (width, width))
-        blackKingImg = QPixmap('src/resources/BlackKing.png')
-        #blackKingImg = pygame.transform.scale(blackKingImg, (width, width))
-        whiteQueenImg = QPixmap('src/resources/WhiteQueen.png')
-        #whiteQueenImg = pygame.transform.scale(whiteQueenImg, (width, width))
-        blackQueenImg = QPixmap('src/resources/BlackQueen.png')
-        #blackQueenImg = pygame.transform.scale(blackQueenImg, (width, width))
+        #test = QtGui.QImage('src/resources/WhiteBishop.png')
+        label = QtWidgets.QLabel(self)
+        label.setGeometry(60,60,60,60)
+        label.setStyleSheet("background-color: rgba(0,0,0,0%)")
+        label.setPixmap(self.whiteBishopImg)
+        label.move(600, 250)
+
+        # grid = QGridLayout()
+        # for i in range(0,5):
+        #     for j in range(0,5):
+        #         label = QtWidgets.QLabel()
+        #         label.setGeometry(50,50,50,50)
+        #         label.move(50*(i+1),50*(j+1))
+        #         label.setPixmap(whiteBishopImg)
+        #         grid.addWidget(label)
+        # self.setLayout(grid)
 
 
 def main():
