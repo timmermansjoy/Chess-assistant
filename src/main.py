@@ -5,13 +5,11 @@ from extra import Coordinate
 
 def main():
     board = Board()
-    print(board.__str__())
-    cord = Coordinate(3, 4)
-    row, col = cord
-
-    print(cord)
-    print(row, col)
-    print(cord.row, cord.column)
+    board.board = TB.Castle
+    board.move(4,3,3,3)
+    board.castling(False,False,board.board)
+    
+    print(board)
 
 
 if __name__ == "__main__":

@@ -474,10 +474,10 @@ class Board:
         if (endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
             self.board[endCoord.row][endCoord.column] = "Q"
 
-    def castling(self, white, queen):  # 2 boolean values
+    def castling(self, white, queen, board):  # 2 boolean values
         """Castles based on two booleans identifying the player and the side to castle to"""
         # check if king is present in the correct spot (potentially redundant) +if a "white" castle takes place on a "white" turn/ "black" castle on "black" turn
-        if white and self.board[7][4] == "K" and self.isWhitePlayerTurn:
+        if white and board[7][4] == "K" and self.isWhitePlayerTurn:
             inBetweenFields = []
             # define fields that have to be free, meanwhile check for moved rooks on the related side of the board
             if queen:
@@ -490,7 +490,7 @@ class Board:
                     raise Exception("this rook already mooved you dummy, alternatively your king did")
             # verify path is empty
             for i in inBetweenFields:
-                if self.board[i.row][i.column] != ".":
+                if board[i.row][i.column] != ".":
                     raise Exception("this is not a free path to castle on")
             inBetweenFields.append(Coordinate(7, 4))
             # verify path isn't under attack
@@ -499,19 +499,19 @@ class Board:
                     if i.__eq__(j):
                         raise Exception("this path or your king is attacked, you can't do that shit here")
             # actually move pieces
-            self.board[7][4] = "."
+            board[7][4] = "."
             if queen:
-                self.board[7][2] = "K"
-                self.board[7][3] = "R"
-                self.board[7][0] = "."
+                board[7][2] = "K"
+                board[7][3] = "R"
+                board[7][0] = "."
                 self.moveLog.append(["O - O - O"])
             else:
-                self.board[7][6] = "K"
-                self.board[7][5] = "R"
-                self.board[7][7] = "."
+                board[7][6] = "K"
+                board[7][5] = "R"
+                board[7][7] = "."
                 self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = False
-        elif (not white) and self.board[0][4] == "k" and (not self.isWhitePlayerTurn):
+        elif (not white) and board[0][4] == "k" and (not self.isWhitePlayerTurn):
             inBetweenFields = []
             # define fields that have to be free, meanwhile check for moved rooks on the related side of the board
             if queen:
@@ -524,7 +524,7 @@ class Board:
                     raise Exception("this rook already mooved you dummy, alternatively your king did")
             # verify path is empty
             for i in inBetweenFields:
-                if self.board[i.row][i.column] != ".":
+                if board[i.row][i.column] != ".":
                     raise Exception("this is not a free path to castle on")
             inBetweenFields.append(Coordinate(0, 4))
             # verify path isn't under attack
@@ -533,17 +533,17 @@ class Board:
                     if i.__eq__(j):
                         raise Exception("this path or your king is attacked, you can't do that shit here")
             # actually move pieces
-            self.board[0][4] = "."
+            board[0][4] = "."
             if queen:
-                self.board[0][2] = "k"
-                self.board[0][3] = "r"
-                self.board[0][0] = "."
+                board[0][2] = "k"
+                board[0][3] = "r"
+                board[0][0] = "."
                 self.moveLog.append(["O - O - O"])
 
             else:
-                self.board[0][6] = "k"
-                self.board[0][5] = "r"
-                self.board[0][7] = "."
+                board[0][6] = "k"
+                board[0][5] = "r"
+                board[0][7] = "."
                 self.moveLog.append(["O - O"])
             self.isWhitePlayerTurn = True
         else:
