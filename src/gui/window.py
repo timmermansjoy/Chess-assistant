@@ -46,15 +46,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def init_gui(self):
             win = QtWidgets.QWidget(self)
             grid = QtWidgets.QGridLayout(win)
+            board = Board()
             for i in range(0,8):
                 for j in range(0,8):
+                    currentPiece = board.board[i][j]
                     label = QtWidgets.QLabel(self)
                     label.setStyleSheet("background-color: rgba(0,0,0,0%)")
                     label.setPixmap(self.whiteBishopImg)
                     grid.addWidget(label,i,j)
 
             win.setLayout(grid)
-            win.setGeometry(175,100,600,600)
+            win.setGeometry(165,94,615,610)
             win.setStyleSheet("background-color: rgba(0,0,0,0%)")
 
 
