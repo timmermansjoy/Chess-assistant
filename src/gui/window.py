@@ -9,6 +9,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'ChessGUI'
+        self.height = 1000
+        self.width = 1200
+        self.left = 15
+        self.top = 15
+        self.initUI()   
 
         self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
         self.whiteBishopImg = self.whiteBishopImg.scaled(75 , 75, Qt.KeepAspectRatio)
@@ -36,11 +41,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.blackQueenImg = self.blackQueenImg.scaled(75 , 75, Qt.KeepAspectRatio)
 
         self.board = Board()
-        self.height = 1000
-        self.width = 1200
-        self.left = 15
-        self.top = 15
-        self.initUI()   
         self.read_board()
 
         gameNotOngoing = False
@@ -56,8 +56,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.readPiece(i,j)
                     if pixmap != None:
                         label.setPixmap(pixmap)
-                    else:
-                        label.setStyleSheet("background-color: rgba(0,0,0,0%);")
                     self.grid.addWidget(label,i,j)
 
             win.setLayout(self.grid)
@@ -143,9 +141,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setGeometry(0, 0, self.width, self.height)
 
         self.inputbox = QLineEdit(self)
-        self.inputbox.move(900, 100)
+        self.inputbox.move(975, 100)
         self.inputbox.resize(150, 30)
         self.inputbox.editingFinished.connect(self.enterPress)
+        inputboxDescription = QtWidgets.QLabel(self)
+        inputboxDescription.setText("<b>Enter your move:</b>")
+        inputboxDescription.setFont(QtGui.QFont("Arial", 12))
+        inputboxDescription.resize(150, 30)
+        inputboxDescription.move(825, 100)
+
+        self.movelog = QtWidgets.QLabel(self)
+        self.movelog.setFont(QtGui.QFont("Arial", 12))
+        self.movelog.resize(200,250)
+        self.movelog.move(875, 170)
+        self.movelog.setStyleSheet("border: 1px solid black;")
+        self.movelog.setAlignment(QtCore.Qt.AlignLeft)
+        movelogDescription = QtWidgets.QLabel(self)
+        movelogDescription.setFont(QtGui.QFont("Arial", 12))
+        movelogDescription.setText("<b>Movelog:</b>")
+        movelogDescription.resize(200,30)
+        movelogDescription.move(875, 140)
+        movelogDescription.setStyleSheet("border: 1px solid black;")
 
         self.setStyleSheet("background-color: #FCFFE9;")
 
@@ -153,8 +169,14 @@ class MainWindow(QtWidgets.QMainWindow):
         inputString = str(self.inputbox.text())
         coords = self.board.notationToCords(inputString)
         self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+        self.updateMovelog()
         self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
         self.inputbox.clear()
+
+    def updateMovelog(self):
+        self.movelog.clear()
+        text = self.board.GetChessNotation()
+        self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
         #delete old piece at old position
