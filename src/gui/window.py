@@ -169,8 +169,8 @@ class MainWindow(QtWidgets.QMainWindow):
         inputString = str(self.inputbox.text())
         coords = self.board.notationToCords(inputString)
         self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-        self.updateMovelog()
         self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+        self.updateMovelog()
         self.inputbox.clear()
 
     def updateMovelog(self):
