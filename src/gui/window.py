@@ -35,28 +35,58 @@ class MainWindow(QtWidgets.QMainWindow):
         self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
         self.blackQueenImg = self.blackQueenImg.scaled(75 , 75, Qt.KeepAspectRatio)
 
+        self.board = Board()
         self.height = 1000
         self.width = 1200
         self.left = 15
         self.top = 15
         self.initUI()
         self.draw_piece()       
-        self.init_gui()
+        self.read_board()
 
-    def init_gui(self):
+        gameNotOngoing = False
+        #while not gameNotOngoing:
+            
+
+    def read_board(self):
             win = QtWidgets.QWidget(self)
             grid = QtWidgets.QGridLayout(win)
-            board = Board()
+            
             for i in range(0,8):
                 for j in range(0,8):
-                    currentPiece = board.board[i][j]
+                    currentPiece = self.board.board[i][j]
                     label = QtWidgets.QLabel(self)
                     label.setStyleSheet("background-color: rgba(0,0,0,0%)")
-                    label.setPixmap(self.whiteBishopImg)
+                    if currentPiece == ".":
+                        pass
+                    elif currentPiece == "k":
+                        label.setPixmap(self.blackKingImg)
+                    elif currentPiece == "p":
+                        label.setPixmap(self.blackPawnImg)
+                    elif currentPiece == "q":
+                        label.setPixmap(self.blackQueenImg)
+                    elif currentPiece == "b":
+                        label.setPixmap(self.blackBishopImg)
+                    elif currentPiece == "n":
+                        label.setPixmap(self.blackKnightImg)
+                    elif currentPiece == "r":
+                        label.setPixmap(self.blackRookImg)
+                    elif currentPiece == "K":
+                        label.setPixmap(self.whiteKingImg)
+                    elif currentPiece == "P":
+                        label.setPixmap(self.whitePawnImg)
+                    elif currentPiece == "Q":
+                        label.setPixmap(self.whiteQueenImg)
+                    elif currentPiece == "B":
+                        label.setPixmap(self.whiteBishopImg)
+                    elif currentPiece == "N":
+                        label.setPixmap(self.whiteKnightImg)
+                    elif currentPiece == "R":
+                        label.setPixmap(self.whiteRookImg)
                     grid.addWidget(label,i,j)
 
             win.setLayout(grid)
-            win.setGeometry(165,94,615,610)
+            win.setGeometry(165,90,615,625)
             win.setStyleSheet("background-color: rgba(0,0,0,0%)")
 
 
@@ -112,8 +142,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox = QLineEdit(self)
         self.inputbox.move(900, 100)
         self.inputbox.resize(150, 30)
+        self.inputbox.editingFinished.connect(self.enterPress)
 
         self.setStyleSheet("background-color: #FCFFE9;")
+
+    def enterPress(self):
+        inputString = str(self.inputbox.text())
+        coords = self.board.notationToCords(inputString)
+        self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+        self.inputbox.clear()
+
+    #def updateBoard(self):
 
 
     def draw_piece(self):
