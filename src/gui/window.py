@@ -141,6 +141,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(0, 0, self.width, self.height)
+        self.setStyleSheet("background-color: #FCFFE9;")
 
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
@@ -148,12 +149,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox.editingFinished.connect(self.enterPress)
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
-        inputboxDescription.setFont(QtGui.QFont("Arial", 12))
         inputboxDescription.resize(150, 30)
         inputboxDescription.move(825, 260)
 
         cameraLabel = QtWidgets.QLabel(self)
-        cameraLabel.setFont(QtGui.QFont("Arial", 12))
         cameraLabel.resize(300,200)
         cameraLabel.move(830, 50)
         cameraLabel.setStyleSheet("border: 1px solid black;")
@@ -161,34 +160,61 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QLabel(self)
-        self.movelog.setFont(QtGui.QFont("Arial", 12))
         self.movelog.resize(300,448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;")
         self.movelog.setAlignment(QtCore.Qt.AlignLeft)
         movelogDescription = QtWidgets.QLabel(self)
-        movelogDescription.setFont(QtGui.QFont("Arial", 12))
         movelogDescription.setText("<b>Movelog:</b>")
         movelogDescription.resize(300,30)
         movelogDescription.move(825, 300)
         movelogDescription.setStyleSheet("border: 1px solid black;")
 
         errorlogDescription = QtWidgets.QLabel(self)
-        errorlogDescription.setFont(QtGui.QFont("Arial", 12))
         errorlogDescription.setText("<b>Errorlog:</b>")
         errorlogDescription.resize(300,30)
         errorlogDescription.move(825, 800)
         errorlogDescription.setStyleSheet("border: 1px solid black;")
         self.errorlog = QtWidgets.QLabel(self)
-        self.errorlog.setFont(QtGui.QFont("Arial", 12))
         self.errorlog.resize(300,100)
         self.errorlog.move(825, 830)
         self.errorlog.setStyleSheet("border: 1px solid black;"
                                     "color: red;"
                                     "font-weight: bold;")
         self.errorlog.setAlignment(QtCore.Qt.AlignLeft)
+        self.errorlog.setWordWrap(True)
 
-        self.setStyleSheet("background-color: #FCFFE9;")
+        castleWKButton = QtWidgets.QPushButton(self)
+        castleWKButton.clicked.connect(self.WKCastle)
+        castleWKButton.move(475, 880)
+        castleWKButton.setStyleSheet("background-color: #BEBEBE;"
+                                    "font-weight: bold;")
+        castleWKButton.setText("White King-side castle")
+        castleWKButton.resize(225, 50)
+
+        castleWQButton = QtWidgets.QPushButton(self)
+        castleWQButton.clicked.connect(self.WQCastle)
+        castleWQButton.move(175, 880)
+        castleWQButton.setStyleSheet("background-color: #BEBEBE;"
+                                     "font-weight: bold;")
+        castleWQButton.setText("White Queen-side castle")
+        castleWQButton.resize(225, 50)
+
+        castleBKButton = QtWidgets.QPushButton(self)
+        castleBKButton.clicked.connect(self.BKCastle)
+        castleBKButton.move(475, 805)
+        castleBKButton.setStyleSheet("background-color: #BEBEBE;"
+                                    "font-weight: bold;")
+        castleBKButton.setText("Black King-side castle")
+        castleBKButton.resize(225, 50)
+
+        castleBQButton = QtWidgets.QPushButton(self)
+        castleBQButton.clicked.connect(self.BQCastle)
+        castleBQButton.move(175, 805)
+        castleBQButton.setStyleSheet("background-color: #BEBEBE;"
+                                    "font-weight: bold;")
+        castleBQButton.setText("Black Queen-side castle")
+        castleBQButton.resize(225, 50)
 
     def enterPress(self):
         try:
@@ -224,8 +250,33 @@ class MainWindow(QtWidgets.QMainWindow):
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow) ,int(newColumn))
 
+    def WKCastle(self):
+        try:
+            self.board.castling(True, False, self.board.board)
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+
+    def WQCastle(self):
+        try:
+            self.board.castling(True, True, self.board.board)
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+
+    def BKCastle(self):
+        try:
+            self.board.castling(False, False, self.board.board)
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+
+    def BQCastle(self):
+        try:
+            self.board.castling(False, True, self.board.board)
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    app.setFont(QtGui.QFont("Arial", 12))
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
