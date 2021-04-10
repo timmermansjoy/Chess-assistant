@@ -40,58 +40,57 @@ class MainWindow(QtWidgets.QMainWindow):
         self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
         self.blackQueenImg = self.blackQueenImg.scaled(75 , 75, Qt.KeepAspectRatio)
 
+        self.win = QtWidgets.QWidget(self)
+        self.grid = QtWidgets.QGridLayout(self.win)
+        self.grid.setContentsMargins(0,0,0,0)
+        self.grid.setSpacing(0)        
+        self.win.setLayout(self.grid)
+        self.win.setGeometry(175,100,600,600)
+        self.win.setStyleSheet("background-color: rgba(0,0,0,0%)")      
+
         self.board = Board()
         self.read_board()
-
-        gameNotOngoing = False
-        #while not gameNotOngoing:
             
     def read_board(self):
-            win = QtWidgets.QWidget(self)
-            self.grid = QtWidgets.QGridLayout(win)
-            self.grid.setContentsMargins(0,0,0,0)
-            self.grid.setSpacing(0)      
-            for i in range(0,8):
-                for j in range(0,8):
-                    label = QtWidgets.QLabel(self)
-                    label.setStyleSheet("background-color: rgba(0,0,0,0%);")
-                    pixmap = self.readPiece(i,j)
-                    if pixmap != None:
-                        label.setPixmap(pixmap)
-                    self.grid.addWidget(label,i,j)
-
-            win.setLayout(self.grid)
-            win.setGeometry(175,100,600,600)
-            win.setStyleSheet("background-color: rgba(0,0,0,0%)")
+        for i in range(0,8):
+            for j in range(0,8):
+                label = QtWidgets.QLabel(self)
+                label.setStyleSheet("background-color: rgba(0,0,0,0%);")
+                pixmap = self.readPiece(i,j)
+                if pixmap != None:
+                    label.setPixmap(pixmap)
+                else:
+                    label.setStyleSheet("background-color: red;")
+                self.grid.addWidget(label,i,j)
 
     def readPiece(self, i, j):
-            currentPiece = self.board.board[i][j]
-            if currentPiece == ".":
-                pass
-            elif currentPiece == "k":
-                return self.blackKingImg
-            elif currentPiece == "p":
-                return self.blackPawnImg
-            elif currentPiece == "q":
-                return self.blackQueenImg
-            elif currentPiece == "b":
-                return self.blackBishopImg
-            elif currentPiece == "n":
-                return self.blackKnightImg
-            elif currentPiece == "r":
-                return self.blackRookImg
-            elif currentPiece == "K":
-                return self.whiteKingImg
-            elif currentPiece == "P":
-                return self.whitePawnImg
-            elif currentPiece == "Q":
-                return self.whiteQueenImg
-            elif currentPiece == "B":
-                return self.whiteBishopImg
-            elif currentPiece == "N":
-                return self.whiteKnightImg
-            elif currentPiece == "R":
-                return self.whiteRookImg
+        currentPiece = self.board.board[i][j]
+        if currentPiece == ".":
+            pass
+        elif currentPiece == "k":
+            return self.blackKingImg
+        elif currentPiece == "p":
+            return self.blackPawnImg
+        elif currentPiece == "q":
+            return self.blackQueenImg
+        elif currentPiece == "b":
+            return self.blackBishopImg
+        elif currentPiece == "n":
+            return self.blackKnightImg
+        elif currentPiece == "r":
+            return self.blackRookImg
+        elif currentPiece == "K":
+            return self.whiteKingImg
+        elif currentPiece == "P":
+            return self.whitePawnImg
+        elif currentPiece == "Q":
+            return self.whiteQueenImg
+        elif currentPiece == "B":
+            return self.whiteBishopImg
+        elif currentPiece == "N":
+            return self.whiteKnightImg
+        elif currentPiece == "R":
+            return self.whiteRookImg
 
     def paintEvent(self, event):
         width = int(600 / 8)
@@ -216,6 +215,30 @@ class MainWindow(QtWidgets.QMainWindow):
         castleBQButton.setText("Black Queen-side castle")
         castleBQButton.resize(225, 50)
 
+        resignButton = QtWidgets.QPushButton(self)
+        resignButton.clicked.connect(self.resign)
+        resignButton.move(175, 25)
+        resignButton.setText("Resign")
+        resignButton.setStyleSheet("background-color: #CD5C5C;"
+                                "font-weight: bold;")
+        resignButton.resize(150, 50)
+
+        drawButton = QtWidgets.QPushButton(self)
+        drawButton.clicked.connect(self.draw)
+        drawButton.move(400, 25)
+        drawButton.setText("Offer draw")
+        drawButton.setStyleSheet("background-color: #CD5C5C;"
+                                "font-weight: bold;")
+        drawButton.resize(150, 50)
+
+        newGameButton = QtWidgets.QPushButton(self)
+        newGameButton.clicked.connect(self.newGame)
+        newGameButton.move(625, 25)
+        newGameButton.setText("Start new game")
+        newGameButton.setStyleSheet("background-color: #CD5C5C;"
+                                "font-weight: bold;")
+        newGameButton.resize(150, 50)
+
     def enterPress(self):
         try:
             inputString = str(self.inputbox.text())
@@ -238,7 +261,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.itemAtPosition(oldRow, oldColumn).widget().deleteLater()
         #place empty label at old piece position
         replacementLabel = QtWidgets.QLabel(self)
-        replacementLabel.setStyleSheet("background-color: rgba(0,0,0,0%);")
+        replacementLabel.setStyleSheet("background-color: red;")
         self.grid.addWidget(replacementLabel, int(oldRow) ,int(oldColumn))
 
         #delete old piece at new position
@@ -273,6 +296,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.board.castling(False, True, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
+
+    def resign(self):
+        sys.exit()
+
+    def draw(self):
+        #TODO misschien AI laten beslissen of het wel/niet de draw accepteert
+        sys.exit()
+
+    def newGame(self):
+        self.errorlog.clear()
+        self.movelog.clear()
+        self.clearGui()
+        self.board = Board()
+        self.read_board()
+    
+    def clearGui(self):
+        for i in range(0, self.grid.rowCount()):
+            for j in range(0, self.grid.columnCount()):
+                self.grid.itemAtPosition(i, j).widget().deleteLater()
+
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
