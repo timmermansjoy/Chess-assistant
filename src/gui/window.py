@@ -59,8 +59,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 pixmap = self.readPiece(i,j)
                 if pixmap != None:
                     label.setPixmap(pixmap)
-                else:
-                    label.setStyleSheet("background-color: red;")
                 self.grid.addWidget(label,i,j)
 
     def readPiece(self, i, j):
@@ -140,12 +138,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(0, 0, self.width, self.height)
-        self.setStyleSheet("background-color: #FCFFE9;")
+        self.setStyleSheet("background-color: #FAF0E6;")
 
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
         self.inputbox.editingFinished.connect(self.enterPress)
+        self.inputbox.setStyleSheet("background-color: white;")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
         inputboxDescription.resize(150, 30)
@@ -154,32 +153,37 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel = QtWidgets.QLabel(self)
         cameraLabel.resize(300,200)
         cameraLabel.move(830, 50)
-        cameraLabel.setStyleSheet("border: 1px solid black;")
+        cameraLabel.setStyleSheet("border: 1px solid black;"
+                                "background-color: white;")
         cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QLabel(self)
         self.movelog.resize(300,448)
         self.movelog.move(825, 330)
-        self.movelog.setStyleSheet("border: 1px solid black;")
+        self.movelog.setStyleSheet("border: 1px solid black;"
+                                "background-color: white;")
         self.movelog.setAlignment(QtCore.Qt.AlignLeft)
         movelogDescription = QtWidgets.QLabel(self)
         movelogDescription.setText("<b>Movelog:</b>")
         movelogDescription.resize(300,30)
         movelogDescription.move(825, 300)
-        movelogDescription.setStyleSheet("border: 1px solid black;")
+        movelogDescription.setStyleSheet("border: 1px solid black;"
+                                        "background-color: white;")
 
         errorlogDescription = QtWidgets.QLabel(self)
         errorlogDescription.setText("<b>Errorlog:</b>")
         errorlogDescription.resize(300,30)
         errorlogDescription.move(825, 800)
-        errorlogDescription.setStyleSheet("border: 1px solid black;")
+        errorlogDescription.setStyleSheet("border: 1px solid black;"
+                                        "background-color: white;")
         self.errorlog = QtWidgets.QLabel(self)
         self.errorlog.resize(300,100)
         self.errorlog.move(825, 830)
         self.errorlog.setStyleSheet("border: 1px solid black;"
                                     "color: red;"
-                                    "font-weight: bold;")
+                                    "font-weight: bold;"
+                                    "background-color: white;")
         self.errorlog.setAlignment(QtCore.Qt.AlignLeft)
         self.errorlog.setWordWrap(True)
 
@@ -261,7 +265,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.itemAtPosition(oldRow, oldColumn).widget().deleteLater()
         #place empty label at old piece position
         replacementLabel = QtWidgets.QLabel(self)
-        replacementLabel.setStyleSheet("background-color: red;")
+        replacementLabel.setStyleSheet("background-color: rgba(0,0,0,0%);")
         self.grid.addWidget(replacementLabel, int(oldRow) ,int(oldColumn))
 
         #delete old piece at new position
