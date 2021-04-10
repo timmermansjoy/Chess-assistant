@@ -48,18 +48,20 @@ class MainWindow(QtWidgets.QMainWindow):
             
     def read_board(self):
             win = QtWidgets.QWidget(self)
-            self.grid = QtWidgets.QGridLayout(win)        
+            self.grid = QtWidgets.QGridLayout(win)
+            self.grid.setContentsMargins(0,0,0,0)
+            self.grid.setSpacing(0)      
             for i in range(0,8):
                 for j in range(0,8):
                     label = QtWidgets.QLabel(self)
-                    label.setStyleSheet("background-color: rgba(0,0,0,0%)")
+                    label.setStyleSheet("background-color: rgba(0,0,0,0%);")
                     pixmap = self.readPiece(i,j)
                     if pixmap != None:
                         label.setPixmap(pixmap)
                     self.grid.addWidget(label,i,j)
 
             win.setLayout(self.grid)
-            win.setGeometry(165,90,615,625)
+            win.setGeometry(175,100,600,600)
             win.setStyleSheet("background-color: rgba(0,0,0,0%)")
 
     def readPiece(self, i, j):
