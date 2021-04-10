@@ -277,7 +277,7 @@ class Board:
                 if (i.row == j.row) & (i.column == j.column):
                     moves.remove(i)
         return moves
-
+    
     def isCheck(self, white, startRow, startColumn, endRow, endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         """Returns whether a move is valid or not"""
         copy_board = deepcopy(self.board)
