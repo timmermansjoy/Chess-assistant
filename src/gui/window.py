@@ -173,17 +173,36 @@ class MainWindow(QtWidgets.QMainWindow):
         movelogDescription.move(825, 300)
         movelogDescription.setStyleSheet("border: 1px solid black;")
 
+        errorlogDescription = QtWidgets.QLabel(self)
+        errorlogDescription.setFont(QtGui.QFont("Arial", 12))
+        errorlogDescription.setText("<b>Errorlog:</b>")
+        errorlogDescription.resize(300,30)
+        errorlogDescription.move(825, 800)
+        errorlogDescription.setStyleSheet("border: 1px solid black;")
+        self.errorlog = QtWidgets.QLabel(self)
+        self.errorlog.setFont(QtGui.QFont("Arial", 12))
+        self.errorlog.resize(300,100)
+        self.errorlog.move(825, 830)
+        self.errorlog.setStyleSheet("border: 1px solid black;"
+                                    "color: red;"
+                                    "font-weight: bold;")
+        self.errorlog.setAlignment(QtCore.Qt.AlignLeft)
+
         self.setStyleSheet("background-color: #FCFFE9;")
 
     def enterPress(self):
-        inputString = str(self.inputbox.text())
-        coords = self.board.notationToCords(inputString)
-        self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-        self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-        self.updateMovelog()
-        self.inputbox.clear()
+        try:
+            inputString = str(self.inputbox.text())
+            coords = self.board.notationToCords(inputString)
+            self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+            self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+            self.updateMovelog()
+            self.inputbox.clear()
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
 
     def updateMovelog(self):
+        self.errorlog.clear()
         self.movelog.clear()
         text = self.board.GetChessNotation()
         self.movelog.setText(text)
