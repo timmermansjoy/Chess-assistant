@@ -244,15 +244,18 @@ class MainWindow(QtWidgets.QMainWindow):
         newGameButton.resize(150, 50)
 
     def enterPress(self):
-        try:
-            inputString = str(self.inputbox.text())
-            coords = self.board.notationToCords(inputString)
-            self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-            self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-            self.updateMovelog()
-            self.inputbox.clear()
-        except Exception as ex:
-            self.errorlog.setText(str(ex))
+        inputString = str(self.inputbox.text())
+        if inputString != "":
+            try:
+                coords = self.board.notationToCords(inputString)
+                self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                self.updateMovelog()
+                self.inputbox.clear()
+            except Exception as ex:
+                self.errorlog.setText(str(ex))
+        else:
+            self.errorlog.setText("Input field is empty")
 
     def updateMovelog(self):
         self.errorlog.clear()
@@ -279,24 +282,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def WKCastle(self):
         try:
+            self.updateBoard(7,4,7,6)
+            self.updateBoard(7,7,7,5)
             self.board.castling(True, False, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def WQCastle(self):
         try:
+            self.updateBoard(7,4,7,2)
+            self.updateBoard(7,0,7,3)
             self.board.castling(True, True, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BKCastle(self):
         try:
+            self.updateBoard(0,4,0,6)
+            self.updateBoard(0,7,0,5)
             self.board.castling(False, False, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BQCastle(self):
         try:
+            self.updateBoard(0,4,0,2)
+            self.updateBoard(0,0,0,3)
             self.board.castling(False, True, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
