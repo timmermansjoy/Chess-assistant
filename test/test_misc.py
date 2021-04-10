@@ -127,6 +127,19 @@ class TestboardMovelogTests(unittest.TestCase):
         self.board.move(1, 0, 3, 0)
         assert self.board.GetChessNotation() == "1. a2 a4 --- a7 a5 "
 
+    def test_getChessNotationWithCastling(self):
+        self.board.move(6, 4, 4, 4)
+        self.board.move(1, 4, 3, 4)
+        self.board.move(6, 3, 4, 3)
+        self.board.move(1, 3, 3, 3)
+        self.board.move(7, 5, 5, 3)
+        self.board.move(0, 5, 2, 3)
+        self.board.move(7, 6, 5, 5)
+        self.board.move(0, 6, 2, 5)
+        self.board.castling(True, False, self.board.board)
+        self.board.castling(False, False, self.board.board)
+        assert self.board.GetChessNotation() == "1. e2 e4 --- e7 e5 \n2. d2 d4 --- d7 d5 \n3. f1 d3 --- f8 d6 \n4. g1 f3 --- g8 f6 \n5. O - O--- O - O"
+
     def test_getChessNotationTooManyMovesTest(self):
         self.board.move(6, 0, 4, 0)
         self.board.move(1, 0, 3, 0)
