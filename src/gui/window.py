@@ -2,8 +2,9 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit, QGridLayout
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
+from testboards import Testboards as TB
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -139,7 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
-        self.inputbox.editingFinished.connect(self.enterPress)
+        #self.inputbox.connect(self.enterPress)
         self.inputbox.setStyleSheet("background-color: white;")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
@@ -238,6 +239,11 @@ class MainWindow(QtWidgets.QMainWindow):
         newGameButton.setStyleSheet("background-color: #CD5C5C;"
                                 "font-weight: bold;")
         newGameButton.resize(150, 50)
+
+        invisibleButton = QtWidgets.QPushButton(self)
+        invisibleButton.resize(0,0)
+        invisibleButton.setShortcut(Qt.Key_Return)
+        invisibleButton.clicked.connect(self.enterPress)
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
