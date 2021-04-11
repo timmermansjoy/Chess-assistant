@@ -96,7 +96,6 @@ class MainWindow(QtWidgets.QMainWindow):
         whitecolor = "#ecd8c2"  # White on a normal chess board
         redcolor = "#ad5b4b"  # Black on a normal chess board
         greycolor = "#A4A2B8"
-        nocolor = "#FCFFE9"
 
         painter = QtGui.QPainter(self)
 
@@ -108,21 +107,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 text = ""
                 if i == 0 and j == 8:                
                     brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
                 elif i == 0:                
                     brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
                     text = str(8-j)
                 elif j == 8:                
                     brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
                     text = chr(96+i)
                 elif (j + i) % 2 == 0:               
                     brush.setColor(QtGui.QColor(whitecolor))                    
-                    painter.setBrush(brush)
                 else:
                     brush.setColor(QtGui.QColor(redcolor))
-                    painter.setBrush(brush)
+
+                painter.setBrush(brush)
 
                 painter.drawRects(
                     QtCore.QRect((width * i) + 100, (height * j) + 100, width, height),
@@ -245,15 +241,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
+        error = False
         if inputString != "":
             try:
                 coords = self.board.notationToCords(inputString)
-                self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)                
                 self.updateMovelog()
                 self.inputbox.clear()
             except Exception as ex:
                 self.errorlog.setText(str(ex))
+                error = True
+            if error == False:
+                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
         else:
             self.errorlog.setText("Input field is empty")
 
@@ -276,7 +275,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #create new piece at new position
         label = QtWidgets.QLabel(self)
         label.setStyleSheet("background-color: rgba(0,0,0,0%)")
-        pixmap = self.readPiece(oldRow, oldColumn)
+        pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow) ,int(newColumn))
 
