@@ -281,33 +281,33 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def WKCastle(self):
         try:
+            self.board.castling(True, False, self.board.board)
             self.updateBoard(7,4,7,6)
             self.updateBoard(7,7,7,5)
-            self.board.castling(True, False, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def WQCastle(self):
         try:
+            self.board.castling(True, True, self.board.board)
             self.updateBoard(7,4,7,2)
             self.updateBoard(7,0,7,3)
-            self.board.castling(True, True, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BKCastle(self):
         try:
+            self.board.castling(False, False, self.board.board)
             self.updateBoard(0,4,0,6)
             self.updateBoard(0,7,0,5)
-            self.board.castling(False, False, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BQCastle(self):
         try:
+            self.board.castling(False, True, self.board.board)
             self.updateBoard(0,4,0,2)
             self.updateBoard(0,0,0,3)
-            self.board.castling(False, True, self.board.board)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
