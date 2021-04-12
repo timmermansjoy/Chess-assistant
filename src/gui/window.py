@@ -2,8 +2,10 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit, QGridLayout
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
+from testboards import Testboards as TB
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -13,53 +15,53 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
-        self.initUI()   
+        self.initUI()
 
         self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
-        self.whiteBishopImg = self.whiteBishopImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whiteBishopImg = self.whiteBishopImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackBishopImg = QPixmap('src/resources/BlackBishop.png')
-        self.blackBishopImg = self.blackBishopImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackBishopImg = self.blackBishopImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.whiteRookImg = QPixmap('src/resources/WhiteRook.png')
-        self.whiteRookImg = self.whiteRookImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whiteRookImg = self.whiteRookImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackRookImg = QPixmap('src/resources/BlackRook.png')
-        self.blackRookImg = self.blackRookImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackRookImg = self.blackRookImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.whiteKnightImg = QPixmap('src/resources/WhiteKnight.png')
-        self.whiteKnightImg = self.whiteKnightImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whiteKnightImg = self.whiteKnightImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackKnightImg = QPixmap('src/resources/BlackKnight.png')
-        self.blackKnightImg = self.blackKnightImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackKnightImg = self.blackKnightImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.whitePawnImg = QPixmap('src/resources/WhitePawn.png')
-        self.whitePawnImg = self.whitePawnImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whitePawnImg = self.whitePawnImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackPawnImg = QPixmap('src/resources/BlackPawn.png')
-        self.blackPawnImg = self.blackPawnImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackPawnImg = self.blackPawnImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.whiteKingImg = QPixmap('src/resources/WhiteKing.png')
-        self.whiteKingImg = self.whiteKingImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whiteKingImg = self.whiteKingImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackKingImg = QPixmap('src/resources/BlackKing.png')
-        self.blackKingImg = self.blackKingImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackKingImg = self.blackKingImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.whiteQueenImg = QPixmap('src/resources/WhiteQueen.png')
-        self.whiteQueenImg = self.whiteQueenImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.whiteQueenImg = self.whiteQueenImg.scaled(75, 75, Qt.KeepAspectRatio)
         self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
-        self.blackQueenImg = self.blackQueenImg.scaled(75 , 75, Qt.KeepAspectRatio)
+        self.blackQueenImg = self.blackQueenImg.scaled(75, 75, Qt.KeepAspectRatio)
 
         self.win = QtWidgets.QWidget(self)
         self.grid = QtWidgets.QGridLayout(self.win)
-        self.grid.setContentsMargins(0,0,0,0)
-        self.grid.setSpacing(0)        
+        self.grid.setContentsMargins(0, 0, 0, 0)
+        self.grid.setSpacing(0)
         self.win.setLayout(self.grid)
-        self.win.setGeometry(175,100,600,600)
-        self.win.setStyleSheet("background-color: rgba(0,0,0,0%)")      
+        self.win.setGeometry(175, 100, 600, 600)
+        self.win.setStyleSheet("background-color: rgba(0,0,0,0%)")
 
         self.board = Board()
         self.read_board()
-            
+
     def read_board(self):
-        for i in range(0,8):
-            for j in range(0,8):
+        for i in range(0, 8):
+            for j in range(0, 8):
                 label = QtWidgets.QLabel(self)
                 label.setStyleSheet("background-color: rgba(0,0,0,0%);")
-                pixmap = self.readPiece(i,j)
+                pixmap = self.readPiece(i, j)
                 if pixmap != None:
                     label.setPixmap(pixmap)
-                self.grid.addWidget(label,i,j)
+                self.grid.addWidget(label, i, j)
 
     def readPiece(self, i, j):
         currentPiece = self.board.board[i][j]
@@ -96,7 +98,6 @@ class MainWindow(QtWidgets.QMainWindow):
         whitecolor = "#ecd8c2"  # White on a normal chess board
         redcolor = "#ad5b4b"  # Black on a normal chess board
         greycolor = "#A4A2B8"
-        nocolor = "#FCFFE9"
 
         painter = QtGui.QPainter(self)
 
@@ -106,23 +107,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 brush.setStyle(Qt.SolidPattern)
                 painter.setPen(QtGui.QPen(Qt.black, 3, Qt.SolidLine))
                 text = ""
-                if i == 0 and j == 8:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
-                elif i == 0:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
+                if i == 0 and j == 8:
+                    brush.setColor(QtGui.QColor(greycolor))
+                elif i == 0:
+                    brush.setColor(QtGui.QColor(greycolor))
                     text = str(8-j)
-                elif j == 8:                
-                    brush.setColor(QtGui.QColor(greycolor))                    
-                    painter.setBrush(brush)
+                elif j == 8:
+                    brush.setColor(QtGui.QColor(greycolor))
                     text = chr(96+i)
-                elif (j + i) % 2 == 0:               
-                    brush.setColor(QtGui.QColor(whitecolor))                    
-                    painter.setBrush(brush)
+                elif (j + i) % 2 == 0:
+                    brush.setColor(QtGui.QColor(whitecolor))
                 else:
                     brush.setColor(QtGui.QColor(redcolor))
-                    painter.setBrush(brush)
+
+                painter.setBrush(brush)
 
                 painter.drawRects(
                     QtCore.QRect((width * i) + 100, (height * j) + 100, width, height),
@@ -143,7 +141,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
-        self.inputbox.editingFinished.connect(self.enterPress)
+        # self.inputbox.connect(self.enterPress)
         self.inputbox.setStyleSheet("background-color: white;")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
@@ -151,34 +149,34 @@ class MainWindow(QtWidgets.QMainWindow):
         inputboxDescription.move(825, 260)
 
         cameraLabel = QtWidgets.QLabel(self)
-        cameraLabel.resize(300,200)
+        cameraLabel.resize(300, 200)
         cameraLabel.move(830, 50)
         cameraLabel.setStyleSheet("border: 1px solid black;"
-                                "background-color: white;")
+                                  "background-color: white;")
         cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QLabel(self)
-        self.movelog.resize(300,448)
+        self.movelog.resize(300, 448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;"
-                                "background-color: white;")
+                                   "background-color: white;")
         self.movelog.setAlignment(QtCore.Qt.AlignLeft)
         movelogDescription = QtWidgets.QLabel(self)
         movelogDescription.setText("<b>Movelog:</b>")
-        movelogDescription.resize(300,30)
+        movelogDescription.resize(300, 30)
         movelogDescription.move(825, 300)
         movelogDescription.setStyleSheet("border: 1px solid black;"
-                                        "background-color: white;")
+                                         "background-color: white;")
 
         errorlogDescription = QtWidgets.QLabel(self)
         errorlogDescription.setText("<b>Errorlog:</b>")
-        errorlogDescription.resize(300,30)
+        errorlogDescription.resize(300, 30)
         errorlogDescription.move(825, 800)
         errorlogDescription.setStyleSheet("border: 1px solid black;"
-                                        "background-color: white;")
+                                          "background-color: white;")
         self.errorlog = QtWidgets.QLabel(self)
-        self.errorlog.resize(300,100)
+        self.errorlog.resize(300, 100)
         self.errorlog.move(825, 830)
         self.errorlog.setStyleSheet("border: 1px solid black;"
                                     "color: red;"
@@ -191,7 +189,7 @@ class MainWindow(QtWidgets.QMainWindow):
         castleWKButton.clicked.connect(self.WKCastle)
         castleWKButton.move(475, 880)
         castleWKButton.setStyleSheet("background-color: #BEBEBE;"
-                                    "font-weight: bold;")
+                                     "font-weight: bold;")
         castleWKButton.setText("White King-side castle")
         castleWKButton.resize(225, 50)
 
@@ -207,7 +205,7 @@ class MainWindow(QtWidgets.QMainWindow):
         castleBKButton.clicked.connect(self.BKCastle)
         castleBKButton.move(475, 805)
         castleBKButton.setStyleSheet("background-color: #BEBEBE;"
-                                    "font-weight: bold;")
+                                     "font-weight: bold;")
         castleBKButton.setText("Black King-side castle")
         castleBKButton.resize(225, 50)
 
@@ -215,7 +213,7 @@ class MainWindow(QtWidgets.QMainWindow):
         castleBQButton.clicked.connect(self.BQCastle)
         castleBQButton.move(175, 805)
         castleBQButton.setStyleSheet("background-color: #BEBEBE;"
-                                    "font-weight: bold;")
+                                     "font-weight: bold;")
         castleBQButton.setText("Black Queen-side castle")
         castleBQButton.resize(225, 50)
 
@@ -224,7 +222,7 @@ class MainWindow(QtWidgets.QMainWindow):
         resignButton.move(175, 25)
         resignButton.setText("Resign")
         resignButton.setStyleSheet("background-color: #CD5C5C;"
-                                "font-weight: bold;")
+                                   "font-weight: bold;")
         resignButton.resize(150, 50)
 
         drawButton = QtWidgets.QPushButton(self)
@@ -232,7 +230,7 @@ class MainWindow(QtWidgets.QMainWindow):
         drawButton.move(400, 25)
         drawButton.setText("Offer draw")
         drawButton.setStyleSheet("background-color: #CD5C5C;"
-                                "font-weight: bold;")
+                                 "font-weight: bold;")
         drawButton.resize(150, 50)
 
         newGameButton = QtWidgets.QPushButton(self)
@@ -240,20 +238,28 @@ class MainWindow(QtWidgets.QMainWindow):
         newGameButton.move(625, 25)
         newGameButton.setText("Start new game")
         newGameButton.setStyleSheet("background-color: #CD5C5C;"
-                                "font-weight: bold;")
+                                    "font-weight: bold;")
         newGameButton.resize(150, 50)
+
+        invisibleButton = QtWidgets.QPushButton(self)
+        invisibleButton.resize(0, 0)
+        invisibleButton.setShortcut(Qt.Key_Return)
+        invisibleButton.clicked.connect(self.enterPress)
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
+        error = False
         if inputString != "":
             try:
                 coords = self.board.notationToCords(inputString)
                 self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.updateMovelog()
                 self.inputbox.clear()
             except Exception as ex:
                 self.errorlog.setText(str(ex))
+                error = True
+            if error == False:
+                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
         else:
             self.errorlog.setText("Input field is empty")
 
@@ -264,51 +270,51 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
-        #delete old piece at old position
+        # delete old piece at old position
         self.grid.itemAtPosition(oldRow, oldColumn).widget().deleteLater()
-        #place empty label at old piece position
+        # place empty label at old piece position
         replacementLabel = QtWidgets.QLabel(self)
         replacementLabel.setStyleSheet("background-color: rgba(0,0,0,0%);")
-        self.grid.addWidget(replacementLabel, int(oldRow) ,int(oldColumn))
+        self.grid.addWidget(replacementLabel, int(oldRow), int(oldColumn))
 
-        #delete old piece at new position
+        # delete old piece at new position
         self.grid.itemAtPosition(newRow, newColumn).widget().deleteLater()
-        #create new piece at new position
+        # create new piece at new position
         label = QtWidgets.QLabel(self)
         label.setStyleSheet("background-color: rgba(0,0,0,0%)")
-        pixmap = self.readPiece(oldRow, oldColumn)
+        pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
-        self.grid.addWidget(label, int(newRow) ,int(newColumn))
+        self.grid.addWidget(label, int(newRow), int(newColumn))
 
     def WKCastle(self):
         try:
-            self.updateBoard(7,4,7,6)
-            self.updateBoard(7,7,7,5)
             self.board.castling(True, False, self.board.board)
+            self.updateBoard(7, 4, 7, 6)
+            self.updateBoard(7, 7, 7, 5)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def WQCastle(self):
         try:
-            self.updateBoard(7,4,7,2)
-            self.updateBoard(7,0,7,3)
             self.board.castling(True, True, self.board.board)
+            self.updateBoard(7, 4, 7, 2)
+            self.updateBoard(7, 0, 7, 3)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BKCastle(self):
         try:
-            self.updateBoard(0,4,0,6)
-            self.updateBoard(0,7,0,5)
             self.board.castling(False, False, self.board.board)
+            self.updateBoard(0, 4, 0, 6)
+            self.updateBoard(0, 7, 0, 5)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BQCastle(self):
         try:
-            self.updateBoard(0,4,0,2)
-            self.updateBoard(0,0,0,3)
             self.board.castling(False, True, self.board.board)
+            self.updateBoard(0, 4, 0, 2)
+            self.updateBoard(0, 0, 0, 3)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -316,7 +322,7 @@ class MainWindow(QtWidgets.QMainWindow):
         sys.exit()
 
     def draw(self):
-        #TODO misschien AI laten beslissen of het wel/niet de draw accepteert
+        # TODO misschien AI laten beslissen of het wel/niet de draw accepteert
         sys.exit()
 
     def newGame(self):
@@ -325,7 +331,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clearGui()
         self.board = Board()
         self.read_board()
-    
+
     def clearGui(self):
         for i in range(0, self.grid.rowCount()):
             for j in range(0, self.grid.columnCount()):
@@ -338,5 +344,6 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
+
 
 main()

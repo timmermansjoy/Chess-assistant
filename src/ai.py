@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from board import *
 from testboards import Testboards as TB
 
@@ -27,3 +28,16 @@ if __name__ == "__main__":
     board.board = TB.Castle
     print(evaluation(board.board, True))
     print(board.getAllLegalMoves(board, True))
+=======
+import random
+from extra import *
+import random
+
+
+def PlayRandomMove(validMoves):
+    move = random.randint(0, len(validMoves)-1)
+    piece = validMoves[move][0]
+    nextMove = random.randint(0, len(validMoves[move][1])-1)
+    nextLocation = validMoves[move][1][nextMove]
+    return piece, nextLocation
+>>>>>>> refs/remotes/origin/main
