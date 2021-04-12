@@ -7,7 +7,8 @@ def main():
     board = Board()
     board.board = TB.Castle
     board.move(4,3,3,3)
-    board.castling(False,False,board.board)
+    print(board.getPossibleMoves(7,7,board.board))
+
     
     print(board)
 
