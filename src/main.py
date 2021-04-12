@@ -7,7 +7,7 @@ import ai
 def main():
     board = Board()
 
-    for i in range(100):
+    for i in range(10):
         moves = board.getAllValidMoves()
         startpos, endpos = ai.PlayRandomMove(moves)
         board.move(startpos.row, startpos.column, endpos.row, endpos.column)
