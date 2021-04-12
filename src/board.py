@@ -458,14 +458,6 @@ class Board:
             moves.append(move)
         return moves
 
-    def __str__(self):
-        result = ""
-        for row in range(len(self.board)):
-            for column in range(len(self.board[0])):
-                result += self.board[row][column] + " "
-            result += "\n"
-        return result
-
     # TODO: promotion auto goes into queen, needs fixing
     def promotionCheck(self, endCoord):
         """replaces a pawn with a queen once it has arrived on the final row."""
@@ -580,3 +572,27 @@ class Board:
             currentRow += verticalStep
             currentColumn += horizontalStep
         return moves
+
+    def __str__(self):
+        result = ""
+        for row in range(len(self.board)):
+            for column in range(len(self.board[0])):
+                result += self.board[row][column] + " "
+            result += "\n"
+        return result
+
+    def getAllValidMoves(self):
+        allValidMoves = []
+        for i in range(7):
+            for j in range(7):
+                if self.board[i][j] != ".":
+                    if self.isWhitePlayerTurn and 65 <= ord(self.board[i][j]) <= 90:
+                        move = self.getPossibleMoves(i, j, self.board)
+                        if move != []:
+                            allValidMoves.append([Coordinate(i, j), move])
+                    elif not self.isWhitePlayerTurn and 97 <= ord(self.board[i][j]) <= 122:
+                        move = self.getPossibleMoves(i, j, self.board)
+                        if move != []:
+                            allValidMoves.append([Coordinate(i, j), move])
+
+        return allValidMoves
