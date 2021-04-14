@@ -582,14 +582,18 @@ class Board:
         return result
 
     def getAllValidMoves(self):
+        """Retuns all possbile moves you could make in the form of an array [piece, [move1,move2]]"""
         allValidMoves = []
         for i in range(7):
             for j in range(7):
+
                 if self.board[i][j] != ".":
+
                     if self.isWhitePlayerTurn and 65 <= ord(self.board[i][j]) <= 90:
                         move = self.getPossibleMoves(i, j, self.board)
                         if move != []:
                             allValidMoves.append([Coordinate(i, j), move])
+
                     elif not self.isWhitePlayerTurn and 97 <= ord(self.board[i][j]) <= 122:
                         move = self.getPossibleMoves(i, j, self.board)
                         if move != []:
