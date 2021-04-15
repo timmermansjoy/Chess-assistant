@@ -600,4 +600,4 @@ class Board:
                             allValidMoves.append([Coordinate(i, j), move])
 
         return allValidMoves
-#test
+# test
