@@ -22,7 +22,7 @@ class Board:
             ["P", "P", "P", "P", "P", "P", "P", "P"],
             ["R", "N", "B", "Q", "K", "B", "N", "R"],
         ])
-
+        self.promotionPiece = 'Q'
         self.isWhitePiece = True
         self.isWhitePlayerTurn = True
         self.whiteARookMoved = False
@@ -462,9 +462,9 @@ class Board:
     def promotionCheck(self, endCoord):
         """replaces a pawn with a queen once it has arrived on the final row."""
         if (endCoord.row == 7 and self.board[endCoord.row][endCoord.column] == "p"):
-            self.board[endCoord.row][endCoord.column] = "q"
+            self.board[endCoord.row][endCoord.column] = self.promotionPiece.lower()
         if (endCoord.row == 0 and self.board[endCoord.row][endCoord.column] == "P"):
-            self.board[endCoord.row][endCoord.column] = "Q"
+            self.board[endCoord.row][endCoord.column] = self.promotionPiece
 
     def castling(self, white, queen, board):  # 2 boolean values
         """Castles based on two booleans identifying the player and the side to castle to"""

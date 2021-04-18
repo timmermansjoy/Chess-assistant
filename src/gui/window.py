@@ -156,7 +156,7 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.movelog = QtWidgets.QLabel(self)
+        self.movelog = QtWidgets.QTextEdit(self)
         self.movelog.resize(300, 448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;"
@@ -187,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         castleWKButton = QtWidgets.QPushButton(self)
         castleWKButton.clicked.connect(self.WKCastle)
-        castleWKButton.move(475, 880)
+        castleWKButton.move(550, 880)
         castleWKButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleWKButton.setText("White King-side castle")
@@ -195,7 +195,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         castleWQButton = QtWidgets.QPushButton(self)
         castleWQButton.clicked.connect(self.WQCastle)
-        castleWQButton.move(175, 880)
+        castleWQButton.move(250, 880)
         castleWQButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleWQButton.setText("White Queen-side castle")
@@ -203,7 +203,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         castleBKButton = QtWidgets.QPushButton(self)
         castleBKButton.clicked.connect(self.BKCastle)
-        castleBKButton.move(475, 805)
+        castleBKButton.move(550, 805)
         castleBKButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleBKButton.setText("Black King-side castle")
@@ -211,7 +211,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         castleBQButton = QtWidgets.QPushButton(self)
         castleBQButton.clicked.connect(self.BQCastle)
-        castleBQButton.move(175, 805)
+        castleBQButton.move(250, 805)
         castleBQButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleBQButton.setText("Black Queen-side castle")
@@ -245,6 +245,20 @@ class MainWindow(QtWidgets.QMainWindow):
         invisibleButton.resize(0, 0)
         invisibleButton.setShortcut(Qt.Key_Return)
         invisibleButton.clicked.connect(self.enterPress)
+
+        self.combobox = QtWidgets.QComboBox(self)
+        self.combobox.addItems(["Queen","Bishop","Rook","Knight"])
+        self.combobox.move(80, 855)
+        self.combobox.resize(140, 30)
+        self.combobox.currentIndexChanged.connect(self.getComboboxItem)
+
+        comboboxDescription = QtWidgets.QLabel(self)
+        comboboxDescription.setText("<b>Promote pawn to:</b>")
+        comboboxDescription.resize(140, 20)
+        comboboxDescription.move(80, 835)
+
+    def getComboboxItem(self):
+        self.board.promotionPiece = self.combobox.currentText()[0]
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
