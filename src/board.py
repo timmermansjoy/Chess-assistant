@@ -584,8 +584,8 @@ class Board:
     def getAllValidMoves(self):
         """Retuns all possbile moves you could make in the form of an array [piece, [move1,move2]]"""
         allValidMoves = []
-        for i in range(7):
-            for j in range(7):
+        for i in range(8):
+            for j in range(8):
 
                 if self.board[i][j] != ".":
 

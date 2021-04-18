@@ -7,12 +7,18 @@ import ai
 def main():
     board = Board()
 
-    for i in range(10):
-        moves = board.getAllValidMoves()
-        startpos, endpos = ai.PlayRandomMove(moves)
-        board.move(startpos.row, startpos.column, endpos.row, endpos.column)
+    for i in range(11):
+        if i%2 == 0:
+            print("My Turn:")
+            beginCoord, endCoord = ai.minimaxRoot(3,board,True)
+            board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+            
+        else:
+            print("Computers Turn:")
+            beginCoord, endCoord = ai.minimaxRoot(3,board,False)
+            board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+            
         print(board)
-        print(i)
 
 
 if __name__ == "__main__":
