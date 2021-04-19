@@ -258,7 +258,10 @@ class MainWindow(QtWidgets.QMainWindow):
         comboboxDescription.move(80, 835)
 
     def getComboboxItem(self):
-        self.board.promotionPiece = self.combobox.currentText()[0]
+        text = self.combobox.currentText()[0]
+        if text == "K":
+            text = "N"
+        self.board.promotionPiece = text
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
