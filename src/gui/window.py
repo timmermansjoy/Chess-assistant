@@ -133,7 +133,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(0, 0, self.width, self.height)
-        self.setStyleSheet("background-color: #FAF0E6;")
+        self.setStyleSheet("background-color: #adcbe3;")
 
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
@@ -219,7 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
         resignButton.clicked.connect(self.resign)
         resignButton.move(175, 25)
         resignButton.setText("Resign")
-        resignButton.setStyleSheet("background-color: #CD5C5C;"
+        resignButton.setStyleSheet("background-color: #ffd3b6;"
                                    "font-weight: bold;")
         resignButton.resize(150, 50)
 
@@ -227,7 +227,7 @@ class MainWindow(QtWidgets.QMainWindow):
         drawButton.clicked.connect(self.draw)
         drawButton.move(400, 25)
         drawButton.setText("Offer draw")
-        drawButton.setStyleSheet("background-color: #CD5C5C;"
+        drawButton.setStyleSheet("background-color: #ffd3b6;"
                                  "font-weight: bold;")
         drawButton.resize(150, 50)
 
@@ -235,7 +235,7 @@ class MainWindow(QtWidgets.QMainWindow):
         newGameButton.clicked.connect(self.newGame)
         newGameButton.move(625, 25)
         newGameButton.setText("Start new game")
-        newGameButton.setStyleSheet("background-color: #CD5C5C;"
+        newGameButton.setStyleSheet("background-color: #ffd3b6;"
                                     "font-weight: bold;")
         newGameButton.resize(150, 50)
 
@@ -246,6 +246,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItems(["Queen","Bishop","Rook","Knight"])
+        self.combobox.setStyleSheet("background-color: white;")
         self.combobox.move(80, 855)
         self.combobox.resize(140, 30)
         self.combobox.currentIndexChanged.connect(self.getComboboxItem)
