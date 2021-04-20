@@ -15,6 +15,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
+        self.highlightedMove = [0,0,0,0]
+
         self.initUI()
 
         self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
@@ -64,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     label.setPixmap(pixmap)
                 self.grid.addWidget(label, i, j)
 
-    def generate_label(self, i, j):
+    def generate_label(self, i, j, highlightTile = False):
         label = QtWidgets.QLabel(self)
         if i == 8 and j == 0:
             label.setStyleSheet("background-color: #A4A2B8;"
@@ -85,11 +87,17 @@ class MainWindow(QtWidgets.QMainWindow):
                                 "font-family: Arial;"
                                 "font-size: 22px;"
                                 "border: 1px solid black;")
-        elif (j + i) % 2 == 0:
-            label.setStyleSheet("background-color: #ad5b4b;" #red
+        elif (j + i) % 2 == 0 and highlightTile == False:
+            label.setStyleSheet("background-color: #6495ED;" #dark tile
+                                "border: 1px solid black;")
+        elif highlightTile == False:
+            label.setStyleSheet("background-color: #CCCCFF;" #light tile
+                                "border: 1px solid black;")
+        elif (j + i) % 2 == 0 and highlightTile == True:
+            label.setStyleSheet("background-color: #40E0D0;" #highlighted dark tile
                                 "border: 1px solid black;")
         else:
-            label.setStyleSheet("background-color: #ecd8c2;" #white
+            label.setStyleSheet("background-color: #9FE2BF;" #highlighted light tile
                                 "border: 1px solid black;")
         return label
 
@@ -146,6 +154,7 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QTextEdit(self)
+        self.movelog.setReadOnly(True)
         self.movelog.resize(300, 448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;"
@@ -276,19 +285,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
+        #Remove old highlighted tiles
+        if self.highlightedMove != [0,0,0,0]:
+            self.grid.itemAtPosition(self.highlightedMove[0], self.highlightedMove[1]+1).widget().deleteLater()
+            replacementLabel = self.generate_label(int(self.highlightedMove[0]), int(self.highlightedMove[1]+1), False)
+            self.grid.addWidget(replacementLabel, int(self.highlightedMove[0]), int(self.highlightedMove[1]+1))
+
+            self.grid.itemAtPosition(self.highlightedMove[2], self.highlightedMove[3]+1).widget().deleteLater()
+            label = self.generate_label(int(self.highlightedMove[2]), int(self.highlightedMove[3]+1), False)
+            pixmap = self.readPiece(int(self.highlightedMove[2]), int(self.highlightedMove[3]))
+            label.setPixmap(pixmap)
+            self.grid.addWidget(label, int(self.highlightedMove[2]), int(self.highlightedMove[3]+1))
+        
         # delete old piece at old position
-        self.grid.itemAtPosition(oldRow, oldColumn+1).widget().autoFillBackground()
+        self.grid.itemAtPosition(oldRow, oldColumn+1).widget().deleteLater()
         # place empty label at old piece position
-        replacementLabel = self.generate_label(int(oldRow), int(oldColumn+1))
+        replacementLabel = self.generate_label(int(oldRow), int(oldColumn+1), True)
         self.grid.addWidget(replacementLabel, int(oldRow), int(oldColumn+1))
 
         # delete old piece at new position
         self.grid.itemAtPosition(newRow, newColumn+1).widget().deleteLater()
         # create new piece at new position
-        label = self.generate_label(int(newRow), int(newColumn+1))
+        label = self.generate_label(int(newRow), int(newColumn+1), True)
         pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
+        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def WKCastle(self):
         try:
