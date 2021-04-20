@@ -139,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
         # self.inputbox.connect(self.enterPress)
-        self.inputbox.setStyleSheet("background-color: white;")
+        self.inputbox.setStyleSheet("background-color: #FFECF5;")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
         inputboxDescription.resize(150, 30)
@@ -149,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel.resize(300, 200)
         cameraLabel.move(830, 50)
         cameraLabel.setStyleSheet("border: 1px solid black;"
-                                  "background-color: white;")
+                                  "background-color: #FFECF5;")
         cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -158,28 +158,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.resize(300, 448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;"
-                                   "background-color: white;")
+                                   "background-color: #FFECF5;")
         self.movelog.setAlignment(QtCore.Qt.AlignLeft)
         movelogDescription = QtWidgets.QLabel(self)
         movelogDescription.setText("<b>Movelog:</b>")
         movelogDescription.resize(300, 30)
         movelogDescription.move(825, 300)
         movelogDescription.setStyleSheet("border: 1px solid black;"
-                                         "background-color: white;")
+                                         "background-color: #FFECF5;")
 
         errorlogDescription = QtWidgets.QLabel(self)
         errorlogDescription.setText("<b>Errorlog:</b>")
         errorlogDescription.resize(300, 30)
         errorlogDescription.move(825, 800)
         errorlogDescription.setStyleSheet("border: 1px solid black;"
-                                          "background-color: white;")
+                                          "background-color: #FFECF5;")
         self.errorlog = QtWidgets.QLabel(self)
         self.errorlog.resize(300, 100)
         self.errorlog.move(825, 830)
         self.errorlog.setStyleSheet("border: 1px solid black;"
                                     "color: red;"
                                     "font-weight: bold;"
-                                    "background-color: white;")
+                                    "background-color: #FFECF5;")
         self.errorlog.setAlignment(QtCore.Qt.AlignLeft)
         self.errorlog.setWordWrap(True)
 
@@ -246,7 +246,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItems(["Queen","Bishop","Rook","Knight"])
-        self.combobox.setStyleSheet("background-color: white;")
+        self.combobox.setStyleSheet("background-color: #FFECF5;")
         self.combobox.move(80, 855)
         self.combobox.resize(140, 30)
         self.combobox.currentIndexChanged.connect(self.getComboboxItem)
