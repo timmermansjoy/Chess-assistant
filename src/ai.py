@@ -11,41 +11,42 @@ def minimaxRoot(depth, board, white):
     bestMoveValue = -20000
     for piece in validMoves:
         for move in piece[1]:
-            #First move of the tree
+            # First move of the tree
             move1 = board.move(piece[0].row, piece[0].column, move.row, move.column)
             moveBeginCoord = Coordinate(piece[0].row, piece[0].column)
             moveEndCoord = Coordinate(move.row, move.column)
-            #this calls the minimax function and checks if the value returned by minimax is higher than bestMoveValue
+            # this calls the minimax function and checks if the value returned by minimax is higher than bestMoveValue
             value = max(bestMoveValue, minimax(depth - 1, board, not white))
             board.undo()
             board.isWhitePlayerTurn = not board.isWhitePlayerTurn
-            if( value > bestMoveValue):
+            if(value > bestMoveValue):
                 bestMoveValue = value
                 bestMoveBeginCoord = moveBeginCoord
                 bestMoveEndCoord = moveEndCoord
-                print("Evaluation score: " ,bestMoveValue)
+                print("Evaluation score: ", bestMoveValue)
                 print("Begin Coordination", bestMoveBeginCoord)
                 print("End Coordination", bestMoveEndCoord)
     return bestMoveBeginCoord, bestMoveEndCoord
 
+
 def minimax(depth, board, white):
     if(depth == 0):
         return evaluation(board)
-        
+
     possibleMoves = board.getAllValidMoves()
     if(white):
         bestMove = -20000
         for piece in possibleMoves:
-            #if you want to see every board in the tree uncomment the print statements
+            # if you want to see every board in the tree uncomment the print statements
             for move in piece[1]:
                 # print(piece[0].row, piece[0].column, move.row, move.column)
                 board.move(piece[0].row, piece[0].column, move.row, move.column)
-                bestMove = max(bestMove,minimax(depth - 1, board, not white))
+                bestMove = max(bestMove, minimax(depth - 1, board, not white))
                 print(bestMove)
                 # print(board)
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
-                
+
         return bestMove
     else:
         bestMove = 20000
@@ -53,7 +54,7 @@ def minimax(depth, board, white):
             for move in piece[1]:
                 # print(piece[0].row, piece[0].column, move.row, move.column)
                 board.move(piece[0].row, piece[0].column, move.row, move.column)
-                bestMove = min(bestMove,minimax(depth - 1, board, not white))
+                bestMove = min(bestMove, minimax(depth - 1, board, not white))
                 print(bestMove)
                 # print(board)
                 board.undo()

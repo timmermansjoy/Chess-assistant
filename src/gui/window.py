@@ -15,7 +15,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
-        self.highlightedMove = [0,0,0,0]
+        self.highlightedMove = [0, 0, 0, 0]
 
         self.initUI()
 
@@ -52,7 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         label.setPixmap(pixmap)
                 self.grid.addWidget(label, i, j)
 
-    def generate_label(self, i, j, highlightTile = False):
+    def generate_label(self, i, j, highlightTile=False):
         label = QtWidgets.QLabel(self)
         if i == 8 and j == 0:
             label.setStyleSheet("background-color: #A4A2B8;"
@@ -74,16 +74,16 @@ class MainWindow(QtWidgets.QMainWindow):
                                 "font-size: 22px;"
                                 "border: 1px solid black;")
         elif (j + i) % 2 == 0 and highlightTile == False:
-            label.setStyleSheet("background-color: #6495ED;" #dark tile
+            label.setStyleSheet("background-color: #6495ED;"  # dark tile
                                 "border: 1px solid black;")
         elif highlightTile == False:
-            label.setStyleSheet("background-color: #CCCCFF;" #light tile
+            label.setStyleSheet("background-color: #CCCCFF;"  # light tile
                                 "border: 1px solid black;")
         elif (j + i) % 2 == 0 and highlightTile == True:
-            label.setStyleSheet("background-color: #40E0D0;" #highlighted dark tile
+            label.setStyleSheet("background-color: #40E0D0;"  # highlighted dark tile
                                 "border: 1px solid black;")
         else:
-            label.setStyleSheet("background-color: #9FE2BF;" #highlighted light tile
+            label.setStyleSheet("background-color: #9FE2BF;"  # highlighted light tile
                                 "border: 1px solid black;")
         return label
 
@@ -231,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
         invisibleButton.clicked.connect(self.enterPress)
 
         self.combobox = QtWidgets.QComboBox(self)
-        self.combobox.addItems(["Queen","Bishop","Rook","Knight"])
+        self.combobox.addItems(["Queen", "Bishop", "Rook", "Knight"])
         self.combobox.setStyleSheet("background-color: #FFECF5;")
         self.combobox.move(80, 855)
         self.combobox.resize(140, 30)
@@ -272,10 +272,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
-        # The arguments of this function are of an 8x8 array, but they are used in a 9x9 array 
+        # The arguments of this function are of an 8x8 array, but they are used in a 9x9 array
         # +1 is added to the columns when they are used in functions because column 0 is filled with labels that don't contain chess pieces
         # Remove old highlighted tiles
-        if self.highlightedMove != [0,0,0,0]:
+        if self.highlightedMove != [0, 0, 0, 0]:
             self.grid.itemAtPosition(self.highlightedMove[0], self.highlightedMove[1]+1).widget().deleteLater()
             replacementLabel = self.generate_label(int(self.highlightedMove[0]), int(self.highlightedMove[1]+1), False)
             self.grid.addWidget(replacementLabel, int(self.highlightedMove[0]), int(self.highlightedMove[1]+1))
@@ -285,7 +285,7 @@ class MainWindow(QtWidgets.QMainWindow):
             pixmap = self.readPiece(int(self.highlightedMove[2]), int(self.highlightedMove[3]))
             label.setPixmap(pixmap)
             self.grid.addWidget(label, int(self.highlightedMove[2]), int(self.highlightedMove[3]+1))
-        
+
         # delete old piece at old position
         self.grid.itemAtPosition(oldRow, oldColumn+1).widget().deleteLater()
         # place empty label at old piece position
