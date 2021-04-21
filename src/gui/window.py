@@ -15,53 +15,91 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
+        self.highlightedMove = [0,0,0,0]
+
         self.initUI()
 
         self.whiteBishopImg = QPixmap('src/resources/WhiteBishop.png')
-        self.whiteBishopImg = self.whiteBishopImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whiteBishopImg = self.whiteBishopImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackBishopImg = QPixmap('src/resources/BlackBishop.png')
-        self.blackBishopImg = self.blackBishopImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackBishopImg = self.blackBishopImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.whiteRookImg = QPixmap('src/resources/WhiteRook.png')
-        self.whiteRookImg = self.whiteRookImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whiteRookImg = self.whiteRookImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackRookImg = QPixmap('src/resources/BlackRook.png')
-        self.blackRookImg = self.blackRookImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackRookImg = self.blackRookImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.whiteKnightImg = QPixmap('src/resources/WhiteKnight.png')
-        self.whiteKnightImg = self.whiteKnightImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whiteKnightImg = self.whiteKnightImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackKnightImg = QPixmap('src/resources/BlackKnight.png')
-        self.blackKnightImg = self.blackKnightImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackKnightImg = self.blackKnightImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.whitePawnImg = QPixmap('src/resources/WhitePawn.png')
-        self.whitePawnImg = self.whitePawnImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whitePawnImg = self.whitePawnImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackPawnImg = QPixmap('src/resources/BlackPawn.png')
-        self.blackPawnImg = self.blackPawnImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackPawnImg = self.blackPawnImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.whiteKingImg = QPixmap('src/resources/WhiteKing.png')
-        self.whiteKingImg = self.whiteKingImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whiteKingImg = self.whiteKingImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackKingImg = QPixmap('src/resources/BlackKing.png')
-        self.blackKingImg = self.blackKingImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackKingImg = self.blackKingImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.whiteQueenImg = QPixmap('src/resources/WhiteQueen.png')
-        self.whiteQueenImg = self.whiteQueenImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.whiteQueenImg = self.whiteQueenImg.scaled(73, 73, Qt.KeepAspectRatio)
         self.blackQueenImg = QPixmap('src/resources/BlackQueen.png')
-        self.blackQueenImg = self.blackQueenImg.scaled(75, 75, Qt.KeepAspectRatio)
+        self.blackQueenImg = self.blackQueenImg.scaled(73, 73, Qt.KeepAspectRatio)
 
         self.win = QtWidgets.QWidget(self)
         self.grid = QtWidgets.QGridLayout(self.win)
         self.grid.setContentsMargins(0, 0, 0, 0)
         self.grid.setSpacing(0)
         self.win.setLayout(self.grid)
-        self.win.setGeometry(175, 100, 600, 600)
+        self.win.setGeometry(100, 100, 675, 675)
         self.win.setStyleSheet("background-color: rgba(0,0,0,0%)")
 
         self.board = Board()
-        self.read_board()
+        self.draw_board()
 
-    def read_board(self):
-        for i in range(0, 8):
-            for j in range(0, 8):
-                label = QtWidgets.QLabel(self)
-                label.setStyleSheet("background-color: rgba(0,0,0,0%);")
-                pixmap = self.readPiece(i, j)
+    def draw_board(self):
+        for i in range(0, 9):
+            for j in range(0, 9):
+                label = self.generate_label(i, j)
+                pixmap = None
+                if j != 0 and i != 8:
+                    pixmap = self.readPiece(i, j-1)
                 if pixmap != None:
                     label.setPixmap(pixmap)
                 self.grid.addWidget(label, i, j)
+
+    def generate_label(self, i, j, highlightTile = False):
+        label = QtWidgets.QLabel(self)
+        if i == 8 and j == 0:
+            label.setStyleSheet("background-color: #A4A2B8;"
+                                "border: 1px solid black;")
+        elif i == 8:
+            label.setText(chr(96+j))
+            label.setAlignment(QtCore.Qt.AlignCenter)
+            label.setStyleSheet("background-color: #A4A2B8;"
+                                "font-weight: bold;"
+                                "font-family: Arial;"
+                                "font-size: 22px;"
+                                "border: 1px solid black;")
+        elif j == 0:
+            label.setText(str(8-i))
+            label.setAlignment(QtCore.Qt.AlignCenter)
+            label.setStyleSheet("background-color: #A4A2B8;"
+                                "font-weight: bold;"
+                                "font-family: Arial;"
+                                "font-size: 22px;"
+                                "border: 1px solid black;")
+        elif (j + i) % 2 == 0 and highlightTile == False:
+            label.setStyleSheet("background-color: #6495ED;" #dark tile
+                                "border: 1px solid black;")
+        elif highlightTile == False:
+            label.setStyleSheet("background-color: #CCCCFF;" #light tile
+                                "border: 1px solid black;")
+        elif (j + i) % 2 == 0 and highlightTile == True:
+            label.setStyleSheet("background-color: #40E0D0;" #highlighted dark tile
+                                "border: 1px solid black;")
+        else:
+            label.setStyleSheet("background-color: #9FE2BF;" #highlighted light tile
+                                "border: 1px solid black;")
+        return label
 
     def readPiece(self, i, j):
         currentPiece = self.board.board[i][j]
@@ -92,57 +130,16 @@ class MainWindow(QtWidgets.QMainWindow):
         elif currentPiece == "R":
             return self.whiteRookImg
 
-    def paintEvent(self, event):
-        width = int(600 / 8)
-        height = int(600 / 8)
-        whitecolor = "#ecd8c2"  # White on a normal chess board
-        redcolor = "#ad5b4b"  # Black on a normal chess board
-        greycolor = "#A4A2B8"
-
-        painter = QtGui.QPainter(self)
-
-        for i in range(9):
-            for j in range(9):
-                brush = QtGui.QBrush()
-                brush.setStyle(Qt.SolidPattern)
-                painter.setPen(QtGui.QPen(Qt.black, 3, Qt.SolidLine))
-                text = ""
-                if i == 0 and j == 8:
-                    brush.setColor(QtGui.QColor(greycolor))
-                elif i == 0:
-                    brush.setColor(QtGui.QColor(greycolor))
-                    text = str(8-j)
-                elif j == 8:
-                    brush.setColor(QtGui.QColor(greycolor))
-                    text = chr(96+i)
-                elif (j + i) % 2 == 0:
-                    brush.setColor(QtGui.QColor(whitecolor))
-                else:
-                    brush.setColor(QtGui.QColor(redcolor))
-
-                painter.setBrush(brush)
-
-                painter.drawRects(
-                    QtCore.QRect((width * i) + 100, (height * j) + 100, width, height),
-                )
-                if text != "":
-                    self.drawText(painter, text, (width * i) + 100, (height * j) + 100)
-        painter.end()
-
-    def drawText(self, pen, text, x, y):
-        pen.setFont(QtGui.QFont("Arial", 18))
-        pen.drawText(x+30, y+50, text)
-
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(0, 0, self.width, self.height)
-        self.setStyleSheet("background-color: #FAF0E6;")
+        self.setStyleSheet("background-color: #adcbe3;")
 
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
         # self.inputbox.connect(self.enterPress)
-        self.inputbox.setStyleSheet("background-color: white;")
+        self.inputbox.setStyleSheet("background-color: #FFECF5;")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
         inputboxDescription.resize(150, 30)
@@ -152,36 +149,37 @@ class MainWindow(QtWidgets.QMainWindow):
         cameraLabel.resize(300, 200)
         cameraLabel.move(830, 50)
         cameraLabel.setStyleSheet("border: 1px solid black;"
-                                  "background-color: white;")
+                                  "background-color: #FFECF5;")
         cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QTextEdit(self)
+        self.movelog.setReadOnly(True)
         self.movelog.resize(300, 448)
         self.movelog.move(825, 330)
         self.movelog.setStyleSheet("border: 1px solid black;"
-                                   "background-color: white;")
+                                   "background-color: #FFECF5;")
         self.movelog.setAlignment(QtCore.Qt.AlignLeft)
         movelogDescription = QtWidgets.QLabel(self)
         movelogDescription.setText("<b>Movelog:</b>")
         movelogDescription.resize(300, 30)
         movelogDescription.move(825, 300)
         movelogDescription.setStyleSheet("border: 1px solid black;"
-                                         "background-color: white;")
+                                         "background-color: #FFECF5;")
 
         errorlogDescription = QtWidgets.QLabel(self)
         errorlogDescription.setText("<b>Errorlog:</b>")
         errorlogDescription.resize(300, 30)
         errorlogDescription.move(825, 800)
         errorlogDescription.setStyleSheet("border: 1px solid black;"
-                                          "background-color: white;")
+                                          "background-color: #FFECF5;")
         self.errorlog = QtWidgets.QLabel(self)
         self.errorlog.resize(300, 100)
         self.errorlog.move(825, 830)
         self.errorlog.setStyleSheet("border: 1px solid black;"
                                     "color: red;"
                                     "font-weight: bold;"
-                                    "background-color: white;")
+                                    "background-color: #FFECF5;")
         self.errorlog.setAlignment(QtCore.Qt.AlignLeft)
         self.errorlog.setWordWrap(True)
 
@@ -221,7 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
         resignButton.clicked.connect(self.resign)
         resignButton.move(175, 25)
         resignButton.setText("Resign")
-        resignButton.setStyleSheet("background-color: #CD5C5C;"
+        resignButton.setStyleSheet("background-color: #ffd3b6;"
                                    "font-weight: bold;")
         resignButton.resize(150, 50)
 
@@ -229,7 +227,7 @@ class MainWindow(QtWidgets.QMainWindow):
         drawButton.clicked.connect(self.draw)
         drawButton.move(400, 25)
         drawButton.setText("Offer draw")
-        drawButton.setStyleSheet("background-color: #CD5C5C;"
+        drawButton.setStyleSheet("background-color: #ffd3b6;"
                                  "font-weight: bold;")
         drawButton.resize(150, 50)
 
@@ -237,7 +235,7 @@ class MainWindow(QtWidgets.QMainWindow):
         newGameButton.clicked.connect(self.newGame)
         newGameButton.move(625, 25)
         newGameButton.setText("Start new game")
-        newGameButton.setStyleSheet("background-color: #CD5C5C;"
+        newGameButton.setStyleSheet("background-color: #ffd3b6;"
                                     "font-weight: bold;")
         newGameButton.resize(150, 50)
 
@@ -248,6 +246,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItems(["Queen","Bishop","Rook","Knight"])
+        self.combobox.setStyleSheet("background-color: #FFECF5;")
         self.combobox.move(80, 855)
         self.combobox.resize(140, 30)
         self.combobox.currentIndexChanged.connect(self.getComboboxItem)
@@ -258,7 +257,10 @@ class MainWindow(QtWidgets.QMainWindow):
         comboboxDescription.move(80, 835)
 
     def getComboboxItem(self):
-        self.board.promotionPiece = self.combobox.currentText()[0]
+        text = self.combobox.currentText()[0]
+        if text == "K":
+            text = "N"
+        self.board.promotionPiece = text
 
     def enterPress(self):
         inputString = str(self.inputbox.text())
@@ -284,21 +286,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
+        #Remove old highlighted tiles
+        if self.highlightedMove != [0,0,0,0]:
+            self.grid.itemAtPosition(self.highlightedMove[0], self.highlightedMove[1]+1).widget().deleteLater()
+            replacementLabel = self.generate_label(int(self.highlightedMove[0]), int(self.highlightedMove[1]+1), False)
+            self.grid.addWidget(replacementLabel, int(self.highlightedMove[0]), int(self.highlightedMove[1]+1))
+
+            self.grid.itemAtPosition(self.highlightedMove[2], self.highlightedMove[3]+1).widget().deleteLater()
+            label = self.generate_label(int(self.highlightedMove[2]), int(self.highlightedMove[3]+1), False)
+            pixmap = self.readPiece(int(self.highlightedMove[2]), int(self.highlightedMove[3]))
+            label.setPixmap(pixmap)
+            self.grid.addWidget(label, int(self.highlightedMove[2]), int(self.highlightedMove[3]+1))
+        
         # delete old piece at old position
-        self.grid.itemAtPosition(oldRow, oldColumn).widget().deleteLater()
+        self.grid.itemAtPosition(oldRow, oldColumn+1).widget().deleteLater()
         # place empty label at old piece position
-        replacementLabel = QtWidgets.QLabel(self)
-        replacementLabel.setStyleSheet("background-color: rgba(0,0,0,0%);")
-        self.grid.addWidget(replacementLabel, int(oldRow), int(oldColumn))
+        replacementLabel = self.generate_label(int(oldRow), int(oldColumn+1), True)
+        self.grid.addWidget(replacementLabel, int(oldRow), int(oldColumn+1))
 
         # delete old piece at new position
-        self.grid.itemAtPosition(newRow, newColumn).widget().deleteLater()
+        self.grid.itemAtPosition(newRow, newColumn+1).widget().deleteLater()
         # create new piece at new position
-        label = QtWidgets.QLabel(self)
-        label.setStyleSheet("background-color: rgba(0,0,0,0%)")
+        label = self.generate_label(int(newRow), int(newColumn+1), True)
         pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
-        self.grid.addWidget(label, int(newRow), int(newColumn))
+        self.grid.addWidget(label, int(newRow), int(newColumn+1))
+        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def WKCastle(self):
         try:
@@ -344,7 +357,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.clear()
         self.clearGui()
         self.board = Board()
-        self.read_board()
+        self.draw_board()
 
     def clearGui(self):
         for i in range(0, self.grid.rowCount()):
