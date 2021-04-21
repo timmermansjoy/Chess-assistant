@@ -59,11 +59,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for i in range(0, 9):
             for j in range(0, 9):
                 label = self.generate_label(i, j)
-                pixmap = None
                 if j != 0 and i != 8:
                     pixmap = self.readPiece(i, j-1)
-                if pixmap != None:
-                    label.setPixmap(pixmap)
+                    if pixmap != None:
+                        label.setPixmap(pixmap)
                 self.grid.addWidget(label, i, j)
 
     def generate_label(self, i, j, highlightTile = False):
