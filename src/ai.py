@@ -30,7 +30,7 @@ def minimaxRoot(depth, board, white):
 
 def minimax(depth, board, white):
     if(depth == 0):
-        return evaluation(board, True)
+        return evaluation(board)
         
     possibleMoves = board.getAllValidMoves()
     if(white):
@@ -41,7 +41,7 @@ def minimax(depth, board, white):
                 # print(piece[0].row, piece[0].column, move.row, move.column)
                 board.move(piece[0].row, piece[0].column, move.row, move.column)
                 bestMove = max(bestMove,minimax(depth - 1, board, not white))
-                # print(bestMove)
+                print(bestMove)
                 # print(board)
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
@@ -54,28 +54,28 @@ def minimax(depth, board, white):
                 # print(piece[0].row, piece[0].column, move.row, move.column)
                 board.move(piece[0].row, piece[0].column, move.row, move.column)
                 bestMove = min(bestMove,minimax(depth - 1, board, not white))
-                # print(bestMove)
+                print(bestMove)
                 # print(board)
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
         return bestMove
 
 
-def evaluation(board, white):
+def evaluation(board):
     evaluationBlack = 0
     evaluationWhite = 0
     for row in range(8):
         for col in range(8):
             if board.board[row][col] != '.':
+                moveAmount = len(board.getPossibleMoves(row, col, board.board))
                 if board.board[row][col].islower():
+                    evaluationBlack += moveAmount * 5
                     evaluationBlack += PieceValues.get((board.board[row][col]).upper())
                 else:
+                    evaluationWhite += moveAmount * 5
                     evaluationWhite += PieceValues.get((board.board[row][col]).upper())
 
-    if white:
-        return evaluationWhite - evaluationBlack
-    else:
-        return evaluationBlack - evaluationWhite
+    return evaluationWhite - evaluationBlack
 
 
 def PlayRandomMove(validMoves):
