@@ -286,7 +286,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.setText(text)
 
     def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
-        #Remove old highlighted tiles
+        # The arguments of this function are of an 8x8 array, but they are used in a 9x9 array 
+        # +1 is added to the columns when they are used in functions because column 0 is filled with labels that don't contain chess pieces
+        # Remove old highlighted tiles
         if self.highlightedMove != [0,0,0,0]:
             self.grid.itemAtPosition(self.highlightedMove[0], self.highlightedMove[1]+1).widget().deleteLater()
             replacementLabel = self.generate_label(int(self.highlightedMove[0]), int(self.highlightedMove[1]+1), False)
