@@ -5,6 +5,27 @@ import random
 
 PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
+opening1 = ['6444','1434', '7655', '0122', '7242']
+# some evaluation conditions
+# A queen versus two rooks
+
+#     In the middlegame, they are equal
+#     In the endgame, the two rooks are somewhat more powerful. With no other pieces on the board, two rooks are equal to a queen and a pawn
+
+# A rook versus two minor pieces
+
+#     In the opening and middlegame, a rook and two pawns are weaker than two bishops; equal to or slightly weaker than a bishop and knight; and equal to two knights
+#     In the endgame, a rook and one pawn are equal to two knights; and equal to or slightly weaker than a bishop and knight. A rook and two pawns are equal to two bishops
+
+# Bishops are often more powerful than rooks in the opening. Rooks are usually more powerful than bishops in the middlegame, and rooks dominate the minor pieces in the endgame
+
+def calculateMove(depth, board, white, moveNumber):
+    if moveNumber <= 5:
+        opening = opening1[moveNumber]
+        return Coordinate(int(opening[0]),int(opening[1])), Coordinate(int(opening[2]), int(opening[3]))
+    else:
+        minimaxRoot(depth,board, white)
+
 
 def minimaxRoot(depth, board, white):
     validMoves = board.getAllValidMoves()
@@ -74,9 +95,24 @@ def evaluation(board):
                     evaluationBlack += PieceValues.get((board.board[row][col]).upper())
                 else:
                     evaluationWhite += moveAmount * 5
-                    evaluationWhite += PieceValues.get((board.board[row][col]).upper())
+                    evaluationWhite += PieceValues.get((board.board[row][col]))
 
     return evaluationWhite - evaluationBlack
+
+def isEndGame(board):
+    heavyPieces = 0
+    for row in range(8):
+        for col in range(8):
+            if board[row][col].upper() != '.' and board[row][col].upper() != 'P':
+                heavyPieces += 1
+    if heavyPieces < 6:
+        return True
+    else:
+        return False
+
+
+def pawnEvaluation(board, row, col):
+    pass
 
 
 def PlayRandomMove(validMoves):

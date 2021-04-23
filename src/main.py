@@ -7,18 +7,16 @@ import ai
 def main():
     board = Board()
 
-    for i in range(2):
-        if i % 2 == 0:
+    for i in range(5):
+        if i % 2 == 1:
             print("My Turn:")
-            beginCoord, endCoord = ai.minimaxRoot(3, board, True)
-            board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-            print(board)
+            s = input()
+            board.notationMove(s)
 
         else:
             print("Computers Turn:")
-            beginCoord, endCoord = ai.minimaxRoot(3, board, False)
+            beginCoord, endCoord = ai.calculateMove(3, board, False, i)
             board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-            print(board)
 
         print(board)
 
