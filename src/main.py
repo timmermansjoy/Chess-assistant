@@ -7,11 +7,11 @@ import ai
 def main():
     board = Board()
 
-    for i in range(5):
-        if i % 2 == 1:
+    for i in range(10):
+        if i % 2 == 0:
             print("My Turn:")
-            s = input()
-            board.notationMove(s)
+            beginCoord, endCoord = ai.calculateMove(3, board, True, i)
+            board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
         else:
             print("Computers Turn:")
