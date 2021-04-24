@@ -35,11 +35,11 @@ def minimaxRoot(depth, board, white):
         for move in piece[1]:
             # First move of the tree
             try:
-                move1 = board.move(piece[0].row, piece[0].column, move.row, move.column)
+                board.move(piece[0].row, piece[0].column, move.row, move.column)
                 moveBeginCoord = Coordinate(piece[0].row, piece[0].column)
                 moveEndCoord = Coordinate(move.row, move.column)
                 # this calls the minimax function and checks if the value returned by minimax is higher than bestMoveValue
-                value = max(bestMoveValue, minimax(depth - 1, board, not white))
+                value = max(bestMoveValue, minimax(depth - 1, board, -20000, 20000, not white))
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
                 if(value > bestMoveValue):
@@ -54,7 +54,7 @@ def minimaxRoot(depth, board, white):
     return bestMoveBeginCoord, bestMoveEndCoord
 
 
-def minimax(depth, board, white):
+def minimax(depth, board, alpha, beta, white):
     if(depth == 0):
         return evaluation(board)
 
@@ -67,11 +67,14 @@ def minimax(depth, board, white):
                 try:
                     # print(piece[0].row, piece[0].column, move.row, move.column)
                     board.move(piece[0].row, piece[0].column, move.row, move.column)
-                    bestMove = max(bestMove, minimax(depth - 1, board, not white))
+                    bestMove = max(bestMove, minimax(depth - 1, board, alpha, beta, not white))
                     # print(bestMove)
                     # print(board)
                     board.undo()
                     board.isWhitePlayerTurn = not board.isWhitePlayerTurn
+                    alpha = max(alpha, bestMove)
+                    if beta <= alpha:
+                        return bestMove
                 except:
                     pass
 
@@ -82,12 +85,15 @@ def minimax(depth, board, white):
             for move in piece[1]:
                 try:
                     # print(piece[0].row, piece[0].column, move.row, move.column)
-                    board.move(piece[0].row, piece[0].column, move.row, move.column)
-                    bestMove = min(bestMove, minimax(depth - 1, board, not white))
+                    board.move(piece[0].row, piece[0].column, move.row, move.column) 
+                    bestMove = min(bestMove, minimax(depth - 1, board, alpha, beta, not white))
                     # print(bestMove)
                     # print(board)
                     board.undo()
                     board.isWhitePlayerTurn = not board.isWhitePlayerTurn
+                    beta = min(alpha, bestMove)
+                    if beta <= alpha:
+                        return bestMove
                 except:
                     pass
         return bestMove
@@ -103,10 +109,10 @@ def evaluation(board):
             if board.board[row][col] != '.':
                 moveAmount = len(board.getPossibleMoves(row, col, board.board))
                 if board.board[row][col].islower():
-                    evaluationBlack += moveAmount * 5
+                    evaluationBlack += moveAmount * 2
                     evaluationBlack += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    evaluationWhite += moveAmount * 5
+                    evaluationWhite += moveAmount * 2
                     evaluationWhite += PieceValues.get((board.board[row][col]))
 
     return evaluationWhite - evaluationBlack
@@ -125,7 +131,25 @@ def isEndGame(board):
 
 
 def pawnEvaluation(board, row, col):
-    pass
+    white = False
+    target = 'p'
+    oposition = 'P'
+    if board[row][col].isupper():
+        white = True
+        target = 'P'
+        oposition = 'p'
+    isolated = False
+    connected = False
+    passed = True
+    for i in range(8):
+        if board[i][col - 1] == target or board[i][col + 1] == target:
+            connected = True
+        if board[i][col] == oposition:
+            passed = False
+    if connected == False:
+        isolated = True
+
+
 
 
 def PlayRandomMove(validMoves):
