@@ -5,7 +5,7 @@ import random
 
 PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
-opening1 = ['6444','1434', '7655', '0122', '7542']
+opening1 = ['6444', '1434', '7655', '0122', '7542']
 # some evaluation conditions
 # A queen versus two rooks
 
@@ -19,12 +19,13 @@ opening1 = ['6444','1434', '7655', '0122', '7542']
 
 # Bishops are often more powerful than rooks in the opening. Rooks are usually more powerful than bishops in the middlegame, and rooks dominate the minor pieces in the endgame
 
+
 def calculateMove(depth, board, white, moveNumber):
     if moveNumber < 5:
         opening = opening1[moveNumber]
-        return Coordinate(int(opening[0]),int(opening[1])), Coordinate(int(opening[2]), int(opening[3]))
+        return Coordinate(int(opening[0]), int(opening[1])), Coordinate(int(opening[2]), int(opening[3]))
     else:
-        return minimaxRoot(depth,board, white)
+        return minimaxRoot(depth, board, white)
 
 
 def minimaxRoot(depth, board, white):
@@ -91,7 +92,9 @@ def minimax(depth, board, white):
                     pass
         return bestMove
 
-#evaluation works in white's favor
+# evaluation works in white's favor
+
+
 def evaluation(board):
     evaluationBlack = 0
     evaluationWhite = 0
@@ -107,6 +110,7 @@ def evaluation(board):
                     evaluationWhite += PieceValues.get((board.board[row][col]))
 
     return evaluationWhite - evaluationBlack
+
 
 def isEndGame(board):
     heavyPieces = 0
