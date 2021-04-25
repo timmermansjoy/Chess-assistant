@@ -7,9 +7,9 @@ import timeit
 
 def main():
     board = Board()
-    for i in range(2):
-        start = timeit.default_timer()
 
+    for i in range(20):
+        start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")
             beginCoord, endCoord = ai.calculateMove(3, board, True, i)
