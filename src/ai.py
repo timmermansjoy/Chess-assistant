@@ -55,7 +55,9 @@ def minimaxRoot(depth, board, white):
 
 
 def minimax(depth, board, alpha, beta, white):
-    if(depth == 0):
+    if(depth == 0 and white):
+        return -evaluation(board)
+    elif(depth == 0 and not white):
         return evaluation(board)
 
     possibleMoves = board.getAllValidMoves()
@@ -91,7 +93,7 @@ def minimax(depth, board, alpha, beta, white):
                     # print(board)
                     board.undo()
                     board.isWhitePlayerTurn = not board.isWhitePlayerTurn
-                    beta = min(alpha, bestMove)
+                    beta = min(beta, bestMove)
                     if beta <= alpha:
                         return bestMove
                 except:
@@ -107,12 +109,15 @@ def evaluation(board):
     for row in range(8):
         for col in range(8):
             if board.board[row][col] != '.':
-                moveAmount = len(board.getPossibleMoves(row, col, board.board))
+                moveAmountScore = 0
+                if board.board[row][col].upper() != 'P':
+                    moveAmount = len(board.getPossibleMoves(row, col, board.board))
+                    moveAmountScore = moveAmount * 1.5
                 if board.board[row][col].islower():
-                    evaluationBlack += moveAmount * 2
+                    evaluationBlack += moveAmountScore
                     evaluationBlack += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    evaluationWhite += moveAmount * 2
+                    evaluationWhite += moveAmount
                     evaluationWhite += PieceValues.get((board.board[row][col]))
 
     return evaluationWhite - evaluationBlack
