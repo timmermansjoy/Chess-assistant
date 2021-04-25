@@ -117,7 +117,7 @@ def evaluation(board):
                     evaluationBlack += moveAmountScore
                     evaluationBlack += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    evaluationWhite += moveAmount
+                    evaluationWhite += moveAmountScore
                     evaluationWhite += PieceValues.get((board.board[row][col]))
 
     return evaluationWhite - evaluationBlack
