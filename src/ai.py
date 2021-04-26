@@ -20,7 +20,7 @@ opening1 = ['6444', '1434', '7655', '0122', '7542']
 # Bishops are often more powerful than rooks in the opening. Rooks are usually more powerful than bishops in the middlegame, and rooks dominate the minor pieces in the endgame
 
 
-def calculateMove(depth, board, white, moveNumber):
+def calculateMove(depth, board, white, moveNumber=5):
     if moveNumber < 5:
         opening = opening1[moveNumber]
         return Coordinate(int(opening[0]), int(opening[1])), Coordinate(int(opening[2]), int(opening[3]))
@@ -31,6 +31,8 @@ def calculateMove(depth, board, white, moveNumber):
 def minimaxRoot(depth, board, white):
     validMoves = board.getAllValidMoves()
     bestMoveValue = -20000
+    bestMoveBeginCoord = Coordinate(0, 0)
+    bestMoveEndCoord = Coordinate(0, 0)
     for piece in validMoves:
         for move in piece[1]:
             # First move of the tree
@@ -87,7 +89,7 @@ def minimax(depth, board, alpha, beta, white):
             for move in piece[1]:
                 try:
                     # print(piece[0].row, piece[0].column, move.row, move.column)
-                    board.move(piece[0].row, piece[0].column, move.row, move.column) 
+                    board.move(piece[0].row, piece[0].column, move.row, move.column)
                     bestMove = min(bestMove, minimax(depth - 1, board, alpha, beta, not white))
                     # print(bestMove)
                     # print(board)
@@ -153,8 +155,6 @@ def pawnEvaluation(board, row, col):
             passed = False
     if connected == False:
         isolated = True
-
-
 
 
 def PlayRandomMove(validMoves):
