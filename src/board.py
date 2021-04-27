@@ -82,7 +82,7 @@ class Board:
             else:
                 raise Exception(piece + " is not a valid piece ??")
             if len(moves) == 0:
-                self.isCheckmate == True
+                self.isCheckmate = True
             return moves
         else:
             raise Exception(piece + " is not a piece ??")
