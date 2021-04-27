@@ -6,6 +6,25 @@ import random
 PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
 opening1 = ['6444', '1434', '7655', '0122', '7542']
+pawnBoardEvalOpening = np.array([
+        [0.90, 0.95, 1.05, 1.10, 1.10, 1.05, 0.95, 0.90],
+        [0.90, 0.95, 1.05, 1.15, 1.15, 1.05, 0.95, 0.90],
+        [0.90, 0.95, 1.10, 1.20, 1.20, 1.10, 0.95, 0.90],
+        [0.97, 1.03, 1.17, 1.27, 1.27, 1.17, 1.03, 0.97],
+        [1.06, 1.12, 1.25, 1.40, 1.40, 1.25, 1.12, 1.06]
+    ])
+pawnBoardEvalEndGame = np.array([
+        [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
+        [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
+        [1.25, 1.10, 1.00, 0.95, 0.95, 1.00, 1.10, 1.25],
+        [1.33, 1.17, 1.07, 1.00, 1.00, 1.07, 1.17, 1.33],
+        [1.45, 1.29, 1.16, 1.05, 1.05, 1.16, 1.29, 1.45]
+    ])
+pawnMultipliers = np.array([
+    [1.05, 1.15, 1.30],
+    [1.30, 1.35, 1.55],
+    [2.1, 1.75, 2]
+])
 # some evaluation conditions
 # A queen versus two rooks
 
@@ -48,6 +67,7 @@ def minimaxRoot(depth, board, white):
                     bestMoveValue = value
                     bestMoveBeginCoord = moveBeginCoord
                     bestMoveEndCoord = moveEndCoord
+    
             except:
                 pass
     print("Evaluation score: ", bestMoveValue)
@@ -57,10 +77,10 @@ def minimaxRoot(depth, board, white):
 
 
 def minimax(depth, board, alpha, beta, white):
-    if(depth == 0 and white):
-        return -evaluation(board)
-    elif(depth == 0 and not white):
+    if((depth == 0 or board.isCheckmate) and not white):
         return evaluation(board)
+    elif((depth == 0 or board.isCheckmate) and white):
+        return -evaluation(board)
 
     possibleMoves = board.getAllValidMoves()
     if(white):
@@ -102,12 +122,10 @@ def minimax(depth, board, alpha, beta, white):
                     pass
         return bestMove
 
-# evaluation works in white's favor
 
 
 def evaluation(board):
-    evaluationBlack = 0
-    evaluationWhite = 0
+    score = 0
     for row in range(8):
         for col in range(8):
             if board.board[row][col] != '.':
@@ -115,14 +133,16 @@ def evaluation(board):
                 if board.board[row][col].upper() != 'P':
                     moveAmount = len(board.getPossibleMoves(row, col, board.board))
                     moveAmountScore = moveAmount * 1.5
-                if board.board[row][col].islower():
-                    evaluationBlack += moveAmountScore
-                    evaluationBlack += PieceValues.get((board.board[row][col]).upper())
+                    if board.board[row][col].islower():
+                        score -= moveAmountScore
+                        score -= PieceValues.get((board.board[row][col]).upper())
+                    else:
+                        score += moveAmountScore
+                        score += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    evaluationWhite += moveAmountScore
-                    evaluationWhite += PieceValues.get((board.board[row][col]))
+                    score += pawnEvaluation(board.board, row , col)
 
-    return evaluationWhite - evaluationBlack
+    return score
 
 
 def isEndGame(board):
@@ -138,23 +158,44 @@ def isEndGame(board):
 
 
 def pawnEvaluation(board, row, col):
-    white = False
+    value = 100 
     target = 'p'
     oposition = 'P'
     if board[row][col].isupper():
-        white = True
         target = 'P'
         oposition = 'p'
     isolated = False
     connected = False
     passed = True
     for i in range(8):
-        if board[i][col - 1] == target or board[i][col + 1] == target:
-            connected = True
+        try:
+            if board[i][col - 1] == target or board[i][col + 1] == target:
+                connected = True
+        except:
+            pass
         if board[i][col] == oposition:
             passed = False
     if connected == False:
         isolated = True
+    if 0 < row < 6:
+        if isEndGame(board):
+            if target.isupper():
+                value *= -pawnBoardEvalEndGame[6 - row][col]
+            else:
+                value *= pawnBoardEvalEndGame[row][col]
+        else:
+            if target.isupper():
+                value *= -pawnBoardEvalOpening[6 - row][col]
+            else:
+                value *= pawnBoardEvalOpening[row][col]
+    if 2 < row < 6:
+        if passed:
+            value *= pawnMultipliers[row - 3][2]
+        if connected:
+            value *= pawnMultipliers[row - 3][1]
+        else:
+            value *= pawnMultipliers[row - 3][0]
+    return value
 
 
 def PlayRandomMove(validMoves):
