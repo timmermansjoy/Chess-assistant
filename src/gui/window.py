@@ -309,6 +309,7 @@ class MainWindow(QtWidgets.QMainWindow):
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
         self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
+        print(self.board.board)
 
     def WKCastle(self):
         try:
