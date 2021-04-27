@@ -33,7 +33,17 @@ class TestAI(unittest.TestCase):
         result = notActual == beginCoord
 
         self.assertEqual(result, False)
-        #Black
+    @pytest.mark.xfail
+    #prioritises taking queen over immediate checkmate on h7
+    def test_mateButFreeQueen(self):
+        self.board.board = TB.AIMateButMaterial
+        beginCoord, endCoord = ai.calculateMove(3, self.board, True)
+        result = Coordinate(1,7)
+        self.assertEqual(result, endCoord)
+
+
+
+    #Black
 
     def test_rookOverBishop(self):
         self.board.board = TB.AIFreePiece
@@ -56,6 +66,24 @@ class TestAI(unittest.TestCase):
         self.assertEqual(endCoord, actualEnd)
         self.assertEqual(beginCoord, actualStart)
 
+    @pytest.mark.xfail
+    #prefers bishop over checkmate
+    def test_mateBlackButFreeBishop(self):
+        self.board.board = TB.AIMateBlackButMaterial
+        self.board.isWhitePlayerTurn = not self.board.isWhitePlayerTurn
+        beginCoord, endCoord = ai.calculateMove(3, self.board, False)
+        actualEnd = Coordinate(6,6)
+        self.assertEqual(actualEnd, endCoord)
+
+    @pytest.mark.xfail
+    #prefers pawn over checkmate
+    def test_mateBlackButFreePawn(self):
+        self.board.board = TB.AIMateBlackButMaterial
+        self.board.board[5][1] = "P"
+        self.board.isWhitePlayerTurn = not self.board.isWhitePlayerTurn
+        beginCoord, endCoord = ai.calculateMove(3, self.board, False)
+        actualEnd = Coordinate(6,6)
+        self.assertEqual(actualEnd, endCoord)
 
 if __name__ == '__main__':
     unittest.main()
