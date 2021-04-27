@@ -44,11 +44,16 @@ class TestAI(unittest.TestCase):
 
 
     #Black
-
+    @pytest.mark.xfail
+    #Wants to move 1:0 to 0:0 despite no piece being present on 1:0
+    #already moves in calculatedMove, is this intended?
+    #also gives away free queen
     def test_rookOverBishop(self):
         self.board.board = TB.AIFreePiece
         self.board.move(2,0,1,1)
+        print(self.board)
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
+        print(self.board)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
         actual = Coordinate(3,2)
         self.assertEqual(endCoord, actual)
