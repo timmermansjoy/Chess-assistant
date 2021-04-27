@@ -264,6 +264,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if error == False:
                 self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.aiMove()
+                self.updateMovelog()
 
         else:
             self.errorlog.setText("Input field is empty")

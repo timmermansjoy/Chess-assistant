@@ -33,6 +33,7 @@ class Board:
         self.squareLog = []
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
+        self.isCheckmate = False
 
 # TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
     def canCapture(self, target):
@@ -80,6 +81,8 @@ class Board:
                 moves = self.getKingMoves(coord, board)
             else:
                 raise Exception(piece + " is not a valid piece ??")
+            if len(moves) == 0:
+                self.isCheckmate == True
             return moves
         else:
             raise Exception(piece + " is not a piece ??")

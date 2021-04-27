@@ -8,7 +8,7 @@ import timeit
 def main():
     board = Board()
 
-    for i in range(20):
+    for i in range(9):
         start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")
@@ -26,6 +26,10 @@ def main():
         stop = timeit.default_timer()
 
         print('Time: ', stop - start)
+
+        if board.isCheckmate:
+            print("checkmate")
+            break
 
 
 if __name__ == "__main__":
