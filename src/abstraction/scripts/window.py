@@ -11,6 +11,8 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
+import cv2
+from cv_bridge import CvBridge
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -48,13 +50,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.board = Board()
         self.draw_board()
 
+        self.bridge = CvBridge()
         # ---- Subscribers ----
         self.chesscamsubscriber = rospy.Subscriber('/chesscam/compressed', Image, self.showChesscam)
         rospy.loginfo('subscribed to /chesscam/compressed')
 
     def showChesscam(self, msg):
-        pass
-        #self.cameraLabel.setPixmap(QPixmap.fromImage(msg))
+        # convert sensor_msgs Image to cv2 image
+        image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        # resize image
+        dimensions = (300, 200)
+        image = cv2.resize(image, dimensions, cv2.INTER_AREA)
+        # convert BGR color to RGB color
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # make image usable for PyQt
+        height, width, channels = image.shape
+        image = QtGui.QImage(image.data, width, height, channels * width, QtGui.QImage.Format_RGB888)
+        self.cameraLabel.setPixmap(QPixmap.fromImage(image))
 
     def draw_board(self):
         for i in range(0, 9):
