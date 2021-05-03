@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QLineEdit, QGridLayout
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.highlightedMove = [0, 0, 0, 0]
         self.bridge = CvBridge()
         self.init_subscriber()
-
+        self.GUI_UPDATE_PERIOD = 10
         self.initUI()
 
         self.whiteBishopImg = QPixmap('../../resources/WhiteBishop.png').scaled(73, 73, Qt.KeepAspectRatio)
@@ -327,7 +327,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start to update the image on the gui.
         self.gui_timer = QTimer(self)
-        self.gui_timer.start(GUI_UPDATE_PERIOD)
+        self.gui_timer.start(self.GUI_UPDATE_PERIOD)
         self.gui_timer.timeout.connect(self.update_image_on_gui)
 
     def getComboboxItem(self):
