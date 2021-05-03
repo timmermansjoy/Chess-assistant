@@ -7,6 +7,7 @@ from threading import Lock
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
+import cv_utils
 
 class abstraction:
     def __init__(self):
@@ -14,7 +15,9 @@ class abstraction:
         self.imageLock = Lock()
         self.bridge = CvBridge()
         self.rate = rospy.Rate(10)
-        self.redrawTimer = rospy.Timer(rospy.Duration(GUI_UPDATE_PERIOD), self.callback_redraw)
+        self.GUI_UPDATE_PERIOD = 0.10
+        self.redrawTimer = rospy.Timer(rospy.Duration(self.GUI_UPDATE_PERIOD), self.callback_redraw)
+        
         
         # ---- Subscribers ----
         self.chesscamsubscriber = rospy.Subscriber('/chesscam/compressed', Image, self.callback_chesscam)
@@ -32,23 +35,24 @@ class abstraction:
                 image_cv = self.convert_ros_to_opencv(self.image)
             finally:
                 self.imageLock.release()
-            image_cv = cv2.resize(image_cv, dsize=(800, 550), interpolation=cv2.INTER_CUBIC)
-            rospy.loginfo("publishing image to gui")
-            self.chesscam_pub.publish(image_cv)
+            
+            image_cv = cv2.resize(image_cv, (1069, 599))
+            
+            img = cv_utils.magic(image_cv)
 
-            cv2.imshow("image", image_cv)
+            cv2.imshow("image", img)
             key = cv2.waitKey(5)
-                if key == 27:
-                    cv2.destroyAllWindows()   
+            if key == 27:
+                cv2.destroyAllWindows()   
     
     def convert_ros_to_opencv(self, ros_image):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(ros_image, "bgr8")
             return cv_image
-            except CvBridgeError as error:
-                raise Exception("Failed to convert to OpenCV image")
+        except CvBridgeError as error:
+            raise Exception("Failed to convert to OpenCV image")
 
-    def callback_chesscam(self, msg):
+    def callback_chesscam(self, data):
         self.imageLock.acquire()
         try:
             self.image = data
