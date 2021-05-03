@@ -7,8 +7,7 @@ import timeit
 
 def main():
     board = Board()
-    board.board = TB.CheckmateInOne
-    for i in range(2):
+    for i in range(4):
         start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")

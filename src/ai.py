@@ -7,19 +7,19 @@ PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
 opening1 = ['6444', '1434', '7655', '0122', '7542']
 pawnBoardEvalOpening = np.array([
-        [0.90, 0.95, 1.05, 1.10, 1.10, 1.05, 0.95, 0.90],
-        [0.90, 0.95, 1.05, 1.15, 1.15, 1.05, 0.95, 0.90],
-        [0.90, 0.95, 1.10, 1.20, 1.20, 1.10, 0.95, 0.90],
-        [0.97, 1.03, 1.17, 1.27, 1.27, 1.17, 1.03, 0.97],
-        [1.06, 1.12, 1.25, 1.40, 1.40, 1.25, 1.12, 1.06]
-    ])
+    [0.90, 0.95, 1.05, 1.10, 1.10, 1.05, 0.95, 0.90],
+    [0.90, 0.95, 1.05, 1.15, 1.15, 1.05, 0.95, 0.90],
+    [0.90, 0.95, 1.10, 1.20, 1.20, 1.10, 0.95, 0.90],
+    [0.97, 1.03, 1.17, 1.27, 1.27, 1.17, 1.03, 0.97],
+    [1.06, 1.12, 1.25, 1.40, 1.40, 1.25, 1.12, 1.06]
+])
 pawnBoardEvalEndGame = np.array([
-        [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
-        [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
-        [1.25, 1.10, 1.00, 0.95, 0.95, 1.00, 1.10, 1.25],
-        [1.33, 1.17, 1.07, 1.00, 1.00, 1.07, 1.17, 1.33],
-        [1.45, 1.29, 1.16, 1.05, 1.05, 1.16, 1.29, 1.45]
-    ])
+    [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
+    [1.20, 1.05, 0.95, 0.90, 0.90, 0.95, 1.05, 1.20],
+    [1.25, 1.10, 1.00, 0.95, 0.95, 1.00, 1.10, 1.25],
+    [1.33, 1.17, 1.07, 1.00, 1.00, 1.07, 1.17, 1.33],
+    [1.45, 1.29, 1.16, 1.05, 1.05, 1.16, 1.29, 1.45]
+])
 pawnMultipliers = np.array([
     [1.05, 1.15, 1.30],
     [1.30, 1.35, 1.55],
@@ -67,7 +67,7 @@ def minimaxRoot(depth, board, white):
                     bestMoveValue = value
                     bestMoveBeginCoord = moveBeginCoord
                     bestMoveEndCoord = moveEndCoord
-    
+
             except:
                 pass
     print("Evaluation score: ", bestMoveValue)
@@ -123,7 +123,6 @@ def minimax(depth, board, alpha, beta, white):
         return bestMove
 
 
-
 def evaluation(board):
     score = 0
     for row in range(8):
@@ -140,17 +139,13 @@ def evaluation(board):
                         score += moveAmountScore
                         score += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    score += pawnEvaluation(board.board, row , col)
+                    score += pawnEvaluation(board, row, col)
 
     return score
 
 
 def isEndGame(board):
-    heavyPieces = 0
-    for row in range(8):
-        for col in range(8):
-            if board[row][col].upper() != '.' and board[row][col].upper() != 'P':
-                heavyPieces += 1
+    heavyPieces = board.getHeavyPieces()
     if heavyPieces < 6:
         return True
     else:
@@ -158,10 +153,10 @@ def isEndGame(board):
 
 
 def pawnEvaluation(board, row, col):
-    value = 100 
+    value = 100
     target = 'p'
     oposition = 'P'
-    if board[row][col].isupper():
+    if board.board[row][col].isupper():
         target = 'P'
         oposition = 'p'
     isolated = False
@@ -169,11 +164,11 @@ def pawnEvaluation(board, row, col):
     passed = True
     for i in range(8):
         try:
-            if board[i][col - 1] == target or board[i][col + 1] == target:
+            if board.board[i][col - 1] == target or board.board[i][col + 1] == target:
                 connected = True
         except:
             pass
-        if board[i][col] == oposition:
+        if board.board[i][col] == oposition:
             passed = False
     if connected == False:
         isolated = True
