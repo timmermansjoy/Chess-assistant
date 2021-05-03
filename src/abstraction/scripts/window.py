@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QLineEdit, QGridLayout
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
 from testboards import Testboards as TB
+import os
 
 import rospy
 from std_msgs.msg import String
@@ -30,18 +31,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.GUI_UPDATE_PERIOD = 10
         self.initUI()
 
-        self.whiteBishopImg = QPixmap('../../resources/WhiteBishop.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackBishopImg = QPixmap('../../resources/BlackBishop.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.whiteRookImg = QPixmap('../../resources/WhiteRook.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackRookImg = QPixmap('../../resources/BlackRook.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.whiteKnightImg = QPixmap('../../resources/WhiteKnight.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackKnightImg = QPixmap('../../resources/BlackKnight.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.whitePawnImg = QPixmap('../../resources/WhitePawn.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackPawnImg = QPixmap('../../resources/BlackPawn.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.whiteKingImg = QPixmap('../../resources/WhiteKing.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackKingImg = QPixmap('../../resources/BlackKing.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.whiteQueenImg = QPixmap('../../resources/WhiteQueen.png').scaled(73, 73, Qt.KeepAspectRatio)
-        self.blackQueenImg = QPixmap('../../resources/BlackQueen.png').scaled(73, 73, Qt.KeepAspectRatio)
+        self.whiteBishopImg = QPixmap(self.find_image("WhiteBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackBishopImg = QPixmap(self.find_image("BlackBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
+        self.whiteRookImg = QPixmap(self.find_image("WhiteRook.png")).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackRookImg = QPixmap(self.find_image("BlackRook.png")).scaled(73, 73, Qt.KeepAspectRatio)
+        self.whiteKnightImg = QPixmap(self.find_image('WhiteKnight.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackKnightImg = QPixmap(self.find_image('BlackKnight.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.whitePawnImg = QPixmap(self.find_image('WhitePawn.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackPawnImg = QPixmap(self.find_image('BlackPawn.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.whiteKingImg = QPixmap(self.find_image('WhiteKing.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackKingImg = QPixmap(self.find_image('BlackKing.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.whiteQueenImg = QPixmap(self.find_image('WhiteQueen.png')).scaled(73, 73, Qt.KeepAspectRatio)
+        self.blackQueenImg = QPixmap(self.find_image('BlackQueen.png')).scaled(73, 73, Qt.KeepAspectRatio)
 
         self.win = QtWidgets.QWidget(self)
         self.grid = QtWidgets.QGridLayout(self.win)
@@ -52,6 +53,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.board = Board()
         self.draw_board()
+
+    def find_image(self, image_name):
+        path = os.path.realpath("")
+        for root, dirs, files in os.walk(path):
+            if image_name in files:
+                return os.path.join(root, image_name)
+        return None
 
     def init_subscriber(self):
         self.ros_image_lock = Lock()
