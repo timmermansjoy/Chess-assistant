@@ -11,9 +11,10 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
+from threading import Lock
 import cv2
 from cv_bridge import CvBridge
-
+import numpy as np
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -24,6 +25,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.left = 15
         self.top = 15
         self.highlightedMove = [0, 0, 0, 0]
+        self.bridge = CvBridge()
+        self.init_subscriber()
 
         self.initUI()
 
@@ -50,23 +53,77 @@ class MainWindow(QtWidgets.QMainWindow):
         self.board = Board()
         self.draw_board()
 
-        self.bridge = CvBridge()
-        # ---- Subscribers ----
-        self.chesscamsubscriber = rospy.Subscriber('/chesscam/compressed', Image, self.showChesscam)
-        rospy.loginfo('subscribed to /chesscam/compressed')
+    def init_subscriber(self):
+        self.ros_image_lock = Lock()
 
-    def showChesscam(self, msg):
-        # convert sensor_msgs Image to cv2 image
-        image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        # resize image
-        dimensions = (300, 200)
-        image = cv2.resize(image, dimensions, cv2.INTER_AREA)
-        # convert BGR color to RGB color
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        # make image usable for PyQt
-        height, width, channels = image.shape
-        image = QtGui.QImage(image.data, width, height, channels * width, QtGui.QImage.Format_RGB888)
-        self.cameraLabel.setPixmap(QPixmap.fromImage(image))
+        self.ros_image_lock.acquire()
+        try:
+            self.received_new_data = False
+        finally:
+            self.ros_image_lock.release()
+
+        # Start to listen...
+        self.subscriber = rospy.Subscriber("/chesscam/compressed", Image, self.callback_image_raw)
+        rospy.loginfo('subscribed to topic /chesscam/compressed')
+    
+    def callback_image_raw(self, image):
+        self.ros_image_lock.acquire()
+        try:
+            self.ros_image = image
+            self.received_new_data = True
+        finally:
+            self.ros_image_lock.release()
+    
+    def update_image_on_gui(self):
+        # Get a new image if there's one and make a copy of it.
+        new_image = False
+        self.ros_image_lock.acquire()
+        try:
+            if self.received_new_data == True:
+                new_image = True
+                opencv_image = self.convert_ros_to_opencv(self.ros_image)
+                self.received_new_data = False
+        finally:
+            self.ros_image_lock.release()
+
+        if not new_image:
+            return
+
+        scale = 0.4
+        interpolation = cv2.INTER_AREA
+        width = int(opencv_image.shape[1] * scale)
+        height = int(opencv_image.shape[0] * scale)
+        dimensions = (width, height)
+
+        scaled_image = cv2.resize(opencv_image, dimensions, interpolation)
+
+        # Conver the scaled image to a QImage and show it on the GUI.
+        rgb_image = cv2.cvtColor(scaled_image, cv2.COLOR_BGR2RGB)
+        height, width, channels = rgb_image.shape
+        bytes_per_line = channels * width
+        qt_image = QtGui.QImage(
+            rgb_image.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888)
+        self.cameraLabel.setPixmap(QPixmap.fromImage(qt_image))
+
+    def convert_ros_to_opencv(self, ros_image):
+        try:
+            cv_image = self.bridge.imgmsg_to_cv2(ros_image, "bgr8")
+            return cv_image
+        except CvBridgeError as error:
+            raise Exception("Failed to convert to OpenCV image")
+
+    # def showChesscam(self, msg):
+    #     # convert sensor_msgs Image to cv2 image
+    #     image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+    #     # resize image
+    #     dimensions = (300, 200)
+    #     image = cv2.resize(image, dimensions, cv2.INTER_AREA)
+    #     # convert BGR color to RGB color
+    #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #     # make image usable for PyQt
+    #     height, width, channels = image.shape
+    #     image = QtGui.QImage(image.data, width, height, channels * width, QtGui.QImage.Format_RGB888)
+    #     self.cameraLabel.setPixmap(QPixmap.fromImage(image))
 
     def draw_board(self):
         for i in range(0, 9):
@@ -268,6 +325,11 @@ class MainWindow(QtWidgets.QMainWindow):
         comboboxDescription.resize(140, 20)
         comboboxDescription.move(80, 835)
 
+        # Start to update the image on the gui.
+        self.gui_timer = QTimer(self)
+        self.gui_timer.start(GUI_UPDATE_PERIOD)
+        self.gui_timer.timeout.connect(self.update_image_on_gui)
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
@@ -390,6 +452,7 @@ class MainWindow(QtWidgets.QMainWindow):
 def main():
     rospy.init_node('abstraction')
     rospy.loginfo('abstraction node has been initialized')
+    
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))
     window = MainWindow()
