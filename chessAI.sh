@@ -21,6 +21,7 @@ then
 
     # start window system
     tmux new-window -t $SESSION:3 -n 'window'
+    tmux send-keys -t 'rosbag' 'cd ~/Projects/catkin_ws/src/RP2021G02' C-m
     tmux send-keys -t 'window' './src/abstraction/scripts/window.py ' C-m
 
     tmux join-pane -v -s 2 -t 1
