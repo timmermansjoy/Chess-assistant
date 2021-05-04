@@ -338,7 +338,7 @@ class Board:
                         self.board[startRow][endColumn] == "p" or self.board[startRow][endColumn] == "P") and (
                         originalTarget == "."):
                     self.squareLog.pop(-1)
-                    self.squareLog.append([self.board[startRow][startColumn], startRow, endColumn])
+                    self.squareLog.append([self.board[startRow][endColumn], startRow, endColumn])
                     self.board[startRow][endColumn] = "."
                 self.promotionCheck(Coordinate(endRow, endColumn))
             else:
@@ -557,6 +557,7 @@ class Board:
             if StartPoint.row == self.squareLog[-1][1] and StartPoint.column == self.squareLog[-1][2]:
                 self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1][0]
             else:
+                self.board[StartPoint.row][StartPoint.column] = "."
                 self.board[endPoint.row][StartPoint.column] = self.squareLog[-1][0]
             if self.squareLog[-1][0] in heavyPieces:
                 self.remainingHeavyPieces += 1
