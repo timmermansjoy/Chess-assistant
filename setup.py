@@ -25,6 +25,7 @@ setuptools.setup(name='PXL_Chess',
                  install_requires=['numpy'],
                  python_requires='>=3.6',
                  extras_require={
-                     'development': ["pytest", "pytest-xdist", "pytest-cov", "autopep8", "cython"]
+                     'development': ["pytest", "pytest-xdist", "pytest-cov", "autopep8", "cython"],
+                     'docker': ["PyQt5", "pyyaml", "rospkg", "opencv-python"]
                  },
                  include_package_data=True)

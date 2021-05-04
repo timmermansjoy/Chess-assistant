@@ -7,19 +7,16 @@ import timeit
 
 def main():
     board = Board()
-
-    for i in range(40):
+    for i in range(4):
         start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")
-            beginCoord, endCoord = ai.calculateMove(3, board, True, i)
-            print("------------------------------------------------ initial move")
+            beginCoord, endCoord = ai.calculateMove(3, board, True)
             board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
         else:
             print("Computers Turn:")
-            beginCoord, endCoord = ai.calculateMove(3, board, False, i)
-            print("------------------------------------------------ initial move")
+            beginCoord, endCoord = ai.calculateMove(3, board, False)
             board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
             
         # Your statements here
@@ -28,7 +25,7 @@ def main():
         stop = timeit.default_timer()
 
         print('Time: ', stop - start)
-
+        print(board.isCheckmate)
         if board.isCheckmate:
             print("checkmate")
             break

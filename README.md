@@ -55,6 +55,11 @@ Add this to your .bashrc file
  export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache/"
 ```
 
-## TODO
+## Docker
 
-- implement ROS container
+- Start noetic-docker container
+```bash
+[terminal 1] $ roscore
+[terminal 2] $ rosrun abstraction window.py
+[terminal 3] ~/Data/bags$ rosbag play demo.bag
+```
