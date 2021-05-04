@@ -20,11 +20,28 @@ def magic(original):
     lower_val = np.array([60, 150, 150])    
     mask = cv2.inRange(hsv, lower_val, upper_val)
 
-    canny = canny_edge_detection(mask)
-    dilate = cv2.dilate(canny, (3,3), 9)
     orig = crop(original)
-    cont = getContours(dilate, orig)
-    return cont
+
+    blurred_mask = cv2.GaussianBlur(mask, (19,19), 0)
+    #corners = cv2.goodFeaturesToTrack(blurred_mask, 100, 0.3, 60)
+    x_vals = [6.0, 116.0, 227.0, 338.0, 449.0, 559.0, 669.0, 778.0, 888.0]
+    y_vals = [6.0, 116.0, 228.0, 339.0, 450.0, 561.0, 672.0, 783.0, 894.0]
+    corners = []
+    for xval in x_vals:
+        for yval in y_vals:
+            cv2.circle(orig, (int(xval),int(yval)), 10, (0,0,255), -1)
+    
+    # for corner in corners:
+    #     x,y = corner.ravel()
+    #     cv2.circle(orig, (int(x),int(y)), 10, (0,0,255), -1)
+        #cv2.putText(orig, '{},{}'.format(x,y), (int(x) + 5, int(y) + 5), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2)
+    
+    return orig
+    # canny = canny_edge_detection(mask)
+    # dilate = cv2.dilate(canny, (3,3), 9)
+    # orig = crop(original)
+    # cont = getContours(dilate, orig)
+    # return cont
 
 
 def crop(img):
