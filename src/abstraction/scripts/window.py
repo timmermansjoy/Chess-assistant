@@ -448,6 +448,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.errorlog.clear()
         self.movelog.clear()
         self.clearGui()
+        self.highlightedMove = [0, 0, 0, 0]
         self.board = Board()
         self.draw_board()
 
