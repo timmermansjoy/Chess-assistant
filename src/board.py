@@ -558,7 +558,7 @@ class Board:
                 self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1][0]
             else:
                 self.board[endPoint.row][StartPoint.column] = self.squareLog[-1][0]
-            if self.squareLog[-1] in heavyPieces:
+            if self.squareLog[-1][0] in heavyPieces:
                 self.remainingHeavyPieces += 1
             self.moveLog.pop(-1)
             self.squareLog.pop(-1)
