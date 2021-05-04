@@ -5,7 +5,7 @@ import random
 
 PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
-opening1 = ['6444', '1434', '7655', '0122', '7542']
+opening1 = ['6444', '1434', '7655', '0122', '7520']
 pawnBoardEvalOpening = np.array([
     [0.90, 0.95, 1.05, 1.10, 1.10, 1.05, 0.95, 0.90],
     [0.90, 0.95, 1.05, 1.15, 1.15, 1.05, 0.95, 0.90],
@@ -49,7 +49,10 @@ def calculateMove(depth, board, white, moveNumber=5):
 
 def minimaxRoot(depth, board, white):
     validMoves = board.getAllValidMoves()
-    bestMoveValue = -20000
+    if white:
+        bestMoveValue = -20000
+    else:
+        bestMoveValue = 20000
     bestMoveBeginCoord = Coordinate(0, 0)
     bestMoveEndCoord = Coordinate(0, 0)
     for piece in validMoves:
@@ -60,28 +63,39 @@ def minimaxRoot(depth, board, white):
                 moveBeginCoord = Coordinate(piece[0].row, piece[0].column)
                 moveEndCoord = Coordinate(move.row, move.column)
                 # this calls the minimax function and checks if the value returned by minimax is higher than bestMoveValue
-                value = max(bestMoveValue, minimax(depth - 1, board, -20000, 20000, not white))
+                if white:
+                    value = max(bestMoveValue, minimax(depth - 1, board, -20000, 20000, not white))
+                    if(value > bestMoveValue):
+                        bestMoveValue = value
+                        bestMoveBeginCoord = moveBeginCoord
+                        bestMoveEndCoord = moveEndCoord
+                else:
+                    value = min(bestMoveValue, minimax(depth - 1, board, -20000, 20000, not white))
+                    if(value < bestMoveValue):
+                        bestMoveValue = value
+                        bestMoveBeginCoord = moveBeginCoord
+                        bestMoveEndCoord = moveEndCoord
+                
+                # print(board)
+                # print(value)
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
-                if(value > bestMoveValue):
-                    bestMoveValue = value
-                    bestMoveBeginCoord = moveBeginCoord
-                    bestMoveEndCoord = moveEndCoord
-
-            except:
+    
+            except Exception as e:
                 pass
-    print("Evaluation score: ", bestMoveValue)
+                # print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)
+                # print(board)
+    print("Best move Evaluation score: ", bestMoveValue)
     print("Begin Coordination", bestMoveBeginCoord)
     print("End Coordination", bestMoveEndCoord)
     return bestMoveBeginCoord, bestMoveEndCoord
 
 
 def minimax(depth, board, alpha, beta, white):
-    if((depth == 0 or board.isCheckmate) and not white):
+    if(depth == 0 or board.isCheckmate):
+        # print(board)
+        # print(ev)
         return evaluation(board)
-    elif((depth == 0 or board.isCheckmate) and white):
-        return -evaluation(board)
-
     possibleMoves = board.getAllValidMoves()
     if(white):
         bestMove = -20000
@@ -91,15 +105,19 @@ def minimax(depth, board, alpha, beta, white):
                 try:
                     # print(piece[0].row, piece[0].column, move.row, move.column)
                     board.move(piece[0].row, piece[0].column, move.row, move.column)
-                    bestMove = max(bestMove, minimax(depth - 1, board, alpha, beta, not white))
+                    value = minimax(depth - 1, board, alpha, beta, not white)
+                    bestMove = max(bestMove, value)
                     # print(bestMove)
                     # print(board)
                     board.undo()
                     board.isWhitePlayerTurn = not board.isWhitePlayerTurn
                     alpha = max(alpha, bestMove)
                     if beta <= alpha:
+                        # print("alphabeta")
                         return bestMove
-                except:
+                except Exception as e:
+                    # print("non valid move in minimax if:", piece[0].row, piece[0].column, move.row, move.column , e )
+                    # print(board)
                     pass
 
         return bestMove
@@ -110,15 +128,19 @@ def minimax(depth, board, alpha, beta, white):
                 try:
                     # print(piece[0].row, piece[0].column, move.row, move.column)
                     board.move(piece[0].row, piece[0].column, move.row, move.column)
-                    bestMove = min(bestMove, minimax(depth - 1, board, alpha, beta, not white))
+                    value = minimax(depth - 1, board, alpha, beta, not white)
+                    bestMove = min(bestMove, value)
                     # print(bestMove)
                     # print(board)
                     board.undo()
                     board.isWhitePlayerTurn = not board.isWhitePlayerTurn
                     beta = min(beta, bestMove)
                     if beta <= alpha:
+                        # print("alphabeta")
                         return bestMove
-                except:
+                except Exception as e:
+                    # print("non valid move in minimax else:", piece[0].row, piece[0].column, move.row, move.column, e)
+                    # print(board)
                     pass
         return bestMove
 
@@ -139,7 +161,11 @@ def evaluation(board):
                         score += moveAmountScore
                         score += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    score += pawnEvaluation(board, row, col)
+                    pawn = pawnEvaluation(board, row, col)
+                    if board.board[row][col].islower():
+                        score -= pawn
+                    else:
+                        score += pawn
 
     return score
 
@@ -159,12 +185,18 @@ def pawnEvaluation(board, row, col):
     if board.board[row][col].isupper():
         target = 'P'
         oposition = 'p'
+        row = row - 5
     isolated = False
     connected = False
     passed = True
     for i in range(8):
         try:
-            if board.board[i][col - 1] == target or board.board[i][col + 1] == target:
+            if board.board[i][col - 1] == target:
+                connected = True
+        except:
+            pass
+        try:
+            if board.board[i][col + 1] == target:
                 connected = True
         except:
             pass
@@ -174,15 +206,9 @@ def pawnEvaluation(board, row, col):
         isolated = True
     if 0 < row < 6:
         if isEndGame(board):
-            if target.isupper():
-                value *= -pawnBoardEvalEndGame[6 - row][col]
-            else:
-                value *= pawnBoardEvalEndGame[row][col]
+            value *= pawnBoardEvalEndGame[row - 1][col]
         else:
-            if target.isupper():
-                value *= -pawnBoardEvalOpening[6 - row][col]
-            else:
-                value *= pawnBoardEvalOpening[row][col]
+            value *= pawnBoardEvalOpening[row - 1][col]
     if 2 < row < 6:
         if passed:
             value *= pawnMultipliers[row - 3][2]

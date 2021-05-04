@@ -18,10 +18,10 @@ def main():
             print("Computers Turn:")
             beginCoord, endCoord = ai.calculateMove(3, board, False)
             board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-
-        print(board)
+            
         # Your statements here
-
+        print(board)
+        print("current game state:", ai.evaluation(board))
         stop = timeit.default_timer()
 
         print('Time: ', stop - start)

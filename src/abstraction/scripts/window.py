@@ -52,7 +52,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setGeometry(100, 100, 675, 675)
 
         self.board = Board()
+        self.previousBoard = Board()
         self.draw_board()
+
+    #when receiving a board from abstraction, put it in self.board and trigger this to get the fields that should get highlighted.
+    # def difference_in_boards():
+    #     changedFields = []
+    #     for i in range (8):
+    #         for j in range (8):
+    #             if self.board.board[i][j] != self.previousBoard.board[i][j]:
+    #                 changedFields.append([i,j])
+    #     self.previousBoard = self.board
+    #     return changedFields
 
     def find_image(self, image_name):
         path = os.path.realpath("")
@@ -357,7 +368,23 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.errorlog.setText(str(ex))
                 error = True
             if error == False:
-                self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                #self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                self.clearGui()
+                self.draw_board()
+
+                self.grid.itemAtPosition(coords[0].row, coords[0].column+1).widget().deleteLater()
+                # place empty label at old piece position
+                replacementLabel = self.generate_label(int(coords[0].row), int(coords[0].column+1), True)
+                self.grid.addWidget(replacementLabel, int(coords[0].row), int(coords[0].column+1))
+
+                # delete old piece at new position
+                self.grid.itemAtPosition(coords[1].row, coords[1].column+1).widget().deleteLater()
+                # create new piece at new position
+                label = self.generate_label(int(coords[1].row), int(coords[1].column+1), True)
+                pixmap = self.readPiece(coords[1].row, coords[1].column)
+                label.setPixmap(pixmap)
+                self.grid.addWidget(label, int(coords[1].row), int(coords[1].column+1))
+                self.highlightedMove = [coords[0].row, coords[0].column, coords[1].row, coords[1].column]
 
         else:
             self.errorlog.setText("Input field is empty")
@@ -408,32 +435,32 @@ class MainWindow(QtWidgets.QMainWindow):
     def WKCastle(self):
         try:
             self.board.castling(True, False, self.board.board)
-            self.updateBoard(7, 4, 7, 6)
             self.updateBoard(7, 7, 7, 5)
+            self.updateBoard(7, 4, 7, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def WQCastle(self):
         try:
             self.board.castling(True, True, self.board.board)
-            self.updateBoard(7, 4, 7, 2)
             self.updateBoard(7, 0, 7, 3)
+            self.updateBoard(7, 4, 7, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BKCastle(self):
         try:
             self.board.castling(False, False, self.board.board)
-            self.updateBoard(0, 4, 0, 6)
             self.updateBoard(0, 7, 0, 5)
+            self.updateBoard(0, 4, 0, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BQCastle(self):
         try:
             self.board.castling(False, True, self.board.board)
-            self.updateBoard(0, 4, 0, 2)
             self.updateBoard(0, 0, 0, 3)
+            self.updateBoard(0, 4, 0, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -448,6 +475,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.errorlog.clear()
         self.movelog.clear()
         self.clearGui()
+        self.highlightedMove = [0, 0, 0, 0]
         self.board = Board()
         self.draw_board()
 

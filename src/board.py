@@ -309,7 +309,7 @@ class Board:
             raise Exception("It is not your turn! Let the other player make their move first!")
         if not self.isCheck(not self.isWhitePlayerTurn, startRow, startColumn, endRow, endColumn):
             if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn, self.board)):
-                self.squareLog.append(self.board[endRow][endColumn])
+                self.squareLog.append([self.board[endRow][endColumn], startRow, startColumn])
                 if target in heavyPieces:
                     self.remainingHeavyPieces -= 1
                 originalTarget = self.board[endRow][endColumn]
@@ -337,6 +337,8 @@ class Board:
                 if (self.board[endRow][endColumn] == "p" or self.board[endRow][endColumn] == "P") and (
                         self.board[startRow][endColumn] == "p" or self.board[startRow][endColumn] == "P") and (
                         originalTarget == "."):
+                    self.squareLog.pop(-1)
+                    self.squareLog.append([self.board[startRow][startColumn], startRow, endColumn])
                     self.board[startRow][endColumn] = "."
                 self.promotionCheck(Coordinate(endRow, endColumn))
             else:
@@ -552,7 +554,10 @@ class Board:
         for i in range(N_undo):
             endPoint, StartPoint = self.moveLog[-1]
             self.board[endPoint.row][endPoint.column] = self.board[StartPoint.row][StartPoint.column]
-            self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1]
+            if StartPoint.row == self.squareLog[-1][1] and StartPoint.column == self.squareLog[-1][2]:
+                self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1][0]
+            else:
+                self.board[endPoint.row][StartPoint.column] = self.squareLog[-1][0]
             if self.squareLog[-1] in heavyPieces:
                 self.remainingHeavyPieces += 1
             self.moveLog.pop(-1)
