@@ -368,23 +368,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.errorlog.setText(str(ex))
                 error = True
             if error == False:
-                #self.updateBoard(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.clearGui()
                 self.draw_board()
-
-                self.grid.itemAtPosition(coords[0].row, coords[0].column+1).widget().deleteLater()
-                # place empty label at old piece position
-                replacementLabel = self.generate_label(int(coords[0].row), int(coords[0].column+1), True)
-                self.grid.addWidget(replacementLabel, int(coords[0].row), int(coords[0].column+1))
-
-                # delete old piece at new position
-                self.grid.itemAtPosition(coords[1].row, coords[1].column+1).widget().deleteLater()
-                # create new piece at new position
-                label = self.generate_label(int(coords[1].row), int(coords[1].column+1), True)
-                pixmap = self.readPiece(coords[1].row, coords[1].column)
-                label.setPixmap(pixmap)
-                self.grid.addWidget(label, int(coords[1].row), int(coords[1].column+1))
-                self.highlightedMove = [coords[0].row, coords[0].column, coords[1].row, coords[1].column]
+                self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
 
         else:
             self.errorlog.setText("Input field is empty")
@@ -393,7 +379,9 @@ class MainWindow(QtWidgets.QMainWindow):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-        self.updateBoard(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+        self.clearGui()
+        self.draw_board()
+        self.highlightMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
     def updateMovelog(self):
         self.errorlog.clear()
@@ -401,21 +389,7 @@ class MainWindow(QtWidgets.QMainWindow):
         text = self.board.GetChessNotation()
         self.movelog.setText(text)
 
-    def updateBoard(self, oldRow, oldColumn, newRow, newColumn):
-        # The arguments of this function are of an 8x8 array, but they are used in a 9x9 array
-        # +1 is added to the columns when they are used in functions because column 0 is filled with labels that don't contain chess pieces
-        # Remove old highlighted tiles
-        if self.highlightedMove != [0, 0, 0, 0]:
-            self.grid.itemAtPosition(self.highlightedMove[0], self.highlightedMove[1]+1).widget().deleteLater()
-            replacementLabel = self.generate_label(int(self.highlightedMove[0]), int(self.highlightedMove[1]+1), False)
-            self.grid.addWidget(replacementLabel, int(self.highlightedMove[0]), int(self.highlightedMove[1]+1))
-
-            self.grid.itemAtPosition(self.highlightedMove[2], self.highlightedMove[3]+1).widget().deleteLater()
-            label = self.generate_label(int(self.highlightedMove[2]), int(self.highlightedMove[3]+1), False)
-            pixmap = self.readPiece(int(self.highlightedMove[2]), int(self.highlightedMove[3]))
-            label.setPixmap(pixmap)
-            self.grid.addWidget(label, int(self.highlightedMove[2]), int(self.highlightedMove[3]+1))
-
+    def highlightMove(self, oldRow, oldColumn, newRow, newColumn):
         # delete old piece at old position
         self.grid.itemAtPosition(oldRow, oldColumn+1).widget().deleteLater()
         # place empty label at old piece position
@@ -435,32 +409,36 @@ class MainWindow(QtWidgets.QMainWindow):
     def WKCastle(self):
         try:
             self.board.castling(True, False, self.board.board)
-            self.updateBoard(7, 7, 7, 5)
-            self.updateBoard(7, 4, 7, 6)
+            self.clearGui()
+            self.draw_board()
+            self.highlightMove(7, 4, 7, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def WQCastle(self):
         try:
             self.board.castling(True, True, self.board.board)
-            self.updateBoard(7, 0, 7, 3)
-            self.updateBoard(7, 4, 7, 2)
+            self.clearGui()
+            self.draw_board()
+            self.highlightMove(7, 4, 7, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BKCastle(self):
         try:
             self.board.castling(False, False, self.board.board)
-            self.updateBoard(0, 7, 0, 5)
-            self.updateBoard(0, 4, 0, 6)
+            self.clearGui()
+            self.draw_board()
+            self.highlightMove(0, 4, 0, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
     def BQCastle(self):
         try:
             self.board.castling(False, True, self.board.board)
-            self.updateBoard(0, 0, 0, 3)
-            self.updateBoard(0, 4, 0, 2)
+            self.clearGui()
+            self.draw_board()
+            self.highlightMove(0, 4, 0, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
