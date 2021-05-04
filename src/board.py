@@ -554,7 +554,7 @@ class Board:
         for i in range(N_undo):
             endPoint, StartPoint = self.moveLog[-1]
             self.board[endPoint.row][endPoint.column] = self.board[StartPoint.row][StartPoint.column]
-            if StartPoint.row == self.squareLog[-1][1] and StartPoint.column == self.squareLog[-1][2]:
+            if endPoint.row == self.squareLog[-1][1] and endPoint.column == self.squareLog[-1][2]:
                 self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1][0]
             else:
                 self.board[StartPoint.row][StartPoint.column] = "."
