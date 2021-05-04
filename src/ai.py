@@ -161,7 +161,7 @@ def evaluation(board):
                         score += moveAmountScore
                         score += PieceValues.get((board.board[row][col]).upper())
                 else:
-                    pawn = pawnEvaluation(board.board, row, col)
+                    pawn = pawnEvaluation(board, row, col)
                     if board.board[row][col].islower():
                         score -= pawn
                     else:
@@ -191,12 +191,12 @@ def pawnEvaluation(board, row, col):
     passed = True
     for i in range(8):
         try:
-            if board[i][col - 1] == target:
+            if board.board[i][col - 1] == target:
                 connected = True
         except:
             pass
         try:
-            if board[i][col + 1] == target:
+            if board.board[i][col + 1] == target:
                 connected = True
         except:
             pass
