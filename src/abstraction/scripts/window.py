@@ -16,6 +16,9 @@ from threading import Lock
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
+import ai
+
+playvsAi = False
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -371,6 +374,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.clearGui()
                 self.draw_board()
                 self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                if playvsAi == True:
+                    self.aiMove()
 
         else:
             self.errorlog.setText("Input field is empty")
@@ -462,6 +467,37 @@ class MainWindow(QtWidgets.QMainWindow):
             for j in range(0, self.grid.columnCount()):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
+class SettingsWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.title = 'Settings'
+        self.setGeometry(0, 0, 600, 800)
+
+        saveButton = QtWidgets.QPushButton(self)
+        saveButton.clicked.connect(self.openMainWindow)
+        saveButton.move(225, 725)
+        saveButton.setText("Save settings")
+        saveButton.setStyleSheet("background-color: #73A657;"
+                                   "font-weight: bold;")
+        saveButton.resize(150, 50)
+
+        checkbox = QtWidgets.QCheckBox("Play vs AI", self)
+        checkbox.stateChanged.connect(self.check)
+        checkbox.move(25, 25)
+        checkbox.resize(200, 50)
+        checkbox.setChecked(False)
+
+    def openMainWindow(self):
+        self.close()
+        window = MainWindow()
+        window.show()
+
+    def check(self, state):
+        global playvsAi
+        if state == QtCore.Qt.Checked:
+            playvsAi = True
+        else:
+            playvsAi = False
 
 def main():
     rospy.init_node('abstraction')
@@ -469,8 +505,10 @@ def main():
     
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))
-    window = MainWindow()
-    window.show()
+
+    gamesettings = SettingsWindow()
+    gamesettings.show()
+
     sys.exit(app.exec_())
 
 
