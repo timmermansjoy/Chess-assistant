@@ -8,6 +8,7 @@ rowsToRanks = {v: k for k, v in ranksToRows.items()}
 filesToColumns = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
 columnsToFiles = {v: k for k, v in filesToColumns.items()}
 pieces = ["r", "n", "b", "q", "k", "p"]
+heavyPieces = ["r", "n", "b", "q", "k", "R", "N", "B", "Q", "K"]
 
 
 class Board:
@@ -33,6 +34,8 @@ class Board:
         self.squareLog = []
         self.fieldsUnderWhiteThreat = []
         self.fieldsUnderBlackThreat = []
+        self.isCheckmate = False
+        self.remainingHeavyPieces = 16
 
 # TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
     def canCapture(self, target):
@@ -54,9 +57,7 @@ class Board:
         return directions
 
     def clearBoard(self):
-        for row in range(len(self.board)):
-            for column in range(len(self.board[0])):
-                self.board[row][column] = "."
+        self.board = np.full((8, 8), ".")
 
     def getPossibleMoves(self, row, column, board):
         """Calls appropriate get moves method for the given coordinate and returns the moves"""
@@ -80,6 +81,8 @@ class Board:
                 moves = self.getKingMoves(coord, board)
             else:
                 raise Exception(piece + " is not a valid piece ??")
+            # if len(moves) == 0:
+            #     self.isCheckmate = True
             return moves
         else:
             raise Exception(piece + " is not a piece ??")
@@ -300,12 +303,15 @@ class Board:
 
     def move(self, startRow, startColumn, endRow, endColumn):
         """Moves a piece from the startpoint to the endpoint"""
+        target = self.board[endRow][endColumn]
         if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (
                 not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
             raise Exception("It is not your turn! Let the other player make their move first!")
         if not self.isCheck(not self.isWhitePlayerTurn, startRow, startColumn, endRow, endColumn):
             if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn, self.board)):
-                self.squareLog.append(self.board[endRow][endColumn])
+                self.squareLog.append([self.board[endRow][endColumn], startRow, startColumn])
+                if target in heavyPieces:
+                    self.remainingHeavyPieces -= 1
                 originalTarget = self.board[endRow][endColumn]
                 self.board[endRow][endColumn] = self.board[startRow][startColumn]
                 self.board[startRow][startColumn] = "."
@@ -331,6 +337,8 @@ class Board:
                 if (self.board[endRow][endColumn] == "p" or self.board[endRow][endColumn] == "P") and (
                         self.board[startRow][endColumn] == "p" or self.board[startRow][endColumn] == "P") and (
                         originalTarget == "."):
+                    self.squareLog.pop(-1)
+                    self.squareLog.append([self.board[startRow][endColumn], startRow, endColumn])
                     self.board[startRow][endColumn] = "."
                 self.promotionCheck(Coordinate(endRow, endColumn))
             else:
@@ -546,7 +554,13 @@ class Board:
         for i in range(N_undo):
             endPoint, StartPoint = self.moveLog[-1]
             self.board[endPoint.row][endPoint.column] = self.board[StartPoint.row][StartPoint.column]
-            self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1]
+            if endPoint.row == self.squareLog[-1][1] and endPoint.column == self.squareLog[-1][2]:
+                self.board[StartPoint.row][StartPoint.column] = self.squareLog[-1][0]
+            else:
+                self.board[StartPoint.row][StartPoint.column] = "."
+                self.board[endPoint.row][StartPoint.column] = self.squareLog[-1][0]
+            if self.squareLog[-1][0] in heavyPieces:
+                self.remainingHeavyPieces += 1
             self.moveLog.pop(-1)
             self.squareLog.pop(-1)
             self.isWhitePiece = not(self.isWhitePlayerTurn)
@@ -573,14 +587,6 @@ class Board:
             currentColumn += horizontalStep
         return moves
 
-    def __str__(self):
-        result = ""
-        for row in range(len(self.board)):
-            for column in range(len(self.board[0])):
-                result += self.board[row][column] + " "
-            result += "\n"
-        return result
-
     def getAllValidMoves(self):
         """Retuns all possbile moves you could make in the form of an array [piece, [move1,move2]]"""
         allValidMoves = []
@@ -600,4 +606,14 @@ class Board:
                             allValidMoves.append([Coordinate(i, j), move])
 
         return allValidMoves
-# test
+
+    def getHeavyPieces(self):
+        return self.remainingHeavyPieces
+
+    def __str__(self):
+        result = ""
+        for row in range(len(self.board)):
+            for column in range(len(self.board[0])):
+                result += self.board[row][column] + " "
+            result += "\n"
+        return result

@@ -82,8 +82,8 @@ def minimaxRoot(depth, board, white):
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
     
             except Exception as e:
-                pass
-                # print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)
+                #pass
+                print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)
                 # print(board)
     print("Best move Evaluation score: ", bestMoveValue)
     print("Begin Coordination", bestMoveBeginCoord)
