@@ -164,8 +164,6 @@ class TestboardPawnsEnPassant(unittest.TestCase):
         self.board.clearBoard()
         self.board.board[1][0] = "P"
         self.board.board[6][0] = "p"
-        self.board.board[1][7] = "k"
-        self.board.board[6][7] = "K"
         whiteValidMoves = self.board.getAllValidMoves()
         self.board.move(1, 0, 0, 0)
         blackValidMoves = self.board.getAllValidMoves()

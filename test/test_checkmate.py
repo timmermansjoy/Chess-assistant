@@ -1,7 +1,7 @@
 import unittest
 import pytest
 from src.abstraction.scripts.board import Board
-from testboards import Testboards as TB
+from src.abstraction.scripts.testboards import Testboards as TB
 
 
 class CheckmateTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class CheckmateTests(unittest.TestCase):
         self.assertEqual(self.board.isInCheckmate(True), False)
 
     def test_isCheckmate(self):
-        self.board.board = TB.checkSetup2
+        self.board.board = TB.anotherCheckSetup
         self.board.move(7, 7, 7, 6)
         self.board.board[2][5] = "r"
         self.board.board[2][7] = "r"

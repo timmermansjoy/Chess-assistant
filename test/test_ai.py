@@ -3,6 +3,7 @@ import unittest
 import pytest
 from testboards import Testboards as TB
 import ai
+from src.abstraction.scripts.extra import Coordinate
 
 
 class TestAI(unittest.TestCase):
