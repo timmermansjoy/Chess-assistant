@@ -48,7 +48,19 @@ def main():
             print("checkmate")
             break
 
+def checkmateTest():
+    board = Board()
+    board.board = TB.checkSetup
+    board.move(7,7,7,6)
+    board.board[2][5] = "r"
+    board.board[2][7] = "r"
+    board.board[3][0] = "R"
+    board.move(0,7,0,6)
+    print("okay")
+    print(board.isInCheckmate(True))
+    print(board.board)
 
 if __name__ == "__main__":
-    main()
+    # main()
     # test()
+    checkmateTest()

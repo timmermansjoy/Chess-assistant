@@ -20,7 +20,7 @@ class TestAI(unittest.TestCase):
             self.assertEqual(endCoord.column, 0)
         else:
             self.assertEqual(endCoord.column, 2)
-    @pytest.mark.xfail
+    #@pytest.mark.xfail
     def test_rookOverBishopWhite(self):
         self.board.board = TB.AIFreeWhitePiece
         beginCoord, endCoord = ai.calculateMove(3, self.board, True)
@@ -45,7 +45,7 @@ class TestAI(unittest.TestCase):
         self.assertEqual(result, endCoord)
 
     # Black
-    @pytest.mark.xfail
+    #@pytest.mark.xfail
     # Wants to move 1:0 to 0:0 despite no piece being present on 1:0
     # already moves in calculatedMove, is this intended?
     # also gives away free queen

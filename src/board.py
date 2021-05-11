@@ -1,6 +1,8 @@
 import logging
 import numpy as np
 from copy import deepcopy
+
+import board
 from extra import Coordinate
 
 ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
@@ -37,7 +39,7 @@ class Board:
         self.isCheckmate = False
         self.remainingHeavyPieces = 16
 
-# TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
+    # TODO: export methods with a 'board' as parameter: getPossibleMoves, getXMoves (8), getDirectional
     def canCapture(self, target):
         """Returns TRUE is target is of opposite color, else FALSE."""
 
@@ -116,14 +118,14 @@ class Board:
             if not ("O - O" in self.moveLog[-1] or "O - O - O" in self.moveLog[-1]):
                 lastMoveEndCoord = self.moveLog[-1][1]
                 if coord.row == 3 and self.isWhitePiece and board[lastMoveEndCoord.row][
-                        lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
+                    lastMoveEndCoord.column] == "p" and lastMoveEndCoord.row == 3:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row - 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
                         moves.append(Coordinate(coord.row - 1, coord.column + 1))
 
                 elif coord.row == 4 and not self.isWhitePiece and board[lastMoveEndCoord.row][
-                        lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
+                    lastMoveEndCoord.column] == "P" and lastMoveEndCoord.row == 4:
                     if lastMoveEndCoord.column == coord.column - 1:
                         moves.append(Coordinate(coord.row + 1, coord.column - 1))
                     if lastMoveEndCoord.column == coord.column + 1:
@@ -281,7 +283,8 @@ class Board:
                     moves.remove(i)
         return moves
 
-    def isCheck(self, white, startRow, startColumn, endRow, endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
+    def isCheck(self, white, startRow, startColumn, endRow,
+                endColumn):  # Je mag jezelf niet check zetten, move moet valide zijn,....
         """Returns whether a move is valid or not"""
         copy_board = deepcopy(self.board)
         copy_board[endRow][endColumn] = copy_board[startRow][startColumn]
@@ -308,7 +311,8 @@ class Board:
                 not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
             raise Exception("It is not your turn! Let the other player make their move first!")
         if not self.isCheck(not self.isWhitePlayerTurn, startRow, startColumn, endRow, endColumn):
-            if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn, self.board)):
+            if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(
+                    self.getPossibleMoves(startRow, startColumn, self.board)):
                 self.squareLog.append([self.board[endRow][endColumn], startRow, startColumn])
                 if target in heavyPieces:
                     self.remainingHeavyPieces -= 1
@@ -353,7 +357,7 @@ class Board:
         result = ""
         count = 1
         for i in self.moveLog:
-            if (count+1) % 2 == 0:
+            if (count + 1) % 2 == 0:
                 if count != 1:
                     result += "\n"
                 result += str((count + 1) // 2) + ". "
@@ -563,7 +567,7 @@ class Board:
                 self.remainingHeavyPieces += 1
             self.moveLog.pop(-1)
             self.squareLog.pop(-1)
-            self.isWhitePiece = not(self.isWhitePlayerTurn)
+            self.isWhitePiece = not (self.isWhitePlayerTurn)
 
     def getMovesFromDirection(self, start, horizontalStep, verticalStep, board):
         """helpermethod used by getHorizontal/vertical/diagonal to avoid reusing code"""
