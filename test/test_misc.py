@@ -1,8 +1,9 @@
 import unittest
 import pytest
-from board import *
+from src.abstraction.scripts.board import Board
 from testboards import Testboards as TB
-
+import numpy as np
+from copy import deepcopy
 
 # Basic structure per piece:
 # 1 test with unrestricted movement

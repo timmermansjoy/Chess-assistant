@@ -1,6 +1,6 @@
+from src.abstraction.scripts.board import Board
 import unittest
 import pytest
-from board import *
 from testboards import Testboards as TB
 import ai
 

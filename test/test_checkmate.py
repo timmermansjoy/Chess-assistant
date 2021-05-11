@@ -1,10 +1,10 @@
 import unittest
 import pytest
-from board import *
+from src.abstraction.scripts.board import Board
 from testboards import Testboards as TB
 
 
-class CastleTests(unittest.TestCase):
+class CheckmateTests(unittest.TestCase):
 
     def setUp(self):
         self.board = Board()

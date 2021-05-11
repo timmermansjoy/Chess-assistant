@@ -166,7 +166,11 @@ class TestboardPawnsEnPassant(unittest.TestCase):
         self.board.board[6][0] = "p"
         self.board.board[1][7] = "k"
         self.board.board[6][7] = "K"
+        whiteValidMoves = self.board.getAllValidMoves()
         self.board.move(1, 0, 0, 0)
+        blackValidMoves = self.board.getAllValidMoves()
+        print(blackValidMoves)
+        print(self.board)
         self.board.move(6, 0, 7, 0)
         self.assertEqual("Q", self.board.board[0][0])
         self.assertEqual("q", self.board.board[7][0])
