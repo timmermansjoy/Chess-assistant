@@ -389,6 +389,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+        self.updateMovelog()
         self.clearGui()
         self.draw_board()
         self.highlightMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
@@ -511,7 +512,6 @@ class SettingsWindow(QtWidgets.QMainWindow):
         suggestMoveCheckbox.stateChanged.connect(self.checkSuggestMove)
         suggestMoveCheckbox.move(25, 75)
         suggestMoveCheckbox.resize(200, 50)
-        suggestMoveCheckbox.setCheckState(True)
 
         playvsAiCheckbox = QtWidgets.QCheckBox("Play vs AI", self)
         playvsAiCheckbox.stateChanged.connect(self.checkPlayvsAi)
