@@ -2,6 +2,7 @@ import unittest
 import pytest
 from src.abstraction.scripts.board import Board
 from src.abstraction.scripts.testboards import Testboards as TB
+from copy import deepcopy
 
 
 class CheckmateTests(unittest.TestCase):
@@ -10,7 +11,7 @@ class CheckmateTests(unittest.TestCase):
         self.board = Board()
 
     def test_notCheckmate(self):
-        self.board.board = TB.checkSetup
+        self.board.board = deepcopy(TB.checkSetup)
         print(self.board)
         self.board.move(7, 7, 7, 6)
         self.board.board[2][5] = "r"
@@ -20,7 +21,7 @@ class CheckmateTests(unittest.TestCase):
         self.assertEqual(self.board.isInCheckmate(True), False)
 
     def test_isCheckmate(self):
-        self.board.board = TB.anotherCheckSetup
+        self.board.board = deepcopy(TB.checkSetup)
         self.board.move(7, 7, 7, 6)
         self.board.board[2][5] = "r"
         self.board.board[2][7] = "r"
@@ -39,4 +40,37 @@ class CheckmateTests(unittest.TestCase):
     #Black
 
     def test_notCheckmateBlack(self):
-        self.board.board = TB.checkSetup
+        self.board.board = deepcopy(TB.checkSetup)
+        self.board.move(1,2,0,3)
+        self.assertEqual(self.board.isInCheckmate(False), False)
+
+    def test_isCheckmateBlack(self):
+        self.board.board = deepcopy(TB.checkSetup)
+        self.board.move(1,2,0,2)
+        self.board.board[1][6] = "N"
+        self.assertEqual(self.board.isInCheckmate(False), True)
+
+    def test_knightsCheckmateBlack(self):
+        self.board.board = deepcopy(TB.checkSetup)
+        self.board.move(1,2,0,2)
+        self.board.board[1][6] = "N"
+        self.board.board[2][4] = "N"
+        self.board.board[0][2] = "."
+        self.assertEqual(self.board.isInCheckmate(False), True)
+
+    def test_knightsNotCheckmateBlack(self):
+        self.board.board = deepcopy(TB.checkSetup)
+        self.board.move(1,2,0,2)
+        self.board.board[1][6] = "N"
+        self.board.board[2][3] = "N"
+        self.board.board[0][2] = "."
+        print(self.board)
+        self.assertEqual(self.board.isInCheckmate(False), False)
+    
+    @pytest.mark.xfail
+    def test_EnPassantPossibleNotCheckmate(self):
+        self.board.board = deepcopy(TB.checkSetup4)
+        self.board.move(6,7,5,7)
+        self.board.move(1,1,3,1)
+        print(self.board)
+        self.assertEqual(self.board.isInCheckmate(True), False)
