@@ -2,7 +2,7 @@ from src.abstraction.scripts.board import Board
 import unittest
 import pytest
 from testboards import Testboards as TB
-import src.abstraction.scripts.ai
+import src.abstraction.scripts.ai as ai
 from src.abstraction.scripts.extra import Coordinate
 
 
