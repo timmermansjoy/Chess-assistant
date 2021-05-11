@@ -614,6 +614,35 @@ class Board:
     def getHeavyPieces(self):
         return self.remainingHeavyPieces
 
+    def findKing(self, white):
+        if white:
+            king = "K"
+        else:
+            king = "k"
+        for row in range(8):
+            for col in range(8):
+                if self.board[row][col] == king:
+                    kingPos = Coordinate(row, col)
+                    return kingPos
+
+    def isInCheckmate(self, white):
+        # find king and assign attackedFields
+        if white:
+            kingPos = self.findKing(white)
+        else:
+            kingPos = self.findKing(white)
+        attackedFields = self.getAllAttackedFields(not white, self.board)
+        validMoveExists=False
+        for piece in self.getAllValidMoves():
+            for move in piece[1]:
+                if not self.isCheck( not white, piece[0].row, piece[0].column, move.row, move.column):
+                    validMoveExists = True
+        kingIsAttacked = False
+        for field in attackedFields:
+            if(kingPos.row == field.row) and (kingPos.column == field.column):
+                kingIsAttacked = True
+        return kingIsAttacked and not validMoveExists
+
     def __str__(self):
         result = ""
         for row in range(len(self.board)):
