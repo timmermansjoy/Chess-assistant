@@ -1,7 +1,7 @@
 import unittest
 import pytest
-from board import *
-from testboards import Testboards as TB
+from src.abstraction.scripts.board import Board
+from src.abstraction.scripts.testboards import Testboards as TB
 
 
 class TestboardWhitePawns(unittest.TestCase):
@@ -161,17 +161,17 @@ class TestboardPawnsEnPassant(unittest.TestCase):
         self.assertEqual(5, len(actual))
 
     def test_PromitionCheck(self):
-        self.board.clearBoard()
-        self.board.board[1][0] = "P"
-        self.board.board[6][0] = "p"
-        whiteValidMoves = self.board.getAllValidMoves()
-        self.board.move(1, 0, 0, 0)
-        blackValidMoves = self.board.getAllValidMoves()
-        print(blackValidMoves)
-        print(self.board)
-        self.board.move(6, 0, 7, 0)
-        self.assertEqual("Q", self.board.board[0][0])
-        self.assertEqual("q", self.board.board[7][0])
+        board = Board()
+        board.clearBoard()
+        board.board[1][0] = "P"
+        board.board[6][0] = "p"
+        board.board[1][7] = "k"
+        board.board[6][7] = "K"
+        board.move(1, 0, 0, 0)
+        board.move(6, 0, 7, 0)
+
+        self.assertEqual("Q", board.board[0][0])
+        self.assertEqual("q", board.board[7][0])
 
     def test_actuallyTakingEnPassant(self):
         self.board.move(6, 1, 4, 1)

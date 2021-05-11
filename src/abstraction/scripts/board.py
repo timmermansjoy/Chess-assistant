@@ -592,7 +592,6 @@ class Board:
         allValidMoves = []
         for i in range(8):
             for j in range(8):
-
                 if self.board[i][j] != ".":
 
                     if self.isWhitePlayerTurn and 65 <= ord(self.board[i][j]) <= 90:
