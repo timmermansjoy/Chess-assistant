@@ -60,7 +60,21 @@ def checkmateTest():
     print(board.isInCheckmate(True))
     print(board.board)
 
+def getAllValidMovesTest():
+    board = Board()
+    board.clearBoard()
+    board.board[1][0] = "P"
+    board.board[6][0] = "p"
+    board.board[1][7] = "k"
+    board.board[6][7] = "K"
+    board.move(1, 0, 0, 0)
+    board.move(6, 0, 7, 0)
+
+    print(board)
+
 if __name__ == "__main__":
     # main()
     # test()
-    checkmateTest()
+    # checkmateTest()
+    getAllValidMovesTest()
+    print("fuck you, you erroring test")

@@ -16,6 +16,10 @@ from threading import Lock
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
+import ai
+
+playvsAi = False
+suggestMove = True
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -54,6 +58,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.board = Board()
         self.previousBoard = Board()
         self.draw_board()
+        if suggestMove == True:
+            self.suggestMove()
 
     #when receiving a board from abstraction, put it in self.board and trigger this to get the fields that should get highlighted.
     # def difference_in_boards():
@@ -371,6 +377,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.clearGui()
                 self.draw_board()
                 self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                if playvsAi == True:
+                    self.aiMove()
+                if suggestMove == True:
+                    self.suggestMove()
 
         else:
             self.errorlog.setText("Input field is empty")
@@ -379,9 +389,16 @@ class MainWindow(QtWidgets.QMainWindow):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+        self.updateMovelog()
         self.clearGui()
         self.draw_board()
         self.highlightMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+
+    def suggestMove(self):
+        beginCoord, endCoord = ai.calculateMove(3, self.board, False)
+        self.clearGui()
+        self.draw_board()
+        self.highlightSuggestedMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
     def updateMovelog(self):
         self.errorlog.clear()
@@ -404,7 +421,22 @@ class MainWindow(QtWidgets.QMainWindow):
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
         self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
-        print(self.board.board)
+
+    def highlightSuggestedMove(self, oldRow, oldColumn, newRow, newColumn):
+        # delete old piece at old position
+        self.grid.itemAtPosition(oldRow, oldColumn+1).widget().deleteLater()
+        # place empty label at old piece position
+        replacementLabel = self.generate_label(int(oldRow), int(oldColumn+1), True)
+        pixmap = self.readPiece(oldRow, oldColumn)
+        replacementLabel.setPixmap(pixmap)
+        self.grid.addWidget(replacementLabel, int(oldRow), int(oldColumn+1))
+
+        # delete old piece at new position
+        self.grid.itemAtPosition(newRow, newColumn+1).widget().deleteLater()
+        # create new piece at new position
+        label = self.generate_label(int(newRow), int(newColumn+1), True)
+        self.grid.addWidget(label, int(newRow), int(newColumn+1))
+        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def WKCastle(self):
         try:
@@ -462,6 +494,49 @@ class MainWindow(QtWidgets.QMainWindow):
             for j in range(0, self.grid.columnCount()):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
+class SettingsWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.title = 'Settings'
+        self.setGeometry(0, 0, 600, 800)
+
+        saveButton = QtWidgets.QPushButton(self)
+        saveButton.clicked.connect(self.openMainWindow)
+        saveButton.move(225, 725)
+        saveButton.setText("Save settings")
+        saveButton.setStyleSheet("background-color: #73A657;"
+                                   "font-weight: bold;")
+        saveButton.resize(150, 50)
+
+        suggestMoveCheckbox = QtWidgets.QCheckBox("Suggest move", self)
+        suggestMoveCheckbox.stateChanged.connect(self.checkSuggestMove)
+        suggestMoveCheckbox.move(25, 75)
+        suggestMoveCheckbox.resize(200, 50)
+
+        playvsAiCheckbox = QtWidgets.QCheckBox("Play vs AI", self)
+        playvsAiCheckbox.stateChanged.connect(self.checkPlayvsAi)
+        playvsAiCheckbox.move(25, 25)
+        playvsAiCheckbox.resize(200, 50)
+
+
+    def openMainWindow(self):
+        self.close()
+        window = MainWindow()
+        window.show()
+
+    def checkSuggestMove(self, state):
+        global suggestMove
+        if state == QtCore.Qt.Checked:
+            suggestMove = True
+        else:
+            suggestMove = False
+
+    def checkPlayvsAi(self, state):
+        global playvsAi
+        if state == QtCore.Qt.Checked:
+            playvsAi = True
+        else:
+            playvsAi = False
 
 def main():
     rospy.init_node('abstraction')
@@ -469,8 +544,10 @@ def main():
     
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))
-    window = MainWindow()
-    window.show()
+
+    gamesettings = SettingsWindow()
+    gamesettings.show()
+
     sys.exit(app.exec_())
 
 
