@@ -59,7 +59,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.board = Board()
         #self.previousBoard = Board()
-        self.board.board = TB.AIblackbisshopMate
         self.draw_board()
         if suggestMove == True:
             self.suggestMove()
@@ -415,7 +414,8 @@ class MainWindow(QtWidgets.QMainWindow):
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
         self.clearGui()
         self.draw_board()
-        self.highlightSuggestedMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+        if not (beginCoord.row == 0 and beginCoord.column ==0 and endCoord.row==0 and endCoord.column==0):
+            self.highlightSuggestedMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
     def updateMovelog(self):
         self.errorlog.clear()
