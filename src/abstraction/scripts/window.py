@@ -20,7 +20,7 @@ import numpy as np
 import ai
 
 playvsAi = False
-suggestMove = True
+suggestMove = False
 
 
 class MainWindow(QtWidgets.QMainWindow):
