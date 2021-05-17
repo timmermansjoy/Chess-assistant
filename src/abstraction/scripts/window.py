@@ -2,7 +2,7 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QLineEdit, QGridLayout
+from PyQt5.QtWidgets import QLineEdit, QGridLayout, QMessageBox
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
 from testboards import Testboards as TB
@@ -20,6 +20,7 @@ import ai
 
 playvsAi = False
 suggestMove = True
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -56,12 +57,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setGeometry(100, 100, 675, 675)
 
         self.board = Board()
-        self.previousBoard = Board()
+        #self.previousBoard = Board()
+        self.board.board = TB.AIblackbisshopMate
         self.draw_board()
         if suggestMove == True:
             self.suggestMove()
 
-    #when receiving a board from abstraction, put it in self.board and trigger this to get the fields that should get highlighted.
+        self.isInCheckmate = False
+
+    # when receiving a board from abstraction, put it in self.board and trigger this to get the fields that should get highlighted.
     # def difference_in_boards():
     #     changedFields = []
     #     for i in range (8):
@@ -90,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Start to listen...
         self.subscriber = rospy.Subscriber("/chesscam/compressed", Image, self.callback_image_raw)
         rospy.loginfo('subscribed to topic /chesscam/compressed')
-    
+
     def callback_image_raw(self, image):
         self.ros_image_lock.acquire()
         try:
@@ -98,7 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.received_new_data = True
         finally:
             self.ros_image_lock.release()
-    
+
     def update_image_on_gui(self):
         # Get a new image if there's one and make a copy of it.
         new_image = False
@@ -243,7 +247,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cameraLabel.resize(300, 200)
         self.cameraLabel.move(830, 50)
         self.cameraLabel.setStyleSheet("border: 1px solid black;"
-                                  "background-color: #FFECF5; color: #000000")
+                                       "background-color: #FFECF5; color: #000000")
         #self.cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         self.cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -355,6 +359,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gui_timer.start(self.GUI_UPDATE_PERIOD)
         self.gui_timer.timeout.connect(self.update_image_on_gui)
 
+        self.messageBox = QMessageBox(self)
+        self.messageBox.resize(400, 300)
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
@@ -376,12 +383,13 @@ class MainWindow(QtWidgets.QMainWindow):
             if error == False:
                 self.clearGui()
                 self.draw_board()
-                self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                if playvsAi == True:
-                    self.aiMove()
-                if suggestMove == True:
-                    self.suggestMove()
-
+                self.checkmateCheck()
+                if not self.isInCheckmate:
+                    self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                    if playvsAi == True:
+                        self.aiMove()
+                    if suggestMove == True:
+                        self.suggestMove()
         else:
             self.errorlog.setText("Input field is empty")
 
@@ -389,6 +397,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+
         self.updateMovelog()
         self.clearGui()
         self.draw_board()
@@ -494,6 +503,33 @@ class MainWindow(QtWidgets.QMainWindow):
             for j in range(0, self.grid.columnCount()):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
+    def test(self, kingRow, kingColumn):
+        self.grid.itemAtPosition(kingRow, kingColumn+1).widget().deleteLater()
+        label = QtWidgets.QLabel(self)
+        label.setStyleSheet("background-color: #8b0000;"
+                            "border: 1px solid black;")
+        pixmap = self.readPiece(kingRow, kingColumn)
+        label.setPixmap(pixmap)
+        self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
+
+    def checkmateCheck(self):
+        thisPlayer = self.board.isWhitePlayerTurn
+        self.isInCheckmate = self.board.isInCheckmate(thisPlayer)
+        if self.isInCheckmate:
+            if thisPlayer:
+                thisPlayerString = "white"
+                otherPlayerString = "black"
+            else:
+                thisPlayerString = "black"
+                otherPlayerString = "white"
+            returnString = "The current " + thisPlayerString + " player has won the game by putting the " + otherPlayerString + \
+                " player in checkmate, the game has ended.\n \n" + "You can now start another game by restarting the app or pressing \" New game\""
+            self.messageBox.setText(returnString)
+            self.test(7,0)
+            self.board.isCheckmate = True
+            self.messageBox.exec()
+
+
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -505,7 +541,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         saveButton.move(225, 725)
         saveButton.setText("Save settings")
         saveButton.setStyleSheet("background-color: #73A657;"
-                                   "font-weight: bold;")
+                                 "font-weight: bold;")
         saveButton.resize(150, 50)
 
         suggestMoveCheckbox = QtWidgets.QCheckBox("Suggest move", self)
@@ -517,7 +553,6 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playvsAiCheckbox.stateChanged.connect(self.checkPlayvsAi)
         playvsAiCheckbox.move(25, 25)
         playvsAiCheckbox.resize(200, 50)
-
 
     def openMainWindow(self):
         self.close()
@@ -538,10 +573,11 @@ class SettingsWindow(QtWidgets.QMainWindow):
         else:
             playvsAi = False
 
+
 def main():
     rospy.init_node('abstraction')
     rospy.loginfo('abstraction node has been initialized')
-    
+
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))
 
