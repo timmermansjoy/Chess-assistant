@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QLineEdit, QGridLayout, QMessageBox
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
 from testboards import Testboards as TB
+from extra import Coordinate
 import os
 
 import rospy
@@ -371,9 +372,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def enterPress(self):
         inputString = str(self.inputbox.text())
         error = False
+        currentMoveIsCheck = False
         if inputString != "":
             try:
                 coords = self.board.notationToCords(inputString)
+                currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.updateMovelog()
                 self.inputbox.clear()
@@ -388,8 +391,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                     if playvsAi == True:
                         self.aiMove()
-                    if suggestMove == True:
-                        self.suggestMove()
+                    try:
+                        if suggestMove == True:
+                            self.suggestMove()
+                    except Exception as ex:
+                        self.errorlog.setText(str(ex))
+                    if currentMoveIsCheck:
+                        self.colorKingField(1)
         else:
             self.errorlog.setText("Input field is empty")
 
@@ -503,10 +511,20 @@ class MainWindow(QtWidgets.QMainWindow):
             for j in range(0, self.grid.columnCount()):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
-    def test(self, kingRow, kingColumn):
+    def colorKingField(self, value=0):
+        king = "K" if self.board.isWhitePlayerTurn else "k"
+        for row in range(8):
+            for col in range(8):
+                if self.board.board[row][col] == king:
+                    kingRow = row
+                    kingColumn = col
         self.grid.itemAtPosition(kingRow, kingColumn+1).widget().deleteLater()
         label = QtWidgets.QLabel(self)
-        label.setStyleSheet("background-color: #8b0000;"
+        if value==1:
+            label.setStyleSheet("background-color: #ff9500;"
+                            "border: 1px solid black;")
+        else:
+            label.setStyleSheet("background-color: #8f0000;"
                             "border: 1px solid black;")
         pixmap = self.readPiece(kingRow, kingColumn)
         label.setPixmap(pixmap)
@@ -524,8 +542,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 otherPlayerString = "white"
             returnString = "The current " + thisPlayerString + " player has won the game by putting the " + otherPlayerString + \
                 " player in checkmate, the game has ended.\n \n" + "You can now start another game by restarting the app or pressing \" New game\""
+            self.colorKingField()
             self.messageBox.setText(returnString)
-            self.test(7,0)
             self.board.isCheckmate = True
             self.messageBox.exec()
 
