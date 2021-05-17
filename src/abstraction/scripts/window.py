@@ -369,6 +369,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.board.promotionPiece = text
 
     def enterPress(self):
+        print(self.board.board)
         inputString = str(self.inputbox.text())
         error = False
         currentMoveIsCheck = False
@@ -395,7 +396,7 @@ class MainWindow(QtWidgets.QMainWindow):
                             self.suggestMove()
                     except Exception as ex:
                         self.errorlog.setText(str(ex))
-                    if currentMoveIsCheck:
+                    if currentMoveIsCheck and not playvsAi:
                         self.colorKingField(1)
         else:
             self.errorlog.setText("Input field is empty")
@@ -403,12 +404,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def aiMove(self):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
+        currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
         self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
         self.updateMovelog()
         self.clearGui()
         self.draw_board()
         self.highlightMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
+        if(currentMoveIsCheck):
+            self.colorKingField(1)
 
     def suggestMove(self):
         beginCoord, endCoord = ai.calculateMove(3, self.board, False)
