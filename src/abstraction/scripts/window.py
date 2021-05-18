@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic, QtSvg
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QObject, Qt, QTimer, QThread, pyqtSignal
 from PyQt5.QtWidgets import QLineEdit, QGridLayout, QMessageBox
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from board import Board
@@ -21,11 +21,20 @@ import ai
 
 playvsAi = False
 suggestMove = False
+board = Board()
+class Worker(QObject):
+    finished = pyqtSignal(Coordinate, Coordinate)
+
+    def run(self):
+        print("Computers Turn:")
+        beginCoord, endCoord = ai.calculateMove(3, board, False)
+        self.finished.emit(beginCoord, endCoord)
+
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.title = 'ChessGUI'
         self.height = 1000
         self.width = 1200
@@ -57,22 +66,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setLayout(self.grid)
         self.win.setGeometry(100, 100, 675, 675)
 
-        self.board = Board()
+        global board
         #self.previousBoard = Board()
         self.draw_board()
-        if suggestMove == True:
-            self.suggestMove()
 
         self.isInCheckmate = False
 
-    # when receiving a board from abstraction, put it in self.board and trigger this to get the fields that should get highlighted.
+    # when receiving a board from abstraction, put it in board and trigger this to get the fields that should get highlighted.
     # def difference_in_boards():
     #     changedFields = []
     #     for i in range (8):
     #         for j in range (8):
-    #             if self.board.board[i][j] != self.previousBoard.board[i][j]:
+    #             if board.board[i][j] != self.previousBoard.board[i][j]:
     #                 changedFields.append([i,j])
-    #     self.previousBoard = self.board
+    #     self.previousBoard = board
     #     return changedFields
 
     def find_image(self, image_name):
@@ -141,19 +148,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except CvBridgeError as error:
             raise Exception("Failed to convert to OpenCV image")
 
-    # def showChesscam(self, msg):
-    #     # convert sensor_msgs Image to cv2 image
-    #     image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-    #     # resize image
-    #     dimensions = (300, 200)
-    #     image = cv2.resize(image, dimensions, cv2.INTER_AREA)
-    #     # convert BGR color to RGB color
-    #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    #     # make image usable for PyQt
-    #     height, width, channels = image.shape
-    #     image = QtGui.QImage(image.data, width, height, channels * width, QtGui.QImage.Format_RGB888)
-    #     self.cameraLabel.setPixmap(QPixmap.fromImage(image))
-
     def draw_board(self):
         for i in range(0, 9):
             for j in range(0, 9):
@@ -200,7 +194,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return label
 
     def readPiece(self, i, j):
-        currentPiece = self.board.board[i][j]
+        currentPiece = board.board[i][j]
         if currentPiece == ".":
             pass
         elif currentPiece == "k":
@@ -337,10 +331,10 @@ class MainWindow(QtWidgets.QMainWindow):
                                     "font-weight: bold;")
         newGameButton.resize(150, 50)
 
-        invisibleButton = QtWidgets.QPushButton(self)
-        invisibleButton.resize(0, 0)
-        invisibleButton.setShortcut(Qt.Key_Return)
-        invisibleButton.clicked.connect(self.enterPress)
+        self.invisibleButton = QtWidgets.QPushButton(self)
+        self.invisibleButton.resize(0, 0)
+        self.invisibleButton.setShortcut(Qt.Key_Return)
+        self.invisibleButton.clicked.connect(self.enterPress)
 
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItems(["Queen", "Bishop", "Rook", "Knight"])
@@ -366,34 +360,33 @@ class MainWindow(QtWidgets.QMainWindow):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
-        self.board.promotionPiece = text
+        board.promotionPiece = text
 
     def enterPress(self):
-        print(self.board.board)
+        print(board.board)
         inputString = str(self.inputbox.text())
         error = False
         currentMoveIsCheck = False
         if inputString != "":
             try:
-                coords = self.board.notationToCords(inputString)
-                currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.updateMovelog()
+                coords = board.notationToCords(inputString)
+                currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coords[0].row, coords[0].column, coords[1].row, coords[1].column)
+                board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                 self.inputbox.clear()
             except Exception as ex:
                 self.errorlog.setText(str(ex))
                 error = True
             if error == False:
+                self.updateMovelog()
                 self.clearGui()
                 self.draw_board()
                 self.checkmateCheck()
                 if not self.isInCheckmate:
-                    self.highlightMove(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
                     if playvsAi == True:
-                        self.aiMove()
+                        self.aiMoveOrSuggest(True)
                     try:
-                        if suggestMove == True:
-                            self.suggestMove()
+                        if suggestMove == True and playvsAi==False:
+                            self.aiMoveOrSuggest()
                     except Exception as ex:
                         self.errorlog.setText(str(ex))
                     if currentMoveIsCheck and not playvsAi:
@@ -401,30 +394,59 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.errorlog.setText("Input field is empty")
 
-    def aiMove(self):
-        print("Computers Turn:")
-        beginCoord, endCoord = ai.calculateMove(3, self.board, False)
-        currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-        self.board.move(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
-
+    def moveFromCoordinates(self, coordinate1, coordinate2):
+        currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
+        board.move(coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
         self.updateMovelog()
         self.clearGui()
         self.draw_board()
-        self.highlightMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
         if(currentMoveIsCheck):
             self.colorKingField(1)
+        if suggestMove == True:
+            self.aiMoveOrSuggest()
 
-    def suggestMove(self):
-        beginCoord, endCoord = ai.calculateMove(3, self.board, False)
-        self.clearGui()
-        self.draw_board()
+    def aiMoveOrSuggest(self, value=False):
+        self.inputbox.setStyleSheet("background-color: grey;")
+        self.inputbox.setEnabled(False)
+        self.errorlog.setText("your move has been made, awaiting a computer generated move.")
+        if value:
+            self.messageBox.setText("Your move was made, please wait patiently for the AI")
+        else:
+            self.messageBox.setText("the AI is generating a proposed move, please wait")
+        self.messageBox.exec()
+        self.worker = Worker()
+        self.thread = QThread()
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        bonusString = "you can now make your own move"
+        if suggestMove:
+            bonusString = "Please wait for the computer to suggest your next move"
+        if value==True:
+            self.worker.finished.connect(self.moveFromCoordinates)
+            self.thread.finished.connect(
+            lambda: self.errorlog.setText("the AI made it's move!\n" + bonusString)
+        )
+        else:
+            self.worker.finished.connect(self.suggestMove)
+            self.thread.finished.connect(
+            lambda: self.errorlog.setText("move has been generated. You can now see the suggested move.")
+        )
+        self.thread.start()
+        self.inputbox.setEnabled(True)
+        self.inputbox.setStyleSheet("background-color: #FFECF5;")
+
+
+    def suggestMove(self, beginCoord, endCoord):
         if not (beginCoord.row == 0 and beginCoord.column ==0 and endCoord.row==0 and endCoord.column==0):
             self.highlightSuggestedMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
     def updateMovelog(self):
         self.errorlog.clear()
         self.movelog.clear()
-        text = self.board.GetChessNotation()
+        text = board.GetChessNotation()
         self.movelog.setText(text)
 
     def highlightMove(self, oldRow, oldColumn, newRow, newColumn):
@@ -461,7 +483,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def WKCastle(self):
         try:
-            self.board.castling(True, False, self.board.board)
+            board.castling(True, False, board.board)
             self.clearGui()
             self.draw_board()
             self.highlightMove(7, 4, 7, 6)
@@ -470,7 +492,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def WQCastle(self):
         try:
-            self.board.castling(True, True, self.board.board)
+            board.castling(True, True, board.board)
             self.clearGui()
             self.draw_board()
             self.highlightMove(7, 4, 7, 2)
@@ -479,7 +501,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BKCastle(self):
         try:
-            self.board.castling(False, False, self.board.board)
+            board.castling(False, False, board.board)
             self.clearGui()
             self.draw_board()
             self.highlightMove(0, 4, 0, 6)
@@ -488,7 +510,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BQCastle(self):
         try:
-            self.board.castling(False, True, self.board.board)
+            board.castling(False, True, board.board)
             self.clearGui()
             self.draw_board()
             self.highlightMove(0, 4, 0, 2)
@@ -507,7 +529,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.movelog.clear()
         self.clearGui()
         self.highlightedMove = [0, 0, 0, 0]
-        self.board = Board()
+        board = Board()
         self.draw_board()
 
     def clearGui(self):
@@ -516,10 +538,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
     def colorKingField(self, value=0):
-        king = "K" if self.board.isWhitePlayerTurn else "k"
+        king = "K" if board.isWhitePlayerTurn else "k"
         for row in range(8):
             for col in range(8):
-                if self.board.board[row][col] == king:
+                if board.board[row][col] == king:
                     kingRow = row
                     kingColumn = col
         self.grid.itemAtPosition(kingRow, kingColumn+1).widget().deleteLater()
@@ -535,8 +557,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
 
     def checkmateCheck(self):
-        thisPlayer = self.board.isWhitePlayerTurn
-        self.isInCheckmate = self.board.isInCheckmate(thisPlayer)
+        thisPlayer = board.isWhitePlayerTurn
+        self.isInCheckmate = board.isInCheckmate(thisPlayer)
         if self.isInCheckmate:
             if thisPlayer:
                 thisPlayerString = "white"
@@ -548,7 +570,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 " player in checkmate, the game has ended.\n \n" + "You can now start another game by restarting the app or pressing \" New game\""
             self.colorKingField()
             self.messageBox.setText(returnString)
-            self.board.isCheckmate = True
+            board.isCheckmate = True
             self.messageBox.exec()
 
 
