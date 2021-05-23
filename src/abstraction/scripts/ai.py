@@ -5,7 +5,7 @@ import random
 
 PieceValues = {'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 10000}
 
-opening1 = ['6444', '1434', '7655', '0122', '7520']
+opening1 = ['6444', '1434', '7655', '0122', '7531']
 pawnBoardEvalOpening = np.array([
     [0.90, 0.95, 1.05, 1.10, 1.10, 1.05, 0.95, 0.90],
     [0.90, 0.95, 1.05, 1.15, 1.15, 1.05, 0.95, 0.90],
@@ -25,6 +25,62 @@ pawnMultipliers = np.array([
     [1.30, 1.35, 1.55],
     [2.1, 1.75, 2]
 ])
+
+PAWN_TABLE = np.array([
+    [ 0,  0,  0,  0,  0,  0,  0,  0],
+    [ 5, 10, 10,-20,-20, 10, 10,  5],
+    [ 5, -5,-10,  0,  0,-10, -5,  5],
+    [ 0,  0,  0, 20, 20,  0,  0,  0],
+    [ 5,  5, 10, 25, 25, 10,  5,  5],
+    [10, 10, 20, 30, 30, 20, 10, 10],
+    [50, 50, 50, 50, 50, 50, 50, 50],
+    [ 0,  0,  0,  0,  0,  0,  0,  0]
+])
+
+KNIGHT_TABLE = np.array([
+    [-50, -40, -30, -30, -30, -30, -40, -50],
+    [-40, -20,   0,   5,   5,   0, -20, -40],
+    [-30,   5,  10,  15,  15,  10,   5, -30],
+    [-30,   0,  15,  20,  20,  15,   0, -30],
+    [-30,   5,  15,  20,  20,  15,   0, -30],
+    [-30,   0,  10,  15,  15,  10,   0, -30],
+    [-40, -20,   0,   0,   0,   0, -20, -40],
+    [-50, -40, -30, -30, -30, -30, -40, -50]
+])
+
+BISHOP_TABLE = np.array([
+    [-20, -10, -10, -10, -10, -10, -10, -20],
+    [-10,   5,   0,   0,   0,   0,   5, -10],
+    [-10,  10,  10,  10,  10,  10,  10, -10],
+    [-10,   0,  10,  10,  10,  10,   0, -10],
+    [-10,   5,   5,  10,  10,   5,   5, -10],
+    [-10,   0,   5,  10,  10,   5,   0, -10],
+    [-10,   0,   0,   0,   0,   0,   0, -10],
+    [-20, -10, -10, -10, -10, -10, -10, -20]
+])
+
+ROOK_TABLE = np.array([
+    [ 0,  0,  0,  5,  5,  0,  0,  0],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [ 5, 10, 10, 10, 10, 10, 10,  5],
+    [ 0,  0,  0,  0,  0,  0,  0,  0]
+])
+
+QUEEN_TABLE = np.array([
+    [-20, -10, -10, -5, -5, -10, -10, -20],
+    [-10,   0,   5,  0,  0,   0,   0, -10],
+    [-10,   5,   5,  5,  5,   5,   0, -10],
+    [  0,   0,   5,  5,  5,   5,   0,  -5],
+    [ -5,   0,   5,  5,  5,   5,   0,  -5],
+    [-10,   0,   5,  5,  5,   5,   0, -10],
+    [-10,   0,   0,  0,  0,   0,   0, -10],
+    [-20, -10, -10, -5, -5, -10, -10, -20]
+])
+
 # some evaluation conditions
 # A queen versus two rooks
 
@@ -82,8 +138,8 @@ def minimaxRoot(depth, board, white):
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
     
             except Exception as e:
-                #pass
-                print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)
+                pass
+                # print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)
                 # print(board)
     print("Best move Evaluation score: ", bestMoveValue)
     print("Begin Coordination", bestMoveBeginCoord)
@@ -95,7 +151,7 @@ def minimax(depth, board, alpha, beta, white):
     if(depth == 0 or board.isCheckmate):
         # print(board)
         # print(ev)
-        return evaluation(board)
+        return evaluation(board.board)
     possibleMoves = board.getAllValidMoves()
     if(white):
         bestMove = -20000
@@ -149,23 +205,25 @@ def evaluation(board):
     score = 0
     for row in range(8):
         for col in range(8):
-            if board.board[row][col] != '.':
-                moveAmountScore = 0
-                if board.board[row][col].upper() != 'P':
-                    moveAmount = len(board.getPossibleMoves(row, col, board.board))
-                    moveAmountScore = moveAmount * 1.5
-                    if board.board[row][col].islower():
-                        score -= moveAmountScore
-                        score -= PieceValues.get((board.board[row][col]).upper())
-                    else:
-                        score += moveAmountScore
-                        score += PieceValues.get((board.board[row][col]).upper())
+            if board[row][col] != '.':
+                piece = board[row][col]
+                if piece.upper() == 'P':
+                    positionTable = PAWN_TABLE
+                elif piece.upper() == 'N':
+                    positionTable = KNIGHT_TABLE
+                elif piece.upper() == 'B':
+                    positionTable = BISHOP_TABLE
+                elif piece.upper() == 'R':
+                    positionTable = ROOK_TABLE
+                elif piece.upper() == 'Q':
+                    positionTable = QUEEN_TABLE
+                if piece.isupper():
+                    positionTable = np.flip(positionTable)
+                    score += positionTable[row][col]
+                    score += PieceValues.get(piece.upper())
                 else:
-                    pawn = pawnEvaluation(board, row, col)
-                    if board.board[row][col].islower():
-                        score -= pawn
-                    else:
-                        score += pawn
+                    score -= positionTable[row][col]
+                    score -= PieceValues.get(piece.upper())
 
     return score
 
