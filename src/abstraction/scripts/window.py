@@ -103,6 +103,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.subscriber = rospy.Subscriber("/chesscam/compressed", Image, self.callback_image_raw)
         rospy.loginfo('subscribed to topic /chesscam/compressed')
 
+        self.move_sub = rospy.Subscriber('visionMove', String, self.playOnVisionSubscriber)
+        rospy.loginfo('subscribed to visionMove')
+
     def callback_image_raw(self, image):
         self.ros_image_lock.acquire()
         try:
@@ -157,7 +160,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.readPiece(i, j-1)
                     if pixmap != None:
                         label.setPixmap(pixmap)
+                        label.update()
+                    else:
+                        label.update()
                 self.grid.addWidget(label, i, j)
+        self.update()
 
     def generate_label(self, i, j, highlightTile=False):
         label = QtWidgets.QLabel(self)
@@ -367,22 +374,34 @@ class MainWindow(QtWidgets.QMainWindow):
             self.combobox.resize(0,0)
             comboboxDescription.resize(0,0)
 
-            self.move_sub = rospy.Subscriber('visionMove', String, self.playOnVisionSubscriber)
-            rospy.loginfo('subscribed to visionMove')
-
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
         board.promotionPiece = text
 
-    def playOnVisionSubscriber(self, msg):
+    def playOnVisionSubscriber(self, rawmsg):
+        error=False
         try:
-            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[0]), int(msg[1]), int(msg[2]), int(msg[3]))
-            board.move(int(msg[0]), int(msg[1]), int(msg[2]), int(msg[3]))
+            msg = rawmsg.data
+            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
         except Exception as ex:
-            self.errorlog.setText(str(ex))
-            error = True
+            if('is not a valid move' in str(ex)):
+                try:
+                    msg = rawmsg.data
+
+                    board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
+                except Exception as ex2:
+                    self.errorlog.setText(str(ex2))
+                    print("ex2 thrown")
+                    error = True
+            else:
+                self.errorlog.setText(str(ex))
+                error = True
+        print("move finished")
+
         if error == False:
             self.updateMovelog()
             self.clearGui()
@@ -415,6 +434,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.clearGui()
                 self.draw_board()
                 self.checkmateCheck()
+                print("redraw")
                 if not self.isInCheckmate:
                     if playvsAi == True:
                         self.aiMoveOrSuggest(True)
@@ -591,6 +611,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
 
     def checkmateCheck(self):
+        print("checkmate start")
         thisPlayer = board.isWhitePlayerTurn
         self.isInCheckmate = board.isInCheckmate(thisPlayer)
         if self.isInCheckmate:
@@ -606,6 +627,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.setText(returnString)
             board.isCheckmate = True
             self.messageBox.exec()
+        print("checkmate end")
 
 
 class SettingsWindow(QtWidgets.QMainWindow):
@@ -669,8 +691,8 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
 
 def main():
-    rospy.init_node('abstraction')
-    rospy.loginfo('abstraction node has been initialized')
+    rospy.init_node('window')
+    rospy.loginfo('window node has been initialized')
 
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))
