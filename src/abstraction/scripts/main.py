@@ -25,7 +25,8 @@ def test():
 
 def main():
     board = Board()
-    for i in range(4):
+    fullgameStart = timeit.default_timer()
+    for i in range(10):
         start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")
@@ -39,7 +40,7 @@ def main():
 
         # Your statements here
         print(board)
-        print("current game state:", ai.evaluation(board))
+        print("current game state:", ai.evaluation(board.board))
         stop = timeit.default_timer()
 
         print('Time: ', stop - start)
@@ -47,6 +48,8 @@ def main():
         if board.isCheckmate:
             print("checkmate")
             break
+    fullgameEnd = timeit.default_timer()
+    print('Time: ', fullgameEnd - fullgameStart)
 
 def checkmateTest():
     board = Board()
@@ -73,7 +76,7 @@ def getAllValidMovesTest():
     print(board)
 
 if __name__ == "__main__":
-    # main()
+    main()
     # test()
     # checkmateTest()
     getAllValidMovesTest()
