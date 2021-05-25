@@ -19,6 +19,11 @@ def calculate_corners(original):
 
     img = original.copy()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #gray = cv2.fastNlMeansDenoisingMulti(gray, 2, 5, None, 4, 7, 35)
+
+    # thr_img = remove_shadow(img)
+    cv2.imshow('tresh', gray)
+    cv2.waitKey(2)
 
     # Find chessboard corners
     ret, corners = cv2.findChessboardCorners(gray, chessboardSize, None)
@@ -54,12 +59,12 @@ def get_squares(corners, img):
 
     new_corners = np.array([])
     for i in range(len(corners)):
-        
+
         # Left outer line
         xl = corners[i][0][0] - (corners[i][1][0] - corners[i][0][0])
         yl = (corners[i][0][1])
         left = np.array([[xl,yl]])
-        
+
         # Right outer line
         xr = corners[i][6][0] + (corners[i][6][0] - corners[i][5][0])
         yr = (corners[i][6][1])
@@ -88,8 +93,37 @@ def get_squares(corners, img):
     return corners, img
 
 
+def find_move(previous_placement, corners, img):
+    placement = np.zeros((8,8))
+    x1 = x2 = y1 = y2 = None
+    img = cv2.Canny(img, 100, 200)
+    for i in range(len(corners) - 1):
+        for j in range(len(corners[i]) - 1):
+            x_start = corners[i][j][0]
+            x_end = corners[i][j + 1][0]
+            y_start = corners[i][j][1]
+            y_end = corners[i + 1][j][1]
+            wT, hT = img.shape
+            points = np.float32([(x_start, y_start), (x_end, y_start),
+                                 (x_start, y_end), (x_end, y_end)])
 
+            roi = warpImg(img, points, hT, wT)
 
+            s = np.sum(roi)
+            print(f'{i},{j}: {s}')
+            if s > 10000000:
+                if previous_placement is not None and previous_placement[i][j] == 0:
+                    x2 = j
+                    y2 = i
+                placement[i][j] = 1
+            elif previous_placement is not None and previous_placement[i][j] == 1:
+                x1 = j
+                y1 = i
+    print(placement)
+    return (x1, y1, x2, y2, placement)
+
+def get_player(roi):
+    pass
 
 def warpImg(img, points, w, h, inv=False):
     """
@@ -137,7 +171,7 @@ def get_move(corners, img, previous_images):
         #diff = difference(img, image)
         total_difference = cv2.addWeighted(total_difference, 1, diff1, 1, 0.0)
         total_difference = cv2.addWeighted(total_difference, 1, diff2, 1, 0.0)
-   
+
     square_sums = []
     for i in range(len(corners) - 1):
         for j in range(len(corners[i]) - 1):
@@ -156,10 +190,10 @@ def get_move(corners, img, previous_images):
                     square_sums[0] = [i, j, s]
                 elif s > square_sums[1][2]:
                     square_sums[1] = [i, j, s]
-            elif s > 12000000: 
+            elif s > 12000000:
                 square_sums.append([i, j, s])
-    x1 = None 
-    y1 = None 
+    x1 = None
+    y1 = None
     x2 = None
     y2 = None
     if len(square_sums) == 1:
@@ -172,15 +206,23 @@ def get_move(corners, img, previous_images):
         y2 = square_sums[1][1]
     return x1, y1, x2, y2
     return total_difference
-        
 
 
+def remove_shadow(img):
+    dilated_img = cv2.dilate(img, np.ones((3,3), np.uint8))
+    bg_img = cv2.medianBlur(dilated_img, 21)
+    diff_img = 255 - cv2.absdiff(img, bg_img)
+    norm_img = diff_img.copy() # Needed for 3.x compatibility
+    cv2.normalize(diff_img, norm_img, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
+    _, thr_img = cv2.threshold(norm_img, 230, 0, cv2.THRESH_TRUNC)
+    cv2.normalize(thr_img, thr_img, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
+    return thr_img
 
 
 
 
 ###########
-# NOT USED 
+# NOT USED
 ###########
 
 def draw_circles2(img, corners):

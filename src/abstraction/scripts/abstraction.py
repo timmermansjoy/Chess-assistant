@@ -21,6 +21,7 @@ class abstraction:
         self.previous_images = []
         self.max_length = 3
         self.got_moves = False
+        self.previous_placement = None
 
         # ---- Subscribers ----
         self.chesscamsubscriber = rospy.Subscriber('/chesscam/compressed', Image, self.callback_chesscam)
@@ -38,26 +39,31 @@ class abstraction:
                 image_cv = self.convert_ros_to_opencv(self.image)
             finally:
                 self.imageLock.release()
-
             image_cv = cv2.resize(image_cv, (1069, 599))
-            
-            corners = cv_utils.calculate_corners(image_cv)
+
+            if self.corners is None:
+                corners = cv_utils.calculate_corners(image_cv)
+                if corners is not None:
+                    self.corners = corners
+
             # if corners is not None:
-            
+            corners = cv_utils.calculate_corners(image_cv)
             if corners is not None:
-                corners, img = cv_utils.get_squares(corners,image_cv)
-                self.corners = corners
-                gray = cv2.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
+                corners, img = cv_utils.get_squares(self.corners,image_cv)
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 if len(self.previous_images) > 0:
-                    x1, y1, x2, y2 = cv_utils.get_move(self.corners, gray, self.previous_images)
+                    x1, y1, x2, y2, placement = cv_utils.find_move(self.previous_placement, self.corners, gray)
                     print(f'{x1},{y1} -- {x2},{y2}')
                     #print(self.got_moves)
+                    self.previous_placement = placement
                     if not self.got_moves and x2 != None:
                         self.got_moves = True
                         self.move = (x1, y1, x2, y2)
+                    elif self.got_moves and x2 != None:
+                        self.move = (x1, y1, x2, y2)
+                    elif self.got_moves and x2 == None:
+                        self.got_moves = False
                         print(self.move)
-                    elif x2 == None:
-                        self.got_moves = False 
                 self.previous_images.append(gray)
                 if len(self.previous_images) > self.max_length:
                     self.previous_images.pop(0)
