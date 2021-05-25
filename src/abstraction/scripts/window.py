@@ -21,6 +21,7 @@ import ai
 
 playvsAi = False
 suggestMove = False
+playOnVision = False
 board = Board()
 class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
@@ -102,6 +103,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.subscriber = rospy.Subscriber("/chesscam/compressed", Image, self.callback_image_raw)
         rospy.loginfo('subscribed to topic /chesscam/compressed')
 
+        self.move_sub = rospy.Subscriber('visionMove', String, self.playOnVisionSubscriber)
+        rospy.loginfo('subscribed to visionMove')
+
     def callback_image_raw(self, image):
         self.ros_image_lock.acquire()
         try:
@@ -156,7 +160,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.readPiece(i, j-1)
                     if pixmap != None:
                         label.setPixmap(pixmap)
+                        label.update()
+                    else:
+                        label.update()
                 self.grid.addWidget(label, i, j)
+        self.update()
 
     def generate_label(self, i, j, highlightTile=False):
         label = QtWidgets.QLabel(self)
@@ -356,12 +364,57 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageBox = QMessageBox(self)
         self.messageBox.resize(400, 300)
 
+        if playOnVision:
+            self.inputbox.resize(0,0)
+            inputboxDescription.resize(0,0)
+            castleWKButton.resize(0,0)
+            castleWQButton.resize(0,0)
+            castleBQButton.resize(0,0)
+            castleBKButton.resize(0,0)
+            self.combobox.resize(0,0)
+            comboboxDescription.resize(0,0)
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
         board.promotionPiece = text
 
+    def playOnVisionSubscriber(self, rawmsg):
+        error=False
+        try:
+            msg = rawmsg.data
+            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+        except Exception as ex:
+            if('is not a valid move' in str(ex)):
+                try:
+                    msg = rawmsg.data
+
+                    board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
+                except Exception as ex2:
+                    self.errorlog.setText(str(ex2))
+                    print("ex2 thrown")
+                    error = True
+            else:
+                self.errorlog.setText(str(ex))
+                error = True
+        print("move finished")
+
+        if error == False:
+            self.updateMovelog()
+            self.clearGui()
+            self.draw_board()
+            self.checkmateCheck()
+            try:
+                if suggestMove == True:
+                    self.aiMoveOrSuggest()
+            except Exception as ex:
+                self.errorlog.setText(str(ex))
+            if currentMoveIsCheck:
+                self.colorKingField(1)
+        
     def enterPress(self):
         print(board.board)
         inputString = str(self.inputbox.text())
@@ -381,6 +434,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.clearGui()
                 self.draw_board()
                 self.checkmateCheck()
+                print("redraw")
                 if not self.isInCheckmate:
                     if playvsAi == True:
                         self.aiMoveOrSuggest(True)
@@ -557,6 +611,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
 
     def checkmateCheck(self):
+        print("checkmate start")
         thisPlayer = board.isWhitePlayerTurn
         self.isInCheckmate = board.isInCheckmate(thisPlayer)
         if self.isInCheckmate:
@@ -572,6 +627,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.setText(returnString)
             board.isCheckmate = True
             self.messageBox.exec()
+        print("checkmate end")
 
 
 class SettingsWindow(QtWidgets.QMainWindow):
@@ -598,6 +654,15 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playvsAiCheckbox.move(25, 25)
         playvsAiCheckbox.resize(200, 50)
 
+        playOnVisionCheckbox = QtWidgets.QCheckBox("""
+        Play using the input coming from the camera instead of 
+        \n using the manual input. If you want to get moves
+        \n suggested to you, check 'suggest moves' as well.
+        \n this mode will not allow any""", self)
+        playOnVisionCheckbox.stateChanged.connect(self.checkPlayOnVision)
+        playOnVisionCheckbox.move(25, 125)
+        playOnVisionCheckbox.resize(500, 50)
+
     def openMainWindow(self):
         self.close()
         window = MainWindow()
@@ -616,11 +681,18 @@ class SettingsWindow(QtWidgets.QMainWindow):
             playvsAi = True
         else:
             playvsAi = False
+    
+    def checkPlayOnVision(self, state):
+        global playOnVision
+        if state == QtCore.Qt.Checked:
+            playOnVision = True
+        else:
+            False
 
 
 def main():
-    rospy.init_node('abstraction')
-    rospy.loginfo('abstraction node has been initialized')
+    rospy.init_node('window')
+    rospy.loginfo('window node has been initialized')
 
     app = QtWidgets.QApplication(sys.argv)
     app.setFont(QtGui.QFont("Arial", 12))

@@ -31,6 +31,9 @@ class abstraction:
         #self.chesscam_pub = rospy.Publisher('chessimage', Image, queue_size=10)
         #rospy.loginfo('created a publisher for topic chessimage')
 
+        self.move_pub = rospy.Publisher('visionMove', String, queue_size=10)
+        rospy.loginfo('created a publisher for topic visionMove')
+
     # ---- Callbacks ----
     def callback_redraw(self, event):
         if self.image is not None:
