@@ -21,6 +21,7 @@ import ai
 
 playvsAi = False
 suggestMove = False
+playOnVision = False
 board = Board()
 class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
@@ -356,12 +357,45 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageBox = QMessageBox(self)
         self.messageBox.resize(400, 300)
 
+        if playOnVision:
+            self.inputbox.resize(0,0)
+            inputboxDescription.resize(0,0)
+            castleWKButton.resize(0,0)
+            castleWQButton.resize(0,0)
+            castleBQButton.resize(0,0)
+            castleBKButton.resize(0,0)
+            self.combobox.resize(0,0)
+            comboboxDescription.resize(0,0)
+
+            self.move_sub = rospy.Subscriber('visionMove', String, self.playOnVisionSubscriber)
+            rospy.loginfo('subscribed to visionMove')
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
         board.promotionPiece = text
 
+    def playOnVisionSubscriber(self, msg):
+        try:
+            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[0]), int(msg[1]), int(msg[2]), int(msg[3]))
+            board.move(int(msg[0]), int(msg[1]), int(msg[2]), int(msg[3]))
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+            error = True
+        if error == False:
+            self.updateMovelog()
+            self.clearGui()
+            self.draw_board()
+            self.checkmateCheck()
+            try:
+                if suggestMove == True:
+                    self.aiMoveOrSuggest()
+            except Exception as ex:
+                self.errorlog.setText(str(ex))
+            if currentMoveIsCheck:
+                self.colorKingField(1)
+        
     def enterPress(self):
         print(board.board)
         inputString = str(self.inputbox.text())
@@ -598,6 +632,15 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playvsAiCheckbox.move(25, 25)
         playvsAiCheckbox.resize(200, 50)
 
+        playOnVisionCheckbox = QtWidgets.QCheckBox("""
+        Play using the input coming from the camera instead of 
+        \n using the manual input. If you want to get moves
+        \n suggested to you, check 'suggest moves' as well.
+        \n this mode will not allow any""", self)
+        playOnVisionCheckbox.stateChanged.connect(self.checkPlayOnVision)
+        playOnVisionCheckbox.move(25, 125)
+        playOnVisionCheckbox.resize(500, 50)
+
     def openMainWindow(self):
         self.close()
         window = MainWindow()
@@ -616,6 +659,13 @@ class SettingsWindow(QtWidgets.QMainWindow):
             playvsAi = True
         else:
             playvsAi = False
+    
+    def checkPlayOnVision(self, state):
+        global playOnVision
+        if state == QtCore.Qt.Checked:
+            playOnVision = True
+        else:
+            False
 
 
 def main():
