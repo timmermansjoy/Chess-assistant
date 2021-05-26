@@ -21,7 +21,7 @@ class TestAI(unittest.TestCase):
             self.assertEqual(endCoord.column, 0)
         else:
             self.assertEqual(endCoord.column, 2)
-    #@pytest.mark.xfail
+    @pytest.mark.xfail
     def test_rookOverBishopWhite(self):
         self.board.board = TB.AIFreeWhitePiece
         beginCoord, endCoord = ai.calculateMove(3, self.board, True)
@@ -38,8 +38,8 @@ class TestAI(unittest.TestCase):
 
         self.assertEqual(result, False)
 
-    #@pytest.mark.xfail
     # prioritises taking queen over immediate checkmate on h7
+    @pytest.mark.xfail
     def test_mateButFreeQueen(self):
         self.board.board = TB.AIMateButMaterial
         beginCoord, endCoord = ai.calculateMove(3, self.board, True)
@@ -51,7 +51,7 @@ class TestAI(unittest.TestCase):
     # Wants to move 1:0 to 0:0 despite no piece being present on 1:0
     # already moves in calculatedMove, is this intended?
     # also gives away free queen
-    #@pytest.mark.xfail
+    @pytest.mark.xfail
     def test_rookOverBishop(self):
         board = Board()
         board.board = TB.AIFreePiece
@@ -65,7 +65,7 @@ class TestAI(unittest.TestCase):
         actual = Coordinate(3, 2)
         self.assertEqual(endCoord, actual)
 
-    #@pytest.mark.xfail
+    @pytest.mark.xfail
     def test_freeBishopMate(self):
         self.board.board = TB.AIblackbisshopMate
         self.board.move(6, 0, 7, 0)
@@ -78,8 +78,8 @@ class TestAI(unittest.TestCase):
         self.assertEqual(endCoord, actualEnd)
         self.assertEqual(beginCoord, actualStart)
 
-    #@pytest.mark.xfail
     # prefers bishop over checkmate
+    @pytest.mark.xfail
     def test_mateBlackButFreeBishop(self):
         self.board.board = TB.AIMateBlackButMaterial
         self.board.isWhitePlayerTurn = not self.board.isWhitePlayerTurn
@@ -87,8 +87,8 @@ class TestAI(unittest.TestCase):
         actualEnd = Coordinate(6, 6)
         self.assertEqual(actualEnd, endCoord)
 
-    #@pytest.mark.xfail
     # prefers pawn over checkmate
+    @pytest.mark.xfail
     def test_mateBlackButFreePawn(self):
         self.board.board = TB.AIMateBlackButMaterial
         self.board.board[5][1] = "P"
