@@ -51,17 +51,19 @@ def main():
     fullgameEnd = timeit.default_timer()
     print('Time: ', fullgameEnd - fullgameStart)
 
+
 def checkmateTest():
     board = Board()
     board.board = TB.checkSetup
-    board.move(7,7,7,6)
+    board.move(7, 7, 7, 6)
     board.board[2][5] = "r"
     board.board[2][7] = "r"
     board.board[3][0] = "R"
-    board.move(0,7,0,6)
+    board.move(0, 7, 0, 6)
     print("okay")
     print(board.isInCheckmate(True))
     print(board.board)
+
 
 def getAllValidMovesTest():
     board = Board()
@@ -74,6 +76,7 @@ def getAllValidMovesTest():
     board.move(6, 0, 7, 0)
 
     print(board)
+
 
 if __name__ == "__main__":
     main()

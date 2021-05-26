@@ -24,6 +24,8 @@ playvsAi = False
 suggestMove = False
 playOnVision = False
 board = Board()
+
+
 class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
 
@@ -32,7 +34,6 @@ class Worker(QObject):
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, board, False)
         self.finished.emit(beginCoord, endCoord)
-
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -367,14 +368,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageBox.resize(400, 300)
 
         if playOnVision:
-            self.inputbox.resize(0,0)
-            inputboxDescription.resize(0,0)
-            castleWKButton.resize(0,0)
-            castleWQButton.resize(0,0)
-            castleBQButton.resize(0,0)
-            castleBKButton.resize(0,0)
-            self.combobox.resize(0,0)
-            comboboxDescription.resize(0,0)
+            self.inputbox.resize(0, 0)
+            inputboxDescription.resize(0, 0)
+            castleWKButton.resize(0, 0)
+            castleWQButton.resize(0, 0)
+            castleBQButton.resize(0, 0)
+            castleBKButton.resize(0, 0)
+            self.combobox.resize(0, 0)
+            comboboxDescription.resize(0, 0)
 
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
@@ -383,7 +384,7 @@ class MainWindow(QtWidgets.QMainWindow):
         board.promotionPiece = text
 
     def playOnVisionSubscriber(self, rawmsg):
-        error=False
+        error = False
         try:
             msg = rawmsg.data
             currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
@@ -414,7 +415,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.errorlog.setText(str(ex))
             if currentMoveIsCheck:
                 self.colorKingField(1)
-        
+
     def enterPress(self):
         print(board.board)
         inputString = str(self.inputbox.text())
@@ -439,7 +440,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if playvsAi == True:
                         self.aiMoveOrSuggest(True)
                     try:
-                        if suggestMove == True and playvsAi==False:
+                        if suggestMove == True and playvsAi == False:
                             self.aiMoveOrSuggest()
                     except Exception as ex:
                         self.errorlog.setText(str(ex))
@@ -467,7 +468,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.setText("Your move was made, please wait patiently for the AI")
         else:
             self.messageBox.setText("the AI is generating a proposed move, please wait")
-        #self.messageBox.exec()
+        # self.messageBox.exec()
         self.worker = Worker()
         self.thread = QThread()
         self.worker.moveToThread(self.thread)
@@ -478,23 +479,22 @@ class MainWindow(QtWidgets.QMainWindow):
         bonusString = "you can now make your own move"
         if suggestMove:
             bonusString = "Please wait for the computer to suggest your next move"
-        if value==True:
+        if value == True:
             self.worker.finished.connect(self.moveFromCoordinates)
             self.thread.finished.connect(
-            lambda: self.errorlog.setText("the AI made it's move!\n" + bonusString)
-        )
+                lambda: self.errorlog.setText("the AI made it's move!\n" + bonusString)
+            )
         else:
             self.worker.finished.connect(self.suggestMove)
             self.thread.finished.connect(
-            lambda: self.errorlog.setText("move has been generated. You can now see the suggested move.")
-        )
+                lambda: self.errorlog.setText("move has been generated. You can now see the suggested move.")
+            )
         self.thread.start()
         self.inputbox.setEnabled(True)
         self.inputbox.setStyleSheet("background-color: #FFECF5;")
 
-
     def suggestMove(self, beginCoord, endCoord):
-        if not (beginCoord.row == 0 and beginCoord.column ==0 and endCoord.row==0 and endCoord.column==0):
+        if not (beginCoord.row == 0 and beginCoord.column == 0 and endCoord.row == 0 and endCoord.column == 0):
             self.highlightSuggestedMove(beginCoord.row, beginCoord.column, endCoord.row, endCoord.column)
 
     def updateMovelog(self):
@@ -600,12 +600,12 @@ class MainWindow(QtWidgets.QMainWindow):
                     kingColumn = col
         self.grid.itemAtPosition(kingRow, kingColumn+1).widget().deleteLater()
         label = QtWidgets.QLabel(self)
-        if value==1:
+        if value == 1:
             label.setStyleSheet("background-color: #ff9500;"
-                            "border: 1px solid black;")
+                                "border: 1px solid black;")
         else:
             label.setStyleSheet("background-color: #8f0000;"
-                            "border: 1px solid black;")
+                                "border: 1px solid black;")
         pixmap = self.readPiece(kingRow, kingColumn)
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
@@ -681,7 +681,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
             playvsAi = True
         else:
             playvsAi = False
-    
+
     def checkPlayOnVision(self, state):
         global playOnVision
         if state == QtCore.Qt.Checked:

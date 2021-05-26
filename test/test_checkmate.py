@@ -37,22 +37,22 @@ class CheckmateTests(unittest.TestCase):
         print(self.board.board)
         self.assertEqual(self.board.isInCheckmate(True), False)
 
-    #Black
+    # Black
 
     def test_notCheckmateBlack(self):
         self.board.board = deepcopy(TB.checkSetup)
-        self.board.move(1,2,0,3)
+        self.board.move(1, 2, 0, 3)
         self.assertEqual(self.board.isInCheckmate(False), False)
 
     def test_isCheckmateBlack(self):
         self.board.board = deepcopy(TB.checkSetup)
-        self.board.move(1,2,0,2)
+        self.board.move(1, 2, 0, 2)
         self.board.board[1][6] = "N"
         self.assertEqual(self.board.isInCheckmate(False), True)
 
     def test_knightsCheckmateBlack(self):
         self.board.board = deepcopy(TB.checkSetup)
-        self.board.move(1,2,0,2)
+        self.board.move(1, 2, 0, 2)
         self.board.board[1][6] = "N"
         self.board.board[2][4] = "N"
         self.board.board[0][2] = "."
@@ -60,17 +60,17 @@ class CheckmateTests(unittest.TestCase):
 
     def test_knightsNotCheckmateBlack(self):
         self.board.board = deepcopy(TB.checkSetup)
-        self.board.move(1,2,0,2)
+        self.board.move(1, 2, 0, 2)
         self.board.board[1][6] = "N"
         self.board.board[2][3] = "N"
         self.board.board[0][2] = "."
         print(self.board)
         self.assertEqual(self.board.isInCheckmate(False), False)
-    
+
     @pytest.mark.xfail
     def test_EnPassantPossibleNotCheckmate(self):
         self.board.board = deepcopy(TB.checkSetup4)
-        self.board.move(6,7,5,7)
-        self.board.move(1,1,3,1)
+        self.board.move(6, 7, 5, 7)
+        self.board.move(1, 1, 3, 1)
         print(self.board)
         self.assertEqual(self.board.isInCheckmate(True), False)
