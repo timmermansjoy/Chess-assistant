@@ -1,5 +1,6 @@
-from board import *
-from extra import *
+from src.abstraction.scripts.board import Board
+from src.abstraction.scripts.extra import Coordinate
+import numpy as np
 import random
 
 

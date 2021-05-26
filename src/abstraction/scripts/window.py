@@ -9,6 +9,7 @@ from testboards import Testboards as TB
 from extra import Coordinate
 import os
 
+import time
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
@@ -27,6 +28,7 @@ class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
 
     def run(self):
+        time.sleep(0.03)
         print("Computers Turn:")
         beginCoord, endCoord = ai.calculateMove(3, board, False)
         self.finished.emit(beginCoord, endCoord)
@@ -400,8 +402,6 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.errorlog.setText(str(ex))
                 error = True
-        print("move finished")
-
         if error == False:
             self.updateMovelog()
             self.clearGui()
@@ -467,7 +467,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.setText("Your move was made, please wait patiently for the AI")
         else:
             self.messageBox.setText("the AI is generating a proposed move, please wait")
-        self.messageBox.exec()
+        #self.messageBox.exec()
         self.worker = Worker()
         self.thread = QThread()
         self.worker.moveToThread(self.thread)
