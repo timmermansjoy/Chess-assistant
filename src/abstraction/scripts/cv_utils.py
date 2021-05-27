@@ -63,7 +63,7 @@ def get_squares(corners, img):
         # Left outer line
         xl = corners[i][0][0] - (corners[i][1][0] - corners[i][0][0])
         yl = (corners[i][0][1])
-        left = np.array([[xl,yl]])
+        left = np.array([[xl, yl]])
 
         # Right outer line
         xr = corners[i][6][0] + (corners[i][6][0] - corners[i][5][0])
@@ -157,8 +157,10 @@ def find_move(white_cascade, black_cascade, chess_cascade, previous_placement, c
     cv2.waitKey(2)
     return placement, possible_begin_moves, possible_end_moves
 
+
 def get_player(roi):
     pass
+
 
 def warpImg(img, points, w, h, inv=False):
     """
@@ -244,16 +246,14 @@ def get_move(corners, img, previous_images):
 
 
 def remove_shadow(img):
-    dilated_img = cv2.dilate(img, np.ones((3,3), np.uint8))
+    dilated_img = cv2.dilate(img, np.ones((3, 3), np.uint8))
     bg_img = cv2.medianBlur(dilated_img, 21)
     diff_img = 255 - cv2.absdiff(img, bg_img)
-    norm_img = diff_img.copy() # Needed for 3.x compatibility
+    norm_img = diff_img.copy()  # Needed for 3.x compatibility
     cv2.normalize(diff_img, norm_img, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
     _, thr_img = cv2.threshold(norm_img, 230, 0, cv2.THRESH_TRUNC)
     cv2.normalize(thr_img, thr_img, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
     return thr_img
-
-
 
 
 ###########
@@ -268,7 +268,7 @@ def draw_circles2(img, corners):
         for j in range(len(corners[i])):
             x = corners[i][j][0]
             y = corners[i][j][1]
-            cv2.circle(img, (x,y), 5, (blue, 0, red), -1)
+            cv2.circle(img, (x, y), 5, (blue, 0, red), -1)
             if count % 2 == 0:
                 red -= 5
             else:

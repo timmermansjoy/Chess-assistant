@@ -635,10 +635,10 @@ class Board:
         else:
             kingPos = self.findKing(white)
         attackedFields = self.getAllAttackedFields(not white, self.board)
-        validMoveExists=False
+        validMoveExists = False
         for piece in self.getAllValidMoves():
             for move in piece[1]:
-                if not self.isCheck( not white, piece[0].row, piece[0].column, move.row, move.column):
+                if not self.isCheck(not white, piece[0].row, piece[0].column, move.row, move.column):
                     validMoveExists = True
         kingIsAttacked = False
         for field in attackedFields:

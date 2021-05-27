@@ -1,5 +1,6 @@
-from board import *
-from extra import *
+from src.abstraction.scripts.board import Board
+from src.abstraction.scripts.extra import Coordinate
+import numpy as np
 import random
 
 
@@ -27,14 +28,14 @@ pawnMultipliers = np.array([
 ])
 
 PAWN_TABLE = np.array([
-    [ 0,  0,  0,  0,  0,  0,  0,  0],
-    [ 5, 10, 10,-20,-20, 10, 10,  5],
-    [ 5, -5,-10,  0,  0,-10, -5,  5],
-    [ 0,  0,  0, 20, 20,  0,  0,  0],
-    [ 5,  5, 10, 25, 25, 10,  5,  5],
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [5, 10, 10, -20, -20, 10, 10,  5],
+    [5, -5, -10,  0,  0, -10, -5,  5],
+    [0,  0,  0, 20, 20,  0,  0,  0],
+    [5,  5, 10, 25, 25, 10,  5,  5],
     [10, 10, 20, 30, 30, 20, 10, 10],
     [50, 50, 50, 50, 50, 50, 50, 50],
-    [ 0,  0,  0,  0,  0,  0,  0,  0]
+    [0,  0,  0,  0,  0,  0,  0,  0]
 ])
 
 KNIGHT_TABLE = np.array([
@@ -60,22 +61,22 @@ BISHOP_TABLE = np.array([
 ])
 
 ROOK_TABLE = np.array([
-    [ 0,  0,  0,  5,  5,  0,  0,  0],
+    [0,  0,  0,  5,  5,  0,  0,  0],
     [-5,  0,  0,  0,  0,  0,  0, -5],
     [-5,  0,  0,  0,  0,  0,  0, -5],
     [-5,  0,  0,  0,  0,  0,  0, -5],
     [-5,  0,  0,  0,  0,  0,  0, -5],
     [-5,  0,  0,  0,  0,  0,  0, -5],
-    [ 5, 10, 10, 10, 10, 10, 10,  5],
-    [ 0,  0,  0,  0,  0,  0,  0,  0]
+    [5, 10, 10, 10, 10, 10, 10,  5],
+    [0,  0,  0,  0,  0,  0,  0,  0]
 ])
 
 QUEEN_TABLE = np.array([
     [-20, -10, -10, -5, -5, -10, -10, -20],
     [-10,   0,   5,  0,  0,   0,   0, -10],
     [-10,   5,   5,  5,  5,   5,   0, -10],
-    [  0,   0,   5,  5,  5,   5,   0,  -5],
-    [ -5,   0,   5,  5,  5,   5,   0,  -5],
+    [0,   0,   5,  5,  5,   5,   0,  -5],
+    [-5,   0,   5,  5,  5,   5,   0,  -5],
     [-10,   0,   5,  5,  5,   5,   0, -10],
     [-10,   0,   0,  0,  0,   0,   0, -10],
     [-20, -10, -10, -5, -5, -10, -10, -20]
@@ -131,12 +132,12 @@ def minimaxRoot(depth, board, white):
                         bestMoveValue = value
                         bestMoveBeginCoord = moveBeginCoord
                         bestMoveEndCoord = moveEndCoord
-                
+
                 # print(board)
                 # print(value)
                 board.undo()
                 board.isWhitePlayerTurn = not board.isWhitePlayerTurn
-    
+
             except Exception as e:
                 pass
                 # print("non valid move in root:", piece[0].row, piece[0].column, move.row, move.column, e)

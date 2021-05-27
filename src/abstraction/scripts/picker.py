@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 #from matplotlib import pyplot as plt
 
+
 def getContours(image):
     contours, hierarchy = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     for cnt in contours:
@@ -34,8 +35,8 @@ upperHSV = np.array([29, 255, 255])
 maskHSV = cv2.inRange(imgHSV, lowerHSV, upperHSV)
 imgResultHSV = cv2.bitwise_and(img, img, mask=maskHSV)
 
-mask_blur =cv2.GaussianBlur(maskHSV, (31,31), 0)
-mask_canny = cv2.Canny(mask_blur, 100,175)
+mask_blur = cv2.GaussianBlur(maskHSV, (31, 31), 0)
+mask_canny = cv2.Canny(mask_blur, 100, 175)
 getContours(mask_canny)
 cv2.imshow("Stacked Images", mask_canny)
 cv2.waitKey(0)

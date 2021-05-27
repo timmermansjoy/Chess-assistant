@@ -2,6 +2,7 @@ import math
 from enum import Enum
 from node import Node
 
+
 def sss(root, depth=4):
     OPEN = []
     OPEN.append((root, Status.LIVE, math.inf))
@@ -10,11 +11,11 @@ def sss(root, depth=4):
 
         if N == root and status == Status.SOLVED:
             return h
-        
+
         if status == Status.LIVE:
             N.get_children() = N.board.getAllValidMoves()
             if len(N.children == 0) or depth == 0:
-                val = min(h,eval(N))
+                val = min(h, eval(N))
                 N.value = val
                 OPEN.append((N, Status.SOLVED, val))
             elif N.max:
@@ -24,7 +25,7 @@ def sss(root, depth=4):
             elif not N.max:
                 OPEN.append(N.children[0], Status.LIVE, h)
                 depth -= 1
-        
+
         if status == Status.SOLVED:
             P = N.parent
             if N.max and P.children[-1] == N:
@@ -42,11 +43,11 @@ def sss(root, depth=4):
                     if N in P.children:
                         OPEN.remove(OPEN[i])
 
+
 def move(board, white):
     root = Node(white, board)
     best = sss(root)
     return best.move
-
 
 
 class Status(Enum):

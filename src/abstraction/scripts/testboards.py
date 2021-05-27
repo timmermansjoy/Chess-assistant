@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Testboards:
-    #pawns
+    # pawns
     noMoveForPawn = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -92,7 +92,6 @@ class Testboards:
 
     ])
 
-
     enPassentStartBoard1 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -159,7 +158,7 @@ class Testboards:
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
 
-#rooks
+# rooks
     rookAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -170,7 +169,7 @@ class Testboards:
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ])
-#knights
+# knights
     knightAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -181,7 +180,7 @@ class Testboards:
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ])
-#bishop
+# bishop
     bishopAccessTest = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -192,7 +191,7 @@ class Testboards:
         ["P", "P", "P", "P", "P", "P", ".", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ])
-#queen
+# queen
     queenMoves = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -247,7 +246,7 @@ class Testboards:
         ["P", "P", "P", "P", "P", "P", "P", "P"],
         ["R", "N", "B", "Q", "K", "B", "N", "R"],
     ])
-#King
+# King
     kingMoves = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],
@@ -335,7 +334,7 @@ class Testboards:
         ["P", "P", "P", ".", "P", "P", "P", "P"],
         ["R", ".", ".", ".", ".", ".", ".", "R"],
     ])
-#AI boards
+# AI boards
     AIFreeMate = np.array([
         [".", ".", ".", "K", ".", ".", ".", "."],
         ["q", ".", ".", ".", ".", ".", ".", "r"],
@@ -386,7 +385,7 @@ class Testboards:
         ["K", ".", ".", ".", ".", ".", ".", "."],
         [".", ".", ".", ".", ".", ".", ".", "."],
     ])
-#VISION
+# VISION
     VisionBoard1 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],
         ["p", "p", "p", "p", "p", "p", "p", "p"],

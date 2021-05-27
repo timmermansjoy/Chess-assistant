@@ -414,7 +414,7 @@ class Testboards:
         ["r", "q", ".", ".", ".", ".", ".", "."],
         [".", ".", ".", ".", ".", ".", "K", "."],
     ])
-#VISION
+# VISION
 
     VisionBoard1 = np.array([
         ["r", "n", "b", "q", "k", "b", "n", "r"],

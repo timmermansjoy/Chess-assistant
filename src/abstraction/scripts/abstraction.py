@@ -9,6 +9,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
 import cv_utils
 
+
 class abstraction:
     def __init__(self):
         self.image = None
@@ -114,7 +115,6 @@ class abstraction:
                 # if key == 27:
                 #     cv2.destroyAllWindows()
 
-
     def move_piece(self, current_img):
         current_img = cv2.cvtColor(current_img, cv2.COLOR_BGR2GRAY)
         if len(self.previous_images) > 0:
@@ -126,7 +126,6 @@ class abstraction:
         self.previous_images.append(current_img)
         if len(self.previous_images) > self.max_length:
             self.previous_images.pop(0)
-
 
     def convert_ros_to_opencv(self, ros_image):
         try:
@@ -141,6 +140,7 @@ class abstraction:
             self.image = data
         finally:
             self.imageLock.release()
+
 
 if __name__ == '__main__':
     rospy.init_node('abstraction')
