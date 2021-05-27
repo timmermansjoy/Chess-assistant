@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import random
-
+import time
 
 def calculate_corners(original):
     """
@@ -92,35 +92,70 @@ def get_squares(corners, img):
     img = crop_on_board(img, xtl, ytl, xtr, ytr, xbl, ybl, xbr, ybr)
     return corners, img
 
+def detect_piece(roi, piece_cascade, white_cascade, black_cascade):
+    scaleVal = 1.1
+    pieces = piece_cascade.detectMultiScale(roi, scaleVal, 1)
+    piece = None
+    if len(pieces) > 0:
+        white_count = 0
+        black_count = 0
+        white_pieces = white_cascade.detectMultiScale(roi, scaleVal, 1)
+        black_pieces = black_cascade.detectMultiScale(roi, scaleVal, 1)
+        while white_count < 10 and black_count < 10 and scaleVal < 1.5:
+            scaleVal += 0.01
+            if len(black_pieces) > 0:
+                black_count += 1
+            if len(white_pieces) > 0:
+                white_count += 1
+            black_pieces = black_cascade.detectMultiScale(roi, scaleVal, 1)
+            white_pieces = white_cascade.detectMultiScale(roi, scaleVal, 1)
+        if len(white_pieces) == 10 or len(white_pieces) > len(black_pieces):
+            return 0
+        elif len(black_pieces) == 10 or len(black_pieces) > len(white_pieces):
+            return 1
+        elif len(black_pieces) == 0 and len(white_pieces) == 0:
+            return -1
+        return -1
+    return None
 
-def find_move(previous_placement, corners, img):
-    placement = np.zeros((8,8))
+def find_move(white_cascade, black_cascade, chess_cascade, previous_placement, corners, img):
+    placement = previous_placement
     x1 = x2 = y1 = y2 = None
-    img = cv2.Canny(img, 100, 200)
+    possible_begin_moves = []
+    possible_end_moves = []
+    names = [['WHITE', (0,255,0)], ['BLACK', (255,0,255)]]
+    #img = cv2.Canny(img, 100, 200)
     for i in range(len(corners) - 1):
         for j in range(len(corners[i]) - 1):
             x_start = corners[i][j][0]
             x_end = corners[i][j + 1][0]
             y_start = corners[i][j][1]
             y_end = corners[i + 1][j][1]
-            wT, hT = img.shape
+            wT, hT, _ = img.shape
             points = np.float32([(x_start, y_start), (x_end, y_start),
                                  (x_start, y_end), (x_end, y_end)])
-
             roi = warpImg(img, points, hT, wT)
-
-            s = np.sum(roi)
-            print(f'{i},{j}: {s}')
-            if s > 10000000:
-                if previous_placement is not None and previous_placement[i][j] == 0:
-                    x2 = j
-                    y2 = i
-                placement[i][j] = 1
-            elif previous_placement is not None and previous_placement[i][j] == 1:
-                x1 = j
-                y1 = i
-    print(placement)
-    return (x1, y1, x2, y2, placement)
+            roi = cv2.resize(roi, (100,101))
+            piece = detect_piece(roi, chess_cascade, white_cascade, black_cascade)
+            if piece is None and previous_placement[i][j] is not None:
+                possible_begin_moves.append((i,j))
+            elif piece is not None and previous_placement[i][j] is None:
+                possible_end_moves.append((i,j))
+            # elif piece == 1:
+            #     if previous_placement[i][j] == 0 or previous_placement is None:
+            #         possible_end_moves.append((j, i))
+            # elif piece == 0:
+            #     if previous_placement[i][j] == 1 or previous_placement is None:
+            #         possible_end_moves.append((j, i))
+            # else:
+            #     piece = previous_placement[i][j]
+            placement[i][j] = piece
+            if piece is not None:
+                cv2.putText(img, 'PIECE', (int(x_start),int(y_start)+15), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255,0,255), 2)
+    #print(placement)
+    cv2.imshow('img', img)
+    cv2.waitKey(2)
+    return placement, possible_begin_moves, possible_end_moves
 
 def get_player(roi):
     pass
