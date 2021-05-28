@@ -95,6 +95,7 @@ class abstraction:
                         row_end = end
                         col_end = ''
                 print(f'({row_start},{col_start}) -- ({row_end},{col_end})')
+                self.move_pub.publish(f'({row_start},{col_start}),({row_end},{col_end})')
                 # print(f'{x1},{y1} -- {x2},{y2}')
                 # print(self.got_moves)
                 # self.previous_placement = placement

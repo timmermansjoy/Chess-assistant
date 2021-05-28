@@ -71,20 +71,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setGeometry(100, 100, 675, 675)
 
         global board
-        #self.previousBoard = Board()
         self.draw_board()
 
         self.isInCheckmate = False
-
-    # when receiving a board from abstraction, put it in board and trigger this to get the fields that should get highlighted.
-    # def difference_in_boards():
-    #     changedFields = []
-    #     for i in range (8):
-    #         for j in range (8):
-    #             if board.board[i][j] != self.previousBoard.board[i][j]:
-    #                 changedFields.append([i,j])
-    #     self.previousBoard = board
-    #     return changedFields
 
     def find_image(self, image_name):
         path = os.path.realpath("")
@@ -140,7 +129,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         scaled_image = cv2.resize(opencv_image, dimensions, interpolation)
 
-        # Conver the scaled image to a QImage and show it on the GUI.
+        # Convert the scaled image to a QImage and show it on the GUI.
         rgb_image = cv2.cvtColor(scaled_image, cv2.COLOR_BGR2RGB)
         height, width, channels = rgb_image.shape
         bytes_per_line = channels * width
@@ -241,7 +230,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
-        # self.inputbox.connect(self.enterPress)
         self.inputbox.setStyleSheet("background-color: #FFECF5; color: #000000")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
@@ -253,7 +241,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cameraLabel.move(830, 50)
         self.cameraLabel.setStyleSheet("border: 1px solid black;"
                                        "background-color: #FFECF5; color: #000000")
-        #self.cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         self.cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QTextEdit(self)
