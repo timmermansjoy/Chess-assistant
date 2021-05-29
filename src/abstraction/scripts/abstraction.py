@@ -37,7 +37,7 @@ class abstraction:
                           [None, None, None, None, None, None, None, None],
                           [1, 1, 1, 1, 1, 1, 1, 1],
                           [1, 1, 1, 1, 1, 1, 1, 1]]
-        self.ignore = [(3,5)]
+        self.ignore = [(3, 5)]
 
         # ---- Subscribers ----
         self.chesscamsubscriber = rospy.Subscriber('/chesscam/compressed', Image, self.callback_chesscam)
@@ -64,10 +64,10 @@ class abstraction:
                 if corners is not None:
                     self.corners = corners
 
-            #if corners is not None:
+            # if corners is not None:
             corners = cv_utils.calculate_corners(image_cv)
             if corners is not None:
-                corners, image = cv_utils.get_squares(self.corners,image_cv)
+                corners, image = cv_utils.get_squares(self.corners, image_cv)
                 #self.corners = corners
                 #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 row_start = col_start = row_end = col_end = None
@@ -85,10 +85,10 @@ class abstraction:
                     self.ignore.append(end)
                 elif len(begin) > 0 and len(end) > 0:
                     if len(begin) == 1:
-                        row_start,col_start = begin[0]
+                        row_start, col_start = begin[0]
                     else:
-                        row_start=begin
-                        col_start=''
+                        row_start = begin
+                        col_start = ''
                     if len(end) == 1:
                         row_end, col_end = end[0]
                     else:

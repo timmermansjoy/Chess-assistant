@@ -367,21 +367,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.combobox.resize(0, 0)
             comboboxDescription.resize(0, 0)
 
-
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
         board.promotionPiece = text
 
-
     def convertCoordstringToArray(self, thisString):
         returnArray = [[]]
-        if len(thisString)==5:
+        if len(thisString) == 5:
             returnArray.append([thisString[1], thisString[3]])
         else:
             totalLength = ((len(thisString)-11)/8)+1
-            for x in range (0, int(totalLength)):
+            for x in range(0, int(totalLength)):
                 returnArray.append([thisString[3+(8*x)], thisString[6+(8*x)]])
         return returnArray
 
@@ -397,14 +395,14 @@ class MainWindow(QtWidgets.QMainWindow):
             totalCastleArray = [[]]
             totalCastleArray.extend(beginCoordArray)
             totalCastleArray.extend(endCoordArray)
-            if len(beginCoordArray)+ len(endCoordArray)>3:
+            if len(beginCoordArray) + len(endCoordArray) > 3:
                 try:
-                    kingCoordWhite = ['0','3']
-                    kingCoordBlack = ['7','3']
-                    RRW=['0','0']
-                    LRW=["0","7"]
-                    RRB=["7","0"]
-                    LRB=["7","7"]
+                    kingCoordWhite = ['0', '3']
+                    kingCoordBlack = ['7', '3']
+                    RRW = ['0', '0']
+                    LRW = ["0", "7"]
+                    RRB = ["7", "0"]
+                    LRB = ["7", "7"]
                     if kingCoordWhite in totalCastleArray and LRW in totalCastleArray:
                         print("Castling attempt LRW")
                         board.castling(True, True, board.board)
@@ -426,8 +424,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if validMoveExecuted == False:
                 for i in beginCoordArray:
                     for j in endCoordArray:
-                        try :
-                            board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
+                        try:
+                            board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
                             validMoveExecuted = True
                             break
                         except Exception as yeet:
@@ -435,21 +433,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 if not validMoveExecuted:
                     for j in beginCoordArray:
                         for i in endCoordArray:
-                            try :
-                                board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
+                            try:
+                                board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
                                 validMoveExecuted = True
                             except Exception as yeet:
                                 pass
             if not validMoveExecuted:
-                #Insert however you want to display an invalid move here
+                # Insert however you want to display an invalid move here
                 print("invalid move executed")
                 print(beginCoordArray)
                 print(endCoordArray)
-            else:  
+            else:
                 print("valid move finished")
                 print(beginCoordArray)
                 print(endCoordArray)
-                
+
             # try:
             #     msg = rawmsg.data
             #     currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
@@ -522,7 +520,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.errorlog.setText(str(ex))
                 if currentMoveIsCheck and not playvsAi:
                     self.colorKingField(1)
-
 
     def moveFromCoordinates(self, coordinate1, coordinate2):
         currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
@@ -713,13 +710,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.mouseMove1 = Coordinate(y, x)
             elif (self.mouseMove2 == None):
                 self.mouseMove2 = Coordinate(y, x)
-                print((self.mouseMove1,self.mouseMove2))
-                self.makeMove((self.mouseMove1,self.mouseMove2))
+                print((self.mouseMove1, self.mouseMove2))
+                self.makeMove((self.mouseMove1, self.mouseMove2))
                 self.mouseMove1 = None
                 self.mouseMove2 = None
         else:
             self.errorlog.setText("Invalid move")
-
 
     def mousePressEvent(self, event):
         if not playOnVision:
@@ -727,6 +723,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.get_index(event.x(), event.y())
             else:
                 self.target = None
+
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -753,8 +750,8 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playvsAiCheckbox.resize(200, 50)
 
         playOnVisionCheckbox = QtWidgets.QCheckBox("Use input coming from a camera instead of using"
-        +"\nmanual input. If you want to get moves suggested "
-        +"\nto you, check 'suggest moves' as well.", self)
+                                                   + "\nmanual input. If you want to get moves suggested "
+                                                   + "\nto you, check 'suggest moves' as well.", self)
         playOnVisionCheckbox.stateChanged.connect(self.checkPlayOnVision)
         playOnVisionCheckbox.move(25, 175)
         playOnVisionCheckbox.resize(500, 100)
@@ -776,7 +773,6 @@ class SettingsWindow(QtWidgets.QMainWindow):
         sliderDifficulty = QtWidgets.QLabel("Easy                   Medium                  Hard", self)
         sliderDifficulty.move(200, 320)
         sliderDifficulty.resize(350, 50)
-
 
     def openMainWindow(self):
         self.close()

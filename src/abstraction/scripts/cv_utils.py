@@ -3,6 +3,7 @@ import cv2
 import random
 import time
 
+
 def calculate_corners(original):
     """
     get back the inside corners of the chessboard with the findChessboardCorners cv2 functtion
@@ -92,6 +93,7 @@ def get_squares(corners, img):
     img = crop_on_board(img, xtl, ytl, xtr, ytr, xbl, ybl, xbr, ybr)
     return corners, img
 
+
 def detect_piece(roi, piece_cascade, white_cascade, black_cascade):
     scaleVal = 1.1
     pieces = piece_cascade.detectMultiScale(roi, scaleVal, 1)
@@ -118,12 +120,13 @@ def detect_piece(roi, piece_cascade, white_cascade, black_cascade):
         return -1
     return None
 
+
 def find_move(white_cascade, black_cascade, chess_cascade, previous_placement, corners, img):
     placement = previous_placement
     x1 = x2 = y1 = y2 = None
     possible_begin_moves = []
     possible_end_moves = []
-    names = [['WHITE', (0,255,0)], ['BLACK', (255,0,255)]]
+    names = [['WHITE', (0, 255, 0)], ['BLACK', (255, 0, 255)]]
     #img = cv2.Canny(img, 100, 200)
     for i in range(len(corners) - 1):
         for j in range(len(corners[i]) - 1):
@@ -135,12 +138,12 @@ def find_move(white_cascade, black_cascade, chess_cascade, previous_placement, c
             points = np.float32([(x_start, y_start), (x_end, y_start),
                                  (x_start, y_end), (x_end, y_end)])
             roi = warpImg(img, points, hT, wT)
-            roi = cv2.resize(roi, (100,101))
+            roi = cv2.resize(roi, (100, 101))
             piece = detect_piece(roi, chess_cascade, white_cascade, black_cascade)
             if piece is None and previous_placement[i][j] is not None:
-                possible_begin_moves.append((i,j))
+                possible_begin_moves.append((i, j))
             elif piece is not None and previous_placement[i][j] is None:
-                possible_end_moves.append((i,j))
+                possible_end_moves.append((i, j))
             # elif piece == 1:
             #     if previous_placement[i][j] == 0 or previous_placement is None:
             #         possible_end_moves.append((j, i))
@@ -151,8 +154,8 @@ def find_move(white_cascade, black_cascade, chess_cascade, previous_placement, c
             #     piece = previous_placement[i][j]
             placement[i][j] = piece
             if piece is not None:
-                cv2.putText(img, 'PIECE', (int(x_start),int(y_start)+15), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255,0,255), 2)
-    #print(placement)
+                cv2.putText(img, 'PIECE', (int(x_start), int(y_start)+15), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 0, 255), 2)
+    # print(placement)
     cv2.imshow('img', img)
     cv2.waitKey(2)
     return placement, possible_begin_moves, possible_end_moves
