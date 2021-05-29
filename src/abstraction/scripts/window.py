@@ -14,7 +14,7 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
-from threading import Lock
+from threading import Lock, Thread
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -364,6 +364,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.combobox.resize(0, 0)
             comboboxDescription.resize(0, 0)
 
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
@@ -397,11 +398,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     try :
                         print("executing move")
                         print(i[0], i[1], j[0], j[1])
-                        board.move(int(i[0]), int(i[1]), int(j[0]), int(j[1]))
+                        board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
                         correctMoveExecuted = True
-                        self.updateMovelog()
-                        self.clearGui()
-                        self.draw_board()
                         break
                     except Exception as yeet:
                         print(str(yeet))
@@ -412,7 +410,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         try :
                             print("executing move")
                             print(i[0], i[1], j[0], j[1])
-                            board.move(int(i[0]), int(i[1]), int(j[0]), int(j[1]))
+                            board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
                             correctMoveExecuted = True
                         except Exception as yeet:
                             print(str(yeet))
@@ -699,6 +697,14 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.close()
         window = MainWindow()
         window.show()
+        if playOnVision:
+            while True:
+                time.sleep(5)
+                print("refreshing board!")
+                print(board)
+                window.updateMovelog()
+                window.clearGui()
+                window.draw_board()
 
     def checkSuggestMove(self, state):
         global suggestMove
