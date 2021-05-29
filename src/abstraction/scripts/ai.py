@@ -1,5 +1,5 @@
-from src.abstraction.scripts.board import Board
-from src.abstraction.scripts.extra import Coordinate
+from board import Board
+from extra import Coordinate
 import numpy as np
 import random
 
@@ -30,11 +30,22 @@ pawnMultipliers = np.array([
 PAWN_TABLE = np.array([
     [0,  0,  0,  0,  0,  0,  0,  0],
     [5, 10, 10, -20, -20, 10, 10,  5],
-    [5, -5, -10,  0,  0, -10, -5,  5],
-    [0,  0,  0, 20, 20,  0,  0,  0],
-    [5,  5, 10, 25, 25, 10,  5,  5],
-    [10, 10, 20, 30, 30, 20, 10, 10],
-    [50, 50, 50, 50, 50, 50, 50, 50],
+    [-10, -5, 5,  10,  10, 5, -5, -10],
+    [-10, -5, 5,  15,  15, 5, -5, -10],
+    [-10, -5, 10,  20,  20, 10, -5, -10],
+    [-3, 3, 17, 27, 27, 17, 3, -3],
+    [6, 12, 25, 40, 40, 25, 12, 6],
+    [0,  0,  0,  0,  0,  0,  0,  0]
+])
+
+PAWN_TABLE_ENDGAME = np.array([
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [5, 10, 10, -20, -20, 10, 10, 5],
+    [20, 5, -5,  -10,  -10, -5, 5, 20],
+    [20, 5, -5,  -10,  -10, -5, 5, 20],
+    [25,  10, 0, -5, -5, 0, 10, 25],
+    [33, 17, 7, 0, 0, 7, 17, 33],
+    [45, 29, 16, 5, 5, 16, 29, 45],
     [0,  0,  0,  0,  0,  0,  0,  0]
 ])
 
@@ -208,7 +219,9 @@ def evaluation(board):
         for col in range(8):
             if board[row][col] != '.':
                 piece = board[row][col]
-                if piece.upper() == 'P':
+                if piece.upper() == 'P' and isEndGame():
+                    positionTable = PAWN_TABLE_ENDGAME
+                elif piece.upper() == 'P':
                     positionTable = PAWN_TABLE
                 elif piece.upper() == 'N':
                     positionTable = KNIGHT_TABLE

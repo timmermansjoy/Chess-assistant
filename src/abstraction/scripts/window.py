@@ -14,7 +14,7 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from sensor_msgs.msg import Image
-from threading import Lock
+from threading import Lock, Thread
 import cv2
 from cv_bridge import CvBridge
 import numpy as np
@@ -49,6 +49,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_subscriber()
         self.GUI_UPDATE_PERIOD = 10
         self.initUI()
+        self.mouseMove1 = None
+        self.mouseMove2 = None
 
         self.whiteBishopImg = QPixmap(self.find_image("WhiteBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
         self.blackBishopImg = QPixmap(self.find_image("BlackBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
@@ -71,20 +73,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setGeometry(100, 100, 675, 675)
 
         global board
-        #self.previousBoard = Board()
         self.draw_board()
 
         self.isInCheckmate = False
-
-    # when receiving a board from abstraction, put it in board and trigger this to get the fields that should get highlighted.
-    # def difference_in_boards():
-    #     changedFields = []
-    #     for i in range (8):
-    #         for j in range (8):
-    #             if board.board[i][j] != self.previousBoard.board[i][j]:
-    #                 changedFields.append([i,j])
-    #     self.previousBoard = board
-    #     return changedFields
 
     def find_image(self, image_name):
         path = os.path.realpath("")
@@ -140,7 +131,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         scaled_image = cv2.resize(opencv_image, dimensions, interpolation)
 
-        # Conver the scaled image to a QImage and show it on the GUI.
+        # Convert the scaled image to a QImage and show it on the GUI.
         rgb_image = cv2.cvtColor(scaled_image, cv2.COLOR_BGR2RGB)
         height, width, channels = rgb_image.shape
         bytes_per_line = channels * width
@@ -241,7 +232,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.inputbox = QLineEdit(self)
         self.inputbox.move(975, 260)
         self.inputbox.resize(150, 30)
-        # self.inputbox.connect(self.enterPress)
         self.inputbox.setStyleSheet("background-color: #FFECF5; color: #000000")
         inputboxDescription = QtWidgets.QLabel(self)
         inputboxDescription.setText("<b>Enter your move:</b>")
@@ -253,7 +243,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.cameraLabel.move(830, 50)
         self.cameraLabel.setStyleSheet("border: 1px solid black;"
                                        "background-color: #FFECF5; color: #000000")
-        #self.cameraLabel.setText("<b> PLACEHOLDER CAMERA </b>")
         self.cameraLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         self.movelog = QtWidgets.QTextEdit(self)
@@ -288,27 +277,27 @@ class MainWindow(QtWidgets.QMainWindow):
 
         castleWKButton = QtWidgets.QPushButton(self)
         castleWKButton.clicked.connect(self.WKCastle)
-        castleWKButton.move(550, 880)
+        castleWKButton.move(535, 890)
         castleWKButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleWKButton.setText("White King-side castle")
-        castleWKButton.resize(225, 50)
+        castleWKButton.resize(240, 60)
 
         castleWQButton = QtWidgets.QPushButton(self)
         castleWQButton.clicked.connect(self.WQCastle)
-        castleWQButton.move(250, 880)
+        castleWQButton.move(250, 890)
         castleWQButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleWQButton.setText("White Queen-side castle")
-        castleWQButton.resize(225, 50)
+        castleWQButton.resize(240, 60)
 
         castleBKButton = QtWidgets.QPushButton(self)
         castleBKButton.clicked.connect(self.BKCastle)
-        castleBKButton.move(550, 805)
+        castleBKButton.move(535, 805)
         castleBKButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleBKButton.setText("Black King-side castle")
-        castleBKButton.resize(225, 50)
+        castleBKButton.resize(240, 60)
 
         castleBQButton = QtWidgets.QPushButton(self)
         castleBQButton.clicked.connect(self.BQCastle)
@@ -316,7 +305,7 @@ class MainWindow(QtWidgets.QMainWindow):
         castleBQButton.setStyleSheet("background-color: #BEBEBE;"
                                      "font-weight: bold;")
         castleBQButton.setText("Black Queen-side castle")
-        castleBQButton.resize(225, 50)
+        castleBQButton.resize(240, 60)
 
         resignButton = QtWidgets.QPushButton(self)
         resignButton.clicked.connect(self.resign)
@@ -324,23 +313,23 @@ class MainWindow(QtWidgets.QMainWindow):
         resignButton.setText("Resign")
         resignButton.setStyleSheet("background-color: #ffd3b6;"
                                    "font-weight: bold;")
-        resignButton.resize(150, 50)
+        resignButton.resize(170, 60)
 
         drawButton = QtWidgets.QPushButton(self)
         drawButton.clicked.connect(self.draw)
-        drawButton.move(400, 25)
+        drawButton.move(390, 25)
         drawButton.setText("Offer draw")
         drawButton.setStyleSheet("background-color: #ffd3b6;"
                                  "font-weight: bold;")
-        drawButton.resize(150, 50)
+        drawButton.resize(170, 60)
 
         newGameButton = QtWidgets.QPushButton(self)
         newGameButton.clicked.connect(self.newGame)
-        newGameButton.move(625, 25)
+        newGameButton.move(605, 25)
         newGameButton.setText("Start new game")
         newGameButton.setStyleSheet("background-color: #ffd3b6;"
                                     "font-weight: bold;")
-        newGameButton.resize(150, 50)
+        newGameButton.resize(170, 60)
 
         self.invisibleButton = QtWidgets.QPushButton(self)
         self.invisibleButton.resize(0, 0)
@@ -350,14 +339,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItems(["Queen", "Bishop", "Rook", "Knight"])
         self.combobox.setStyleSheet("background-color: #FFECF5; color: #000000")
-        self.combobox.move(80, 855)
-        self.combobox.resize(140, 30)
+        self.combobox.move(60, 865)
+        self.combobox.resize(150, 30)
         self.combobox.currentIndexChanged.connect(self.getComboboxItem)
 
         comboboxDescription = QtWidgets.QLabel(self)
         comboboxDescription.setText("<b>Promote pawn to:</b>")
-        comboboxDescription.resize(140, 20)
-        comboboxDescription.move(80, 835)
+        comboboxDescription.resize(150, 23)
+        comboboxDescription.move(60, 835)
 
         # Start to update the image on the gui.
         self.gui_timer = QTimer(self)
@@ -377,77 +366,162 @@ class MainWindow(QtWidgets.QMainWindow):
             self.combobox.resize(0, 0)
             comboboxDescription.resize(0, 0)
 
+
     def getComboboxItem(self):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
         board.promotionPiece = text
 
-    def playOnVisionSubscriber(self, rawmsg):
-        error = False
-        try:
-            msg = rawmsg.data
-            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-        except Exception as ex:
-            if('is not a valid move' in str(ex)):
-                try:
-                    msg = rawmsg.data
 
-                    board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
-                except Exception as ex2:
-                    self.errorlog.setText(str(ex2))
-                    print("ex2 thrown")
-                    error = True
+    def convertCoordstringToArray(self, thisString):
+        returnArray = [[]]
+        if len(thisString)==5:
+            returnArray.append([thisString[1], thisString[3]])
+        else:
+            totalLength = ((len(thisString)-11)/8)+1
+            for x in range (0, int(totalLength)):
+                returnArray.append([thisString[3+(8*x)], thisString[6+(8*x)]])
+        return returnArray
+
+    def playOnVisionSubscriber(self, rawmsg):
+        msg = rawmsg.data
+        if msg != "(None,None)--(None,None)":
+            indexMiddle = msg.find("--")
+            beginCoord = msg[:indexMiddle]
+            endCoord = msg[indexMiddle+2:]
+            beginCoordArray = self.convertCoordstringToArray(beginCoord)
+            endCoordArray = self.convertCoordstringToArray(endCoord)
+            validMoveExecuted = False
+            totalCastleArray = [[]]
+            totalCastleArray.extend(beginCoordArray)
+            totalCastleArray.extend(endCoordArray)
+            if len(beginCoordArray)+ len(endCoordArray)>3:
+                try:
+                    kingCoordWhite = ['0','3']
+                    kingCoordBlack = ['7','3']
+                    RRW=['0','0']
+                    LRW=["0","7"]
+                    RRB=["7","0"]
+                    LRB=["7","7"]
+                    if kingCoordWhite in totalCastleArray and LRW in totalCastleArray:
+                        print("Castling attempt LRW")
+                        board.castling(True, True, board.board)
+                        validMoveExecuted = True
+                    if kingCoordWhite in totalCastleArray and RRW in totalCastleArray:
+                        print("castling attempt RRW")
+                        board.castling(True, False, board.board)
+                        validMoveExecuted = True
+                    if kingCoordBlack in totalCastleArray and RRB in totalCastleArray:
+                        print("castling attempt LRB")
+                        board.castling(False, True, board.board)
+                        validMoveExecuted = True
+                    if kingCoordBlack in totalCastleArray and LRB in totalCastleArray:
+                        print("castling attempt RRB")
+                        board.castling(False, False, board.board)
+                        validMoveExecuted = True
+                except Exception as ex:
+                    pass
+            if validMoveExecuted == False:
+                for i in beginCoordArray:
+                    for j in endCoordArray:
+                        try :
+                            board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
+                            validMoveExecuted = True
+                            break
+                        except Exception as yeet:
+                            pass
+                if not validMoveExecuted:
+                    for j in beginCoordArray:
+                        for i in endCoordArray:
+                            try :
+                                board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
+                                validMoveExecuted = True
+                            except Exception as yeet:
+                                pass
+            if not validMoveExecuted:
+                #Insert however you want to display an invalid move here
+                print("invalid move executed")
+                print(beginCoordArray)
+                print(endCoordArray)
+            else:  
+                print("valid move finished")
+                print(beginCoordArray)
+                print(endCoordArray)
+                
+            # try:
+            #     msg = rawmsg.data
+            #     currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            #     board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            #     print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            # except Exception as ex:
+            #     if('is not a valid move' in str(ex)):
+            #         try:
+            #             msg = rawmsg.data
+            #             board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
+            #         except Exception as ex2:
+            #             self.errorlog.setText(str(ex2))
+            #             print("ex2 thrown")
+            #             error = True
+            #     else:
+            #         self.errorlog.setText(str(ex))
+            #         error = True
+            # if error == False:
+            #     self.updateMovelog()
+            #     self.clearGui()
+            #     self.draw_board()
+            #     self.checkmateCheck()
+            #     try:
+            #         if suggestMove == True:
+            #             self.aiMoveOrSuggest()
+            #     except Exception as ex:
+            #         self.errorlog.setText(str(ex))
+            #     if currentMoveIsCheck:
+            #         self.colorKingField(1)
+
+    def enterPress(self):
+        if not playOnVision:
+            print(board.board)
+            inputString = str(self.inputbox.text())
+            if inputString != "":
+                coords = board.notationToCords(inputString)
+                print(coords)
+                self.makeMove(coords)
             else:
-                self.errorlog.setText(str(ex))
-                error = True
+                self.errorlog.setText("Input field is empty")
+        else:
+                print("refreshing board!")
+                self.updateMovelog()
+                self.clearGui()
+                self.draw_board()
+
+    def makeMove(self, inputMove):
+        error = False
+        currentMoveIsCheck = False
+        try:
+            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            board.move(inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            self.inputbox.clear()
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+            error = True
         if error == False:
             self.updateMovelog()
             self.clearGui()
             self.draw_board()
             self.checkmateCheck()
-            try:
-                if suggestMove == True:
-                    self.aiMoveOrSuggest()
-            except Exception as ex:
-                self.errorlog.setText(str(ex))
-            if currentMoveIsCheck:
-                self.colorKingField(1)
+            print("redraw")
+            if not self.isInCheckmate:
+                if playvsAi == True:
+                    self.aiMoveOrSuggest(True)
+                try:
+                    if suggestMove == True and playvsAi == False:
+                        self.aiMoveOrSuggest()
+                except Exception as ex:
+                    self.errorlog.setText(str(ex))
+                if currentMoveIsCheck and not playvsAi:
+                    self.colorKingField(1)
 
-    def enterPress(self):
-        print(board.board)
-        inputString = str(self.inputbox.text())
-        error = False
-        currentMoveIsCheck = False
-        if inputString != "":
-            try:
-                coords = board.notationToCords(inputString)
-                currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.inputbox.clear()
-            except Exception as ex:
-                self.errorlog.setText(str(ex))
-                error = True
-            if error == False:
-                self.updateMovelog()
-                self.clearGui()
-                self.draw_board()
-                self.checkmateCheck()
-                print("redraw")
-                if not self.isInCheckmate:
-                    if playvsAi == True:
-                        self.aiMoveOrSuggest(True)
-                    try:
-                        if suggestMove == True and playvsAi == False:
-                            self.aiMoveOrSuggest()
-                    except Exception as ex:
-                        self.errorlog.setText(str(ex))
-                    if currentMoveIsCheck and not playvsAi:
-                        self.colorKingField(1)
-        else:
-            self.errorlog.setText("Input field is empty")
 
     def moveFromCoordinates(self, coordinate1, coordinate2):
         currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
@@ -540,7 +614,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(True, False, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(7, 4, 7, 6)
+            # self.highlightMove(7, 4, 7, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -549,7 +623,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(True, True, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(7, 4, 7, 2)
+            # self.highlightMove(7, 4, 7, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -558,7 +632,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(False, False, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(0, 4, 0, 6)
+            # self.highlightMove(0, 4, 0, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -567,7 +641,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(False, True, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(0, 4, 0, 2)
+            # self.highlightMove(0, 4, 0, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -629,6 +703,29 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.exec()
         print("checkmate end")
 
+    def get_index(self, mouseX, mouseY):
+        # Bug met Y, het werkt als er boven het board geklikt wordt
+        x = int((mouseX - 175) / 75)
+        y = int((mouseY - 100) / 75)
+        print(x,y)
+        if (not(x < 0 or x > 7 or y < 0 or y > 7)):
+            if (self.mouseMove1 == None):
+                self.mouseMove1 = Coordinate(y, x)
+            elif (self.mouseMove2 == None):
+                self.mouseMove2 = Coordinate(y, x)
+                print((self.mouseMove1,self.mouseMove2))
+                self.makeMove((self.mouseMove1,self.mouseMove2))
+                self.mouseMove1 = None
+                self.mouseMove2 = None
+        else:
+            self.errorlog.setText("Invalid move")
+
+
+    # def mousePressEvent(self, event):
+    #     if event.button() == Qt.LeftButton:
+    #         self.get_index(event.x(), event.y())
+    #     else:
+    #         self.target = None
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -646,7 +743,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
         suggestMoveCheckbox = QtWidgets.QCheckBox("Suggest move", self)
         suggestMoveCheckbox.stateChanged.connect(self.checkSuggestMove)
-        suggestMoveCheckbox.move(25, 75)
+        suggestMoveCheckbox.move(25, 100)
         suggestMoveCheckbox.resize(200, 50)
 
         playvsAiCheckbox = QtWidgets.QCheckBox("Play vs AI", self)
@@ -654,14 +751,12 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playvsAiCheckbox.move(25, 25)
         playvsAiCheckbox.resize(200, 50)
 
-        playOnVisionCheckbox = QtWidgets.QCheckBox("""
-        Play using the input coming from the camera instead of 
-        \n using the manual input. If you want to get moves
-        \n suggested to you, check 'suggest moves' as well.
-        \n this mode will not allow any""", self)
+        playOnVisionCheckbox = QtWidgets.QCheckBox("Use input coming from a camera instead of using"
+        +"\nmanual input. If you want to get moves suggested "
+        +"\nto you, check 'suggest moves' as well.", self)
         playOnVisionCheckbox.stateChanged.connect(self.checkPlayOnVision)
-        playOnVisionCheckbox.move(25, 125)
-        playOnVisionCheckbox.resize(500, 50)
+        playOnVisionCheckbox.move(25, 175)
+        playOnVisionCheckbox.resize(500, 100)
 
     def openMainWindow(self):
         self.close()
@@ -695,7 +790,7 @@ def main():
     rospy.loginfo('window node has been initialized')
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setFont(QtGui.QFont("Arial", 12))
+    app.setFont(QtGui.QFont("Arial", 11))
 
     gamesettings = SettingsWindow()
     gamesettings.show()
