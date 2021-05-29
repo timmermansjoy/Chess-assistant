@@ -370,38 +370,85 @@ class MainWindow(QtWidgets.QMainWindow):
             text = "N"
         board.promotionPiece = text
 
-    def playOnVisionSubscriber(self, rawmsg):
-        error = False
-        try:
-            msg = rawmsg.data
-            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-        except Exception as ex:
-            if('is not a valid move' in str(ex)):
-                try:
-                    msg = rawmsg.data
 
-                    board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
-                except Exception as ex2:
-                    self.errorlog.setText(str(ex2))
-                    print("ex2 thrown")
-                    error = True
-            else:
-                self.errorlog.setText(str(ex))
-                error = True
-        if error == False:
-            self.updateMovelog()
-            self.clearGui()
-            self.draw_board()
-            self.checkmateCheck()
-            try:
-                if suggestMove == True:
-                    self.aiMoveOrSuggest()
-            except Exception as ex:
-                self.errorlog.setText(str(ex))
-            if currentMoveIsCheck:
-                self.colorKingField(1)
+    def convertCoordstringToArray(self, thisString):
+        returnArray = [[]]
+        if len(thisString)==5:
+            returnArray.append([thisString[1], thisString[3]])
+        else:
+            totalLength = ((len(thisString)-11)/8)+1
+            for x in range (0, int(totalLength)):
+                returnArray.append([thisString[3+(8*x)], thisString[6+(8*x)]])
+        del returnArray[0]
+        print(returnArray)
+        return returnArray
+
+    def playOnVisionSubscriber(self, rawmsg):
+        msg = rawmsg.data
+        if msg != "(None,None)--(None,None)":
+            indexMiddle = msg.find("--")
+            beginCoord = msg[:indexMiddle]
+            endCoord = msg[indexMiddle+2:]
+            beginCoordArray = self.convertCoordstringToArray(beginCoord)
+            endCoordArray = self.convertCoordstringToArray(endCoord)
+            correctMoveExecuted = False
+            for i in beginCoordArray:
+                for j in endCoordArray:
+                    try :
+                        print("executing move")
+                        print(i[0], i[1], j[0], j[1])
+                        board.move(int(i[0]), int(i[1]), int(j[0]), int(j[1]))
+                        correctMoveExecuted = True
+                        self.updateMovelog()
+                        self.clearGui()
+                        self.draw_board()
+                        break
+                    except Exception as yeet:
+                        print(str(yeet))
+                        print(board)
+            if not correctMoveExecuted:
+                for j in beginCoordArray:
+                    for i in endCoordArray:
+                        try :
+                            print("executing move")
+                            print(i[0], i[1], j[0], j[1])
+                            board.move(int(i[0]), int(i[1]), int(j[0]), int(j[1]))
+                            correctMoveExecuted = True
+                        except Exception as yeet:
+                            print(str(yeet))
+            if not correctMoveExecuted:
+                print("WHY GOD WHY")
+                print("-------------------")
+                
+            # try:
+            #     msg = rawmsg.data
+            #     currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            #     board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            #     print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
+            # except Exception as ex:
+            #     if('is not a valid move' in str(ex)):
+            #         try:
+            #             msg = rawmsg.data
+            #             board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
+            #         except Exception as ex2:
+            #             self.errorlog.setText(str(ex2))
+            #             print("ex2 thrown")
+            #             error = True
+            #     else:
+            #         self.errorlog.setText(str(ex))
+            #         error = True
+            # if error == False:
+            #     self.updateMovelog()
+            #     self.clearGui()
+            #     self.draw_board()
+            #     self.checkmateCheck()
+            #     try:
+            #         if suggestMove == True:
+            #             self.aiMoveOrSuggest()
+            #     except Exception as ex:
+            #         self.errorlog.setText(str(ex))
+            #     if currentMoveIsCheck:
+            #         self.colorKingField(1)
 
     def enterPress(self):
         print(board.board)
