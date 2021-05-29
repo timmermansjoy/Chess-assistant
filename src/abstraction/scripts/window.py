@@ -24,6 +24,7 @@ playvsAi = False
 suggestMove = False
 playOnVision = False
 board = Board()
+AIDifficulty = 3
 
 
 class Worker(QObject):
@@ -32,7 +33,7 @@ class Worker(QObject):
     def run(self):
         time.sleep(0.03)
         print("Computers Turn:")
-        beginCoord, endCoord = ai.calculateMove(3, board, False)
+        beginCoord, endCoord = ai.calculateMove(AIDifficulty, board, False)
         self.finished.emit(beginCoord, endCoord)
 
 
@@ -490,10 +491,10 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.errorlog.setText("Input field is empty")
         else:
-                print("refreshing board!")
-                self.updateMovelog()
-                self.clearGui()
-                self.draw_board()
+            print("refreshing board!")
+            self.updateMovelog()
+            self.clearGui()
+            self.draw_board()
 
     def makeMove(self, inputMove):
         error = False
@@ -707,7 +708,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Bug met Y, het werkt als er boven het board geklikt wordt
         x = int((mouseX - 175) / 75)
         y = int((mouseY - 100) / 75)
-        print(x,y)
         if (not(x < 0 or x > 7 or y < 0 or y > 7)):
             if (self.mouseMove1 == None):
                 self.mouseMove1 = Coordinate(y, x)
@@ -721,11 +721,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.errorlog.setText("Invalid move")
 
 
-    # def mousePressEvent(self, event):
-    #     if event.button() == Qt.LeftButton:
-    #         self.get_index(event.x(), event.y())
-    #     else:
-    #         self.target = None
+    def mousePressEvent(self, event):
+        if not playOnVision:
+            if event.button() == Qt.LeftButton:
+                self.get_index(event.x(), event.y())
+            else:
+                self.target = None
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -758,6 +759,25 @@ class SettingsWindow(QtWidgets.QMainWindow):
         playOnVisionCheckbox.move(25, 175)
         playOnVisionCheckbox.resize(500, 100)
 
+        slider = QtWidgets.QSlider(Qt.Horizontal, self)
+        slider.valueChanged.connect(self.sliderChanged)
+        slider.move(200, 300)
+        slider.setTickInterval(1)
+        slider.setMinimum(1)
+        slider.setMaximum(3)
+        slider.resize(300, 25)
+        slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+        slider.setValue(3)
+
+        sliderDescription = QtWidgets.QLabel("Select AI difficulty:", self)
+        sliderDescription.move(25, 285)
+        sliderDescription.resize(160, 50)
+
+        sliderDifficulty = QtWidgets.QLabel("Easy                   Medium                  Hard", self)
+        sliderDifficulty.move(200, 320)
+        sliderDifficulty.resize(350, 50)
+
+
     def openMainWindow(self):
         self.close()
         window = MainWindow()
@@ -783,6 +803,10 @@ class SettingsWindow(QtWidgets.QMainWindow):
             playOnVision = True
         else:
             False
+
+    def sliderChanged(self, value):
+        global AIDifficulty
+        AIDifficulty = value
 
 
 def main():
