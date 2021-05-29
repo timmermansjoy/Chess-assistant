@@ -1,6 +1,9 @@
 # AI2 Chess Assistant
 
 ![Run all tests](https://github.com/PXLAIRobotics/RP2021G02/actions/workflows/run_tests.yml/badge.svg)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
+
 
 <p align="center">
   <img width="500px" src="https://github.com/PXLAIRobotics/RP2021G02/blob/main/src/resources/Hikaru.png">
