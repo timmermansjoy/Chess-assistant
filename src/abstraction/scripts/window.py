@@ -382,8 +382,6 @@ class MainWindow(QtWidgets.QMainWindow):
             totalLength = ((len(thisString)-11)/8)+1
             for x in range (0, int(totalLength)):
                 returnArray.append([thisString[3+(8*x)], thisString[6+(8*x)]])
-        del returnArray[0]
-        print(returnArray)
         return returnArray
 
     def playOnVisionSubscriber(self, rawmsg):
@@ -394,31 +392,63 @@ class MainWindow(QtWidgets.QMainWindow):
             endCoord = msg[indexMiddle+2:]
             beginCoordArray = self.convertCoordstringToArray(beginCoord)
             endCoordArray = self.convertCoordstringToArray(endCoord)
-            correctMoveExecuted = False
-            for i in beginCoordArray:
-                for j in endCoordArray:
-                    try :
-                        print("executing move")
-                        print(i[0], i[1], j[0], j[1])
-                        board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
-                        correctMoveExecuted = True
-                        break
-                    except Exception as yeet:
-                        print(str(yeet))
-                        print(board)
-            if not correctMoveExecuted:
-                for j in beginCoordArray:
-                    for i in endCoordArray:
+            validMoveExecuted = False
+            totalCastleArray = [[]]
+            totalCastleArray.extend(beginCoordArray)
+            totalCastleArray.extend(endCoordArray)
+            if len(beginCoordArray)+ len(endCoordArray)>3:
+                try:
+                    kingCoordWhite = ['0','3']
+                    kingCoordBlack = ['7','3']
+                    RRW=['0','0']
+                    LRW=["0","7"]
+                    RRB=["7","0"]
+                    LRB=["7","7"]
+                    kingCastleDic= {"KCW":["0","3"], "KCB":["7","3"],"LRW":["0","0"], "RRW":["0","7"], "LRB":["7","0"],"RRB":["7","7"]}
+                    if kingCoordWhite in totalCastleArray and RRW in totalCastleArray:
+                        print("Castling attempt LRW")
+                        board.castling(True, True, board.board)
+                        validMoveExecuted = True
+                    if kingCoordWhite in totalCastleArray and LRW in totalCastleArray:
+                        print("castling attempt RRW")
+                        board.castling(True, True, board.board)
+                        validMoveExecuted = True
+                    if kingCoordBlack in totalCastleArray and RRB in totalCastleArray:
+                        print("castling attempt LRB")
+                        board.castling(False, True, board.board)
+                        validMoveExecuted = True
+                    if kingCoordBlack in totalCastleArray and LRB in totalCastleArray:
+                        print("castling attempt RRB")
+                        board.castling(False, False, board.board)
+                        validMoveExecuted = True
+                except Exception as ex:
+                    pass
+            if validMoveExecuted == False:
+                for i in beginCoordArray:
+                    for j in endCoordArray:
                         try :
-                            print("executing move")
-                            print(i[0], i[1], j[0], j[1])
                             board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
-                            correctMoveExecuted = True
+                            validMoveExecuted = True
+                            break
                         except Exception as yeet:
-                            print(str(yeet))
-            if not correctMoveExecuted:
-                print("WHY GOD WHY")
-                print("-------------------")
+                            pass
+                if not validMoveExecuted:
+                    for j in beginCoordArray:
+                        for i in endCoordArray:
+                            try :
+                                board.move(7-int(i[0]),7-int(i[1]),7-int(j[0]),7-int(j[1]))
+                                validMoveExecuted = True
+                            except Exception as yeet:
+                                pass
+            if not validMoveExecuted:
+                #Insert however you want to display an invalid move here
+                print("invalid move executed")
+                print(beginCoordArray)
+                print(endCoordArray)
+            else:  
+                print("valid move finished")
+                print(beginCoordArray)
+                print(endCoordArray)
                 
             # try:
             #     msg = rawmsg.data
@@ -451,14 +481,20 @@ class MainWindow(QtWidgets.QMainWindow):
             #         self.colorKingField(1)
 
     def enterPress(self):
-        print(board.board)
-        inputString = str(self.inputbox.text())
-        if inputString != "":
-            coords = board.notationToCords(inputString)
-            print(coords)
-            self.makeMove(coords)
+        if not playOnVision:
+            print(board.board)
+            inputString = str(self.inputbox.text())
+            if inputString != "":
+                coords = board.notationToCords(inputString)
+                print(coords)
+                self.makeMove(coords)
+            else:
+                self.errorlog.setText("Input field is empty")
         else:
-            self.errorlog.setText("Input field is empty")
+                print("refreshing board!")
+                self.updateMovelog()
+                self.clearGui()
+                self.draw_board()
 
     def makeMove(self, inputMove):
         error = False
@@ -579,7 +615,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(True, False, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(7, 4, 7, 6)
+            # self.highlightMove(7, 4, 7, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -588,7 +624,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(True, True, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(7, 4, 7, 2)
+            # self.highlightMove(7, 4, 7, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -597,7 +633,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(False, False, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(0, 4, 0, 6)
+            # self.highlightMove(0, 4, 0, 6)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -606,7 +642,7 @@ class MainWindow(QtWidgets.QMainWindow):
             board.castling(False, True, board.board)
             self.clearGui()
             self.draw_board()
-            self.highlightMove(0, 4, 0, 2)
+            # self.highlightMove(0, 4, 0, 2)
         except Exception as ex:
             self.errorlog.setText(str(ex))
 
@@ -686,11 +722,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.errorlog.setText("Invalid move")
 
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.get_index(event.x(), event.y())
-        else:
-            self.target = None
+    # def mousePressEvent(self, event):
+    #     if event.button() == Qt.LeftButton:
+    #         self.get_index(event.x(), event.y())
+    #     else:
+    #         self.target = None
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -727,14 +763,6 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.close()
         window = MainWindow()
         window.show()
-        if playOnVision:
-            while True:
-                time.sleep(5)
-                print("refreshing board!")
-                print(board)
-                window.updateMovelog()
-                window.clearGui()
-                window.draw_board()
 
     def checkSuggestMove(self, state):
         global suggestMove
