@@ -49,6 +49,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_subscriber()
         self.GUI_UPDATE_PERIOD = 10
         self.initUI()
+        self.mouseMove1 = None
+        self.mouseMove2 = None
 
         self.whiteBishopImg = QPixmap(self.find_image("WhiteBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
         self.blackBishopImg = QPixmap(self.find_image("BlackBishop.png")).scaled(73, 73, Qt.KeepAspectRatio)
@@ -453,35 +455,40 @@ class MainWindow(QtWidgets.QMainWindow):
     def enterPress(self):
         print(board.board)
         inputString = str(self.inputbox.text())
-        error = False
-        currentMoveIsCheck = False
         if inputString != "":
-            try:
-                coords = board.notationToCords(inputString)
-                currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                board.move(coords[0].row, coords[0].column, coords[1].row, coords[1].column)
-                self.inputbox.clear()
-            except Exception as ex:
-                self.errorlog.setText(str(ex))
-                error = True
-            if error == False:
-                self.updateMovelog()
-                self.clearGui()
-                self.draw_board()
-                self.checkmateCheck()
-                print("redraw")
-                if not self.isInCheckmate:
-                    if playvsAi == True:
-                        self.aiMoveOrSuggest(True)
-                    try:
-                        if suggestMove == True and playvsAi == False:
-                            self.aiMoveOrSuggest()
-                    except Exception as ex:
-                        self.errorlog.setText(str(ex))
-                    if currentMoveIsCheck and not playvsAi:
-                        self.colorKingField(1)
+            coords = board.notationToCords(inputString)
+            print(coords)
+            self.makeMove(coords)
         else:
             self.errorlog.setText("Input field is empty")
+
+    def makeMove(self, inputMove):
+        error = False
+        currentMoveIsCheck = False
+        try:
+            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            board.move(inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            self.inputbox.clear()
+        except Exception as ex:
+            self.errorlog.setText(str(ex))
+            error = True
+        if error == False:
+            self.updateMovelog()
+            self.clearGui()
+            self.draw_board()
+            self.checkmateCheck()
+            print("redraw")
+            if not self.isInCheckmate:
+                if playvsAi == True:
+                    self.aiMoveOrSuggest(True)
+                try:
+                    if suggestMove == True and playvsAi == False:
+                        self.aiMoveOrSuggest()
+                except Exception as ex:
+                    self.errorlog.setText(str(ex))
+                if currentMoveIsCheck and not playvsAi:
+                    self.colorKingField(1)
+
 
     def moveFromCoordinates(self, coordinate1, coordinate2):
         currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
@@ -663,6 +670,29 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.exec()
         print("checkmate end")
 
+    def get_index(self, mouseX, mouseY):
+        # Bug met Y, het werkt als er boven het board geklikt wordt
+        x = int((mouseX - 175) / 75)
+        y = int((mouseY - 100) / 75)
+        print(x,y)
+        if (not(x < 0 or x > 7 or y < 0 or y > 7)):
+            if (self.mouseMove1 == None):
+                self.mouseMove1 = Coordinate(y, x)
+            elif (self.mouseMove2 == None):
+                self.mouseMove2 = Coordinate(y, x)
+                print((self.mouseMove1,self.mouseMove2))
+                self.makeMove((self.mouseMove1,self.mouseMove2))
+                self.mouseMove1 = None
+                self.mouseMove2 = None
+        else:
+            self.errorlog.setText("Invalid move")
+
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.get_index(event.x(), event.y())
+        else:
+            self.target = None
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
