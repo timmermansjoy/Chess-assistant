@@ -400,18 +400,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 try:
                     kingCoordWhite = ['0','3']
                     kingCoordBlack = ['7','3']
-                    RRW=['0','0']
-                    LRW=["0","7"]
-                    RRB=["7","0"]
-                    LRB=["7","7"]
-                    kingCastleDic= {"KCW":["0","3"], "KCB":["7","3"],"LRW":["0","0"], "RRW":["0","7"], "LRB":["7","0"],"RRB":["7","7"]}
+                    # RRW=['0','0']
+                    # LRW=["0","7"]
+                    # RRB=["7","0"]
+                    # LRB=["7","7"]
                     if kingCoordWhite in totalCastleArray and RRW in totalCastleArray:
                         print("Castling attempt LRW")
                         board.castling(True, True, board.board)
                         validMoveExecuted = True
                     if kingCoordWhite in totalCastleArray and LRW in totalCastleArray:
                         print("castling attempt RRW")
-                        board.castling(True, True, board.board)
+                        board.castling(True, False, board.board)
                         validMoveExecuted = True
                     if kingCoordBlack in totalCastleArray and RRB in totalCastleArray:
                         print("castling attempt LRB")
