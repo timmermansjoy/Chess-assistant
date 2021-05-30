@@ -44,6 +44,7 @@ class Worker(QObject):
             else:
                 raise ex
 
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
