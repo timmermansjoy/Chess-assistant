@@ -112,10 +112,10 @@ def calculateMove(depth, board, white, moveNumber=5):
         opening = opening1[moveNumber]
         return Coordinate(int(opening[0]), int(opening[1])), Coordinate(int(opening[2]), int(opening[3]))
     else:
-        return minimaxRoot(depth, board, white)
+        return minimaxRoot(depth, board, white, moveNumber)
 
 
-def minimaxRoot(depth, board, white):
+def minimaxRoot(depth, board, white, movenumber):
     validMoves = board.getAllValidMoves()
     if white:
         bestMoveValue = -20000
@@ -137,6 +137,7 @@ def minimaxRoot(depth, board, white):
                         bestMoveValue = value
                         bestMoveBeginCoord = moveBeginCoord
                         bestMoveEndCoord = moveEndCoord
+
                 else:
                     value = min(bestMoveValue, minimax(depth - 1, board, -20000, 20000, not white))
                     if(value < bestMoveValue):
@@ -163,7 +164,7 @@ def minimax(depth, board, alpha, beta, white):
     if(depth == 0 or board.isCheckmate):
         # print(board)
         # print(ev)
-        return evaluation(board.board)
+        return evaluation(board)
     possibleMoves = board.getAllValidMoves()
     if(white):
         bestMove = -20000
@@ -217,9 +218,9 @@ def evaluation(board):
     score = 0
     for row in range(8):
         for col in range(8):
-            if board[row][col] != '.':
-                piece = board[row][col]
-                if piece.upper() == 'P' and isEndGame():
+            if board.board[row][col] != '.':
+                piece = board.board[row][col]
+                if piece.upper() == 'P' and isEndGame(board):
                     positionTable = PAWN_TABLE_ENDGAME
                 elif piece.upper() == 'P':
                     positionTable = PAWN_TABLE
