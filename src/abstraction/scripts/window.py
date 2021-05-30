@@ -31,11 +31,18 @@ class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
 
     def run(self):
-        time.sleep(0.03)
-        print("Computers Turn:")
-        beginCoord, endCoord = ai.calculateMove(AIDifficulty, board, False)
-        self.finished.emit(beginCoord, endCoord)
-
+        try:
+            time.sleep(0.03)
+            print("Computers Turn:")
+            beginCoord, endCoord = ai.calculateMove(AIDifficulty, board, board.isWhitePlayerTurn)
+            self.finished.emit(beginCoord, endCoord)
+        except Exception as ex:
+            if "0, 0, 0, 0," in str(ex):
+                print("The AI has returned a 0.0.0.0 move, implying that something did a :notlikethis:. A random move got executed because reasons.")
+                beginCoord, endCoord = ai.PlayRandomMove(board.getAllValidMoves())
+                self.finished.emit(beginCoord, endCoord)
+            else:
+                raise ex
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -45,7 +52,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
-        self.highlightedMove = [0, 0, 0, 0]
         self.bridge = CvBridge()
         self.init_subscriber()
         self.GUI_UPDATE_PERIOD = 10
@@ -74,6 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win.setGeometry(100, 100, 675, 675)
 
         global board
+        self.board = board
         self.draw_board()
 
         self.isInCheckmate = False
@@ -197,7 +204,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return label
 
     def readPiece(self, i, j):
-        currentPiece = board.board[i][j]
+        currentPiece = self.board.board[i][j]
         if currentPiece == ".":
             pass
         elif currentPiece == "k":
@@ -371,7 +378,7 @@ class MainWindow(QtWidgets.QMainWindow):
         text = self.combobox.currentText()[0]
         if text == "K":
             text = "N"
-        board.promotionPiece = text
+        self.board.promotionPiece = text
 
     def convertCoordstringToArray(self, thisString):
         returnArray = [[]]
@@ -405,19 +412,19 @@ class MainWindow(QtWidgets.QMainWindow):
                     LRB = ["7", "7"]
                     if kingCoordWhite in totalCastleArray and LRW in totalCastleArray:
                         print("Castling attempt LRW")
-                        board.castling(True, True, board.board)
+                        self.board.castling(True, True, self.board.board)
                         validMoveExecuted = True
                     if kingCoordWhite in totalCastleArray and RRW in totalCastleArray:
                         print("castling attempt RRW")
-                        board.castling(True, False, board.board)
+                        self.board.castling(True, False, self.board.board)
                         validMoveExecuted = True
                     if kingCoordBlack in totalCastleArray and RRB in totalCastleArray:
                         print("castling attempt LRB")
-                        board.castling(False, True, board.board)
+                        self.board.castling(False, True, self.board.board)
                         validMoveExecuted = True
                     if kingCoordBlack in totalCastleArray and LRB in totalCastleArray:
                         print("castling attempt RRB")
-                        board.castling(False, False, board.board)
+                        self.board.castling(False, False, self.board.board)
                         validMoveExecuted = True
                 except Exception as ex:
                     pass
@@ -425,7 +432,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in beginCoordArray:
                     for j in endCoordArray:
                         try:
-                            board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
+                            self.board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
                             validMoveExecuted = True
                             break
                         except Exception as yeet:
@@ -434,7 +441,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     for j in beginCoordArray:
                         for i in endCoordArray:
                             try:
-                                board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
+                                self.board.move(7-int(i[0]), 7-int(i[1]), 7-int(j[0]), 7-int(j[1]))
                                 validMoveExecuted = True
                             except Exception as yeet:
                                 pass
@@ -448,43 +455,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(beginCoordArray)
                 print(endCoordArray)
 
-            # try:
-            #     msg = rawmsg.data
-            #     currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            #     board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            #     print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            # except Exception as ex:
-            #     if('is not a valid move' in str(ex)):
-            #         try:
-            #             msg = rawmsg.data
-            #             board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
-            #         except Exception as ex2:
-            #             self.errorlog.setText(str(ex2))
-            #             print("ex2 thrown")
-            #             error = True
-            #     else:
-            #         self.errorlog.setText(str(ex))
-            #         error = True
-            # if error == False:
-            #     self.updateMovelog()
-            #     self.clearGui()
-            #     self.draw_board()
-            #     self.checkmateCheck()
-            #     try:
-            #         if suggestMove == True:
-            #             self.aiMoveOrSuggest()
-            #     except Exception as ex:
-            #         self.errorlog.setText(str(ex))
-            #     if currentMoveIsCheck:
-            #         self.colorKingField(1)
-
     def enterPress(self):
         if not playOnVision:
-            print(board.board)
             inputString = str(self.inputbox.text())
             if inputString != "":
-                coords = board.notationToCords(inputString)
-                print(coords)
+                coords = self.board.notationToCords(inputString)
                 self.makeMove(coords)
             else:
                 self.errorlog.setText("Input field is empty")
@@ -498,8 +473,8 @@ class MainWindow(QtWidgets.QMainWindow):
         error = False
         currentMoveIsCheck = False
         try:
-            currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
-            board.move(inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
+            self.board.move(inputMove[0].row, inputMove[0].column, inputMove[1].row, inputMove[1].column)
             self.inputbox.clear()
         except Exception as ex:
             self.errorlog.setText(str(ex))
@@ -521,8 +496,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.colorKingField(1)
 
     def moveFromCoordinates(self, coordinate1, coordinate2):
-        currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
-        board.move(coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
+        currentMoveIsCheck = self.board.isCheck(self.board.isWhitePlayerTurn, coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
+        self.board.move(coordinate1.row, coordinate1.column, coordinate2.row, coordinate2.column)
         self.updateMovelog()
         self.clearGui()
         self.draw_board()
@@ -571,7 +546,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def updateMovelog(self):
         self.errorlog.clear()
         self.movelog.clear()
-        text = board.GetChessNotation()
+        text = self.board.GetChessNotation()
         self.movelog.setText(text)
 
     def highlightMove(self, oldRow, oldColumn, newRow, newColumn):
@@ -588,7 +563,6 @@ class MainWindow(QtWidgets.QMainWindow):
         pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
-        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def highlightSuggestedMove(self, oldRow, oldColumn, newRow, newColumn):
         # delete old piece at old position
@@ -602,13 +576,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # delete old piece at new position
         self.grid.itemAtPosition(newRow, newColumn+1).widget().deleteLater()
         # create new piece at new position
+        newPixmap = self.readPiece(int(newRow), int(newColumn))
         label = self.generate_label(int(newRow), int(newColumn+1), True)
+        if newPixmap is not None:
+            label.setPixmap(newPixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
-        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def WKCastle(self):
         try:
-            board.castling(True, False, board.board)
+            self.board.castling(True, False, self.board.board)
             self.clearGui()
             self.draw_board()
             # self.highlightMove(7, 4, 7, 6)
@@ -617,7 +593,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def WQCastle(self):
         try:
-            board.castling(True, True, board.board)
+            self.board.castling(True, True, self.board.board)
             self.clearGui()
             self.draw_board()
             # self.highlightMove(7, 4, 7, 2)
@@ -626,7 +602,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BKCastle(self):
         try:
-            board.castling(False, False, board.board)
+            self.board.castling(False, False, self.board.board)
             self.clearGui()
             self.draw_board()
             # self.highlightMove(0, 4, 0, 6)
@@ -635,7 +611,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def BQCastle(self):
         try:
-            board.castling(False, True, board.board)
+            self.board.castling(False, True, self.board.board)
             self.clearGui()
             self.draw_board()
             # self.highlightMove(0, 4, 0, 2)
@@ -646,15 +622,16 @@ class MainWindow(QtWidgets.QMainWindow):
         sys.exit()
 
     def draw(self):
-        # TODO misschien AI laten beslissen of het wel/niet de draw accepteert
+        # Misschien handig voor logging
         sys.exit()
 
     def newGame(self):
         self.errorlog.clear()
         self.movelog.clear()
         self.clearGui()
-        self.highlightedMove = [0, 0, 0, 0]
-        board = Board()
+        self.board = Board()
+        global board
+        board = self.board
         self.draw_board()
 
     def clearGui(self):
@@ -663,10 +640,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.grid.itemAtPosition(i, j).widget().deleteLater()
 
     def colorKingField(self, value=0):
-        king = "K" if board.isWhitePlayerTurn else "k"
+        king = "K" if self.board.isWhitePlayerTurn else "k"
         for row in range(8):
             for col in range(8):
-                if board.board[row][col] == king:
+                if self.board.board[row][col] == king:
                     kingRow = row
                     kingColumn = col
         self.grid.itemAtPosition(kingRow, kingColumn+1).widget().deleteLater()
@@ -682,8 +659,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
 
     def checkmateCheck(self):
-        thisPlayer = board.isWhitePlayerTurn
-        self.isInCheckmate = board.isInCheckmate(thisPlayer)
+        thisPlayer = self.board.isWhitePlayerTurn
+        self.isInCheckmate = self.board.isInCheckmate(thisPlayer)
         if self.isInCheckmate:
             if thisPlayer:
                 thisPlayerString = "white"
@@ -695,19 +672,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 " player in checkmate, the game has ended.\n \n" + "You can now start another game by restarting the app or pressing \" New game\""
             self.colorKingField()
             self.messageBox.setText(returnString)
-            board.isCheckmate = True
+            self.board.isCheckmate = True
             self.messageBox.exec()
 
     def get_index(self, mouseX, mouseY):
-        # Bug met Y, het werkt als er boven het board geklikt wordt
         x = int((mouseX - 175) / 75)
-        y = int((mouseY - 100) / 75)
+        if mouseY < 100:
+            y = -1
+        else:
+            y = int((mouseY - 100) / 75)
         if (not(x < 0 or x > 7 or y < 0 or y > 7)):
             if (self.mouseMove1 == None):
                 self.mouseMove1 = Coordinate(y, x)
             elif (self.mouseMove2 == None):
                 self.mouseMove2 = Coordinate(y, x)
-                print((self.mouseMove1, self.mouseMove2))
                 self.makeMove((self.mouseMove1, self.mouseMove2))
                 self.mouseMove1 = None
                 self.mouseMove2 = None
