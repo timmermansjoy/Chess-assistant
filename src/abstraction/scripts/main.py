@@ -26,7 +26,7 @@ def test():
 def main():
     board = Board()
     fullgameStart = timeit.default_timer()
-    for i in range(50):
+    for i in range(6):
         start = timeit.default_timer()
         if i % 2 == 0:
             print("My Turn:")
@@ -81,6 +81,6 @@ def getAllValidMovesTest():
 if __name__ == "__main__":
     main()
     # test()
-    # checkmateTest()
-    getAllValidMovesTest()
-    print("fuck you, you erroring test")
+    #checkmateTest()
+    #getAllValidMovesTest()
+

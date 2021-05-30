@@ -3,9 +3,10 @@ class Coordinate:
     def __init__(self, row, column):
         self.row = row
         self.column = column
+        self.rep = str(self.row) + ":" + str(self.column)
 
     def __repr__(self):
-        return str(self.row) + ":" + str(self.column)
+        return self.rep
 
     def __eq__(self, other):
         if isinstance(other, Coordinate):
