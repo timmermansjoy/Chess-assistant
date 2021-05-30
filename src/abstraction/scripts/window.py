@@ -509,7 +509,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.clearGui()
             self.draw_board()
             self.checkmateCheck()
-            print("redraw")
             if not self.isInCheckmate:
                 if playvsAi == True:
                     self.aiMoveOrSuggest(True)
@@ -683,7 +682,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grid.addWidget(label, int(kingRow), int(kingColumn+1))
 
     def checkmateCheck(self):
-        print("checkmate start")
         thisPlayer = board.isWhitePlayerTurn
         self.isInCheckmate = board.isInCheckmate(thisPlayer)
         if self.isInCheckmate:
@@ -699,7 +697,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.setText(returnString)
             board.isCheckmate = True
             self.messageBox.exec()
-        print("checkmate end")
 
     def get_index(self, mouseX, mouseY):
         # Bug met Y, het werkt als er boven het board geklikt wordt

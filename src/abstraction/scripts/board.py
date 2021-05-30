@@ -306,6 +306,7 @@ class Board:
         target = self.board[endRow][endColumn]
         if (self.isWhitePlayerTurn and str(self.board[startRow][startColumn]).islower()) or (
                 not (self.isWhitePlayerTurn) and str(self.board[startRow][startColumn]).isupper()):
+            print(self.board)
             raise Exception("It is not your turn! Let the other player make their move first!")
         if not self.isCheck(not self.isWhitePlayerTurn, startRow, startColumn, endRow, endColumn):
             if self.board[startRow][startColumn] != "." and "{}:{}".format(endRow, endColumn) in str(self.getPossibleMoves(startRow, startColumn, self.board)):
