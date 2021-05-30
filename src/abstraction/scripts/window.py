@@ -31,11 +31,18 @@ class Worker(QObject):
     finished = pyqtSignal(Coordinate, Coordinate)
 
     def run(self):
-        time.sleep(0.03)
-        print("Computers Turn:")
-        beginCoord, endCoord = ai.calculateMove(AIDifficulty, board, False)
-        self.finished.emit(beginCoord, endCoord)
-
+        try:
+            time.sleep(0.03)
+            print("Computers Turn:")
+            beginCoord, endCoord = ai.calculateMove(AIDifficulty, board, board.isWhitePlayerTurn)
+            self.finished.emit(beginCoord, endCoord)
+        except Exception as ex:
+            if "0, 0, 0, 0," in str(ex):
+                print("The AI has returned a 0.0.0.0 move, implying that something did a :notlikethis:. A random move got executed because reasons.")
+                beginCoord, endCoord = ai.PlayRandomMove(board.getAllValidMoves())
+                self.finished.emit(beginCoord, endCoord)
+            else:
+                raise ex
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -45,7 +52,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.width = 1200
         self.left = 15
         self.top = 15
-        self.highlightedMove = [0, 0, 0, 0]
         self.bridge = CvBridge()
         self.init_subscriber()
         self.GUI_UPDATE_PERIOD = 10
@@ -448,43 +454,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(beginCoordArray)
                 print(endCoordArray)
 
-            # try:
-            #     msg = rawmsg.data
-            #     currentMoveIsCheck = board.isCheck(board.isWhitePlayerTurn, int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            #     board.move(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            #     print(int(msg[1]), int(msg[4]), int(msg[7]), int(msg[10]))
-            # except Exception as ex:
-            #     if('is not a valid move' in str(ex)):
-            #         try:
-            #             msg = rawmsg.data
-            #             board.move(int(msg[7]), int(msg[10]), int(msg[1]), int(msg[4]))
-            #         except Exception as ex2:
-            #             self.errorlog.setText(str(ex2))
-            #             print("ex2 thrown")
-            #             error = True
-            #     else:
-            #         self.errorlog.setText(str(ex))
-            #         error = True
-            # if error == False:
-            #     self.updateMovelog()
-            #     self.clearGui()
-            #     self.draw_board()
-            #     self.checkmateCheck()
-            #     try:
-            #         if suggestMove == True:
-            #             self.aiMoveOrSuggest()
-            #     except Exception as ex:
-            #         self.errorlog.setText(str(ex))
-            #     if currentMoveIsCheck:
-            #         self.colorKingField(1)
-
     def enterPress(self):
         if not playOnVision:
-            print(board.board)
             inputString = str(self.inputbox.text())
             if inputString != "":
                 coords = board.notationToCords(inputString)
-                print(coords)
                 self.makeMove(coords)
             else:
                 self.errorlog.setText("Input field is empty")
@@ -588,7 +562,6 @@ class MainWindow(QtWidgets.QMainWindow):
         pixmap = self.readPiece(newRow, newColumn)
         label.setPixmap(pixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
-        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def highlightSuggestedMove(self, oldRow, oldColumn, newRow, newColumn):
         # delete old piece at old position
@@ -602,9 +575,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # delete old piece at new position
         self.grid.itemAtPosition(newRow, newColumn+1).widget().deleteLater()
         # create new piece at new position
+        newPixmap = self.readPiece(int(newRow), int(newColumn))
         label = self.generate_label(int(newRow), int(newColumn+1), True)
+        if newPixmap is not None:
+            label.setPixmap(newPixmap)
         self.grid.addWidget(label, int(newRow), int(newColumn+1))
-        self.highlightedMove = [oldRow, oldColumn, newRow, newColumn]
 
     def WKCastle(self):
         try:
@@ -646,14 +621,13 @@ class MainWindow(QtWidgets.QMainWindow):
         sys.exit()
 
     def draw(self):
-        # TODO misschien AI laten beslissen of het wel/niet de draw accepteert
+        # Misschien handig voor logging
         sys.exit()
 
     def newGame(self):
         self.errorlog.clear()
         self.movelog.clear()
         self.clearGui()
-        self.highlightedMove = [0, 0, 0, 0]
         board = Board()
         self.draw_board()
 
@@ -699,15 +673,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messageBox.exec()
 
     def get_index(self, mouseX, mouseY):
-        # Bug met Y, het werkt als er boven het board geklikt wordt
         x = int((mouseX - 175) / 75)
-        y = int((mouseY - 100) / 75)
+        if mouseY < 100:
+            y = -1
+        else:
+            y = int((mouseY - 100) / 75)
         if (not(x < 0 or x > 7 or y < 0 or y > 7)):
             if (self.mouseMove1 == None):
                 self.mouseMove1 = Coordinate(y, x)
             elif (self.mouseMove2 == None):
                 self.mouseMove2 = Coordinate(y, x)
-                print((self.mouseMove1, self.mouseMove2))
                 self.makeMove((self.mouseMove1, self.mouseMove2))
                 self.mouseMove1 = None
                 self.mouseMove2 = None
