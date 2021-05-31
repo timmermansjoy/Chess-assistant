@@ -386,7 +386,7 @@ class Board:
                 raise Exception(notation, 'is not a valid move')
         except KeyError as ke:
             raise Exception("the coordinates you passed were not valid coordinates, please try again")
-        raise Exception("don't ask, you did something wrong")
+        #raise Exception("don't ask, you did something wrong")
 
     # TODO refactor this with notationToCords [[update: not sure if still needed?]]
 

@@ -82,6 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         global board
         self.board = board
+        self.board.board = TB.checkSetup
         self.draw_board()
 
         self.isInCheckmate = False
@@ -661,9 +662,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def checkmateCheck(self):
         thisPlayer = self.board.isWhitePlayerTurn
-        self.isInCheckmate = self.board.isInCheckmate(thisPlayer)
+        self.isInCheckmate = self.board.isInCheckmate(self.board.isWhitePlayerTurn)
         if self.isInCheckmate:
-            if thisPlayer:
+            if not thisPlayer:
                 thisPlayerString = "white"
                 otherPlayerString = "black"
             else:
